@@ -1,3 +1,4 @@
 from .MultiQCHelpFormatter import MultiQCHelpFormatter, CustomArgumentParser
 from .run_pipeline import run_pipeline
 from .plot_novoplasty_summary import plot_novoplasty_summary
+from .plot_pilon_heatmap import plot_pilon_heatmap

@@ -10,6 +10,7 @@ from .generate_excel import generate_excel
 from .prepare_plot_dataframe import prepare_plot_dataframe
 from .plot_genome_size_heatmap import plot_genome_size_heatmap
 from .plot_novoplasty_summary import plot_novoplasty_summary
+from .plot_pilon_heatmap import plot_pilon_heatmap
 from .pilon_columns import PILON_COLUMNS
 
 
@@ -102,11 +103,30 @@ async def run_pipeline(**kwargs):
         dpi=dpi,
         fig_format=fig_format,
     )
-#
+
+    pilon_heatmap_path = plot_pilon_heatmap(
+        dataframe=plot_df,
+        output_file=os.path.join(
+            output_dir,
+            "pilon_metrics_heatmap",
+        ),
+        dpi=dpi,
+        fig_format=fig_format,
+        annotate=True,
+        mismatch_alpha=0.15,
+        metrics_per_row=1,
+        gene_rows_per_metric=2,
+        category_column_spacing=0.025,
+        category_row_spacing=0.05,
+        gene_row_spacing=0.5,
+        category_title_height=0.045,
+    )
+
     logging.info("Pipeline completed successfully")
 
     return {
         "excel": excel_path,
         "summary_plot": summary_plot_path,
         "heatmap": heatmap_path,
+        "pilon_heatmap": pilon_heatmap_path,
     }
