@@ -116,7 +116,7 @@ async def parse_novoplasty_log(**kwargs):
         text = await read_text_async(file_path=log_file)
 
     record = parse_novoplasty_text(text)
-    logging.info(f"Parsed NOVOPlasty log: {log_file} -> {record}")
+    #logging.info(f"Parsed NOVOPlasty log: {log_file} -> {record}")
 
     return record
 

@@ -11,6 +11,7 @@ from .prepare_plot_dataframe import prepare_plot_dataframe
 from .plot_genome_size_heatmap import plot_genome_size_heatmap
 from .plot_novoplasty_summary import plot_novoplasty_summary
 from .plot_pilon_heatmap import plot_pilon_heatmap
+from .plot_pilon_before_after_heatmap import plot_pilon_before_after_heatmap
 from .pilon_columns import PILON_COLUMNS
 
 
@@ -114,12 +115,34 @@ async def run_pipeline(**kwargs):
         fig_format=fig_format,
         annotate=True,
         mismatch_alpha=0.15,
-        metrics_per_row=1,
+        metrics_per_row=2,
         gene_rows_per_metric=2,
         category_column_spacing=0.025,
         category_row_spacing=0.05,
         gene_row_spacing=0.5,
         category_title_height=0.045,
+    )
+
+    pilon_before_after_heatmap_path = (
+        plot_pilon_before_after_heatmap(
+            dataframe=plot_df,
+            output_file=os.path.join(
+                output_dir,
+                "pilon_before_after_heatmap",
+            ),
+            dpi=dpi,
+            fig_format=fig_format,
+            annotate=True,
+            mismatch_alpha=0.15,
+            metrics_per_row=2,
+            gene_rows_per_metric=2,
+            category_column_spacing=0.025,
+            category_row_spacing=0.05,
+            gene_row_spacing=0.5,
+            gene_block_spacing=0.025,
+            stage_bar_width=0.050,
+            stage_bar_offset=0.055,
+        )
     )
 
     logging.info("Pipeline completed successfully")
@@ -129,4 +152,5 @@ async def run_pipeline(**kwargs):
         "summary_plot": summary_plot_path,
         "heatmap": heatmap_path,
         "pilon_heatmap": pilon_heatmap_path,
+        "pilon_before_after_heatmap": pilon_before_after_heatmap_path,
     }

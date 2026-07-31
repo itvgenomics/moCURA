@@ -834,7 +834,7 @@ def plot_pilon_heatmap(**kwargs):
     outer_grid = figure.add_gridspec(
         number_of_metric_rows,
         metrics_per_row,
-        wspace=category_column_spacing,
+        wspace=category_column_spacing + 0.15,
         hspace=category_row_spacing,
     )
 
