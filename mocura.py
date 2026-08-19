@@ -2,12 +2,36 @@
 import argparse
 import asyncio
 import logging
-import textwrap
+import os
 import sys
+import textwrap
 
-from moCURA import MultiQCHelpFormatter, CustomArgumentParser, run_pipeline
+os.environ.setdefault(
+    "MPLBACKEND",
+    "Agg",
+)
+
+try:
+    from moCURA import (
+        CustomArgumentParser,
+        MultiQCHelpFormatter,
+        run_pipeline,
+    )
+except ModuleNotFoundError as exc:
+    if exc.name == "yaml":
+        raise ModuleNotFoundError(
+            "Missing dependency 'PyYAML'. Activate the moCURA environment "
+            "and install pyyaml if needed: 'conda activate mocura_env && "
+            "conda install -c conda-forge pyyaml'."
+        ) from exc
+    raise
+
 
 TOOL_NAME = "moCURA"
+DEFAULT_CONFIG_FILE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "config.yml",
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -15,97 +39,127 @@ logging.basicConfig(
     datefmt="%Y/%m/%d - %H:%M:%S",
 )
 
+
 def main():
     parser = CustomArgumentParser(
         prog=TOOL_NAME,
-        usage='%(prog)s [options]',
-        description=f'{TOOL_NAME} - pipeline for generating curated reports from organellar assembly results.',
-        #epilog=
-        formatter_class=lambda prog: MultiQCHelpFormatter(prog=prog),
+        usage="%(prog)s [options]",
+        description=(
+            f"{TOOL_NAME} - pipeline for generating curated reports "
+            "from organellar assembly results."
+        ),
+        formatter_class=lambda prog: MultiQCHelpFormatter(
+            prog=prog
+        ),
         add_help=False,
-        )
+    )
 
-    input = parser.add_argument_group(
+    input_group = parser.add_argument_group(
         title="Input Arguments",
         description=textwrap.dedent(
             """\
             Input Arguments:
-            --results-dir: Absolute directory containing the results.
+            --results-dir: Directory containing the organpipe results.
+            --config: YAML file containing report and plot settings.
+            --metadata: Optional metadata table mapped by Project name.
             """
         ),
     )
 
-    input.add_argument(
+    input_group.add_argument(
         "-i",
-        "--results-dir", 
-        required=True, 
+        "--results-dir",
+        required=True,
         help="Directory containing the organpipe results.",
-        default="example_results"
-        )
+    )
 
-    output = parser.add_argument_group(
+    input_group.add_argument(
+        "-c",
+        "--config",
+        default=DEFAULT_CONFIG_FILE,
+        help="YAML configuration file.",
+    )
+
+    input_group.add_argument(
+        "--metadata",
+        default=None,
+        help=(
+            "Optional CSV, TSV, XLSX or ODS metadata table with Project name, "
+            "Species, Location, Latitude and Longitude columns."
+        ),
+    )
+
+    output_group = parser.add_argument_group(
         title="Output Arguments",
         description=textwrap.dedent(
             """\
             Output Arguments:
-            --output-dir: Absolute directory to store the output.
+            --output-dir: Directory used to store generated reports.
             """
         ),
     )
-    output.add_argument(
-        "-o",
-        "--output-dir", 
-        required=True, 
-        help="Directory to store the output.",
-        default="example_output"
-        )
 
-    threads = parser.add_argument_group(
+    output_group.add_argument(
+        "-o",
+        "--output-dir",
+        required=True,
+        help="Directory used to store generated reports.",
+    )
+
+    threading_group = parser.add_argument_group(
         title="Threading Arguments",
         description=textwrap.dedent(
             """\
             Threading Arguments:
-            --threads: Number of concurrent tasks.
+            --threads: Override the number of concurrent tasks from config.yml.
             """
         ),
     )
-    threads.add_argument(
+
+    threading_group.add_argument(
         "-t",
-        "--threads", 
-        type=int, 
-        default=20, 
-        help="Number of concurrent tasks."
+        "--threads",
+        type=int,
+        default=None,
+        help="Override the number of concurrent tasks from config.yml.",
     )
 
-    miscellaneous = parser.add_argument_group(
+    miscellaneous_group = parser.add_argument_group(
         title="Miscellaneous Arguments",
         description=textwrap.dedent(
             """\
             Miscellaneous Arguments:
-            --only-circularized: Process only circularized organelles in NOVOPlasty.
-            --fig-format: Format for output figures (e.g., png, svg).
-            --dpi: DPI for output figures.
+            --only-circularized: Process only circularized NOVOPlasty assemblies.
+            --no-only-circularized: Process circularized and non-circularized assemblies.
+            --fig-format: Override the figure format from config.yml.
+            --dpi: Override the figure DPI from config.yml.
             """
         ),
     )
-    miscellaneous.add_argument(
-        "--only-circularized", 
-        action="store_true", 
-        help="Process only circularized organelles in NOVOPlasty."
+
+    miscellaneous_group.add_argument(
+        "--only-circularized",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "Override the circularized-only setting from config.yml."
+        ),
     )
-    miscellaneous.add_argument(
+
+    miscellaneous_group.add_argument(
         "--fig-format",
-        type=str, 
-        default="png", 
-        help="Format for output figures (e.g., png, svg)."
+        type=str,
+        default=None,
+        help="Override the figure format from config.yml.",
     )
-    miscellaneous.add_argument(
-        "--dpi", 
-        type=int, 
-        default=300, 
-        help="DPI for output figures."
+
+    miscellaneous_group.add_argument(
+        "--dpi",
+        type=int,
+        default=None,
+        help="Override the figure DPI from config.yml.",
     )
-    
+
     arguments = parser.parse_args()
 
     try:
@@ -113,15 +167,21 @@ def main():
             run_pipeline(
                 results_dir=arguments.results_dir,
                 output_dir=arguments.output_dir,
+                config_file=arguments.config,
                 concurrency=arguments.threads,
                 only_circularized=arguments.only_circularized,
                 dpi=arguments.dpi,
-                fig_format=arguments.fig_format
-                )
+                fig_format=arguments.fig_format,
+                metadata_path=arguments.metadata,
+            )
         )
     except Exception as error:
-        logging.error(f"An error occurred: {error}")
+        logging.exception(
+            "An error occurred: %s",
+            error,
+        )
         sys.exit(1)
-#
+
+
 if __name__ == "__main__":
     main()

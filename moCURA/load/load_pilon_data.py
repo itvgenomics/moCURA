@@ -4,11 +4,11 @@ import os
 import re
 
 import pandas as pd
-from .gather_records import gather_records
-from .standardized_gene_name import standardized_gene_name
-from .to_integer import to_integer
-from .read_text_async import read_text_async
-from .pilon_columns import PILON_COLUMNS
+from ..standardization.standardized_gene_name import standardized_gene_name
+from ..utils.gather_records import gather_records
+from ..utils.pilon_columns import PILON_COLUMNS
+from ..utils.read_text_async import read_text_async
+from ..utils.to_integer import to_integer
 
 def parse_pilon_text(**kwargs):
     text = kwargs.get("text", None)

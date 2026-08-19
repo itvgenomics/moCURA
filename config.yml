@@ -1,0 +1,201 @@
+pipeline:
+  threads: 20
+  only_circularized: true
+
+figures:
+  format: png
+  dpi: 300
+  style:
+    annotate: true
+    bar_linewidth: 10
+    x_tick_pad: 7.5
+    x_label_pad: 15
+    plot_height_scale: 1.5
+    panel_title_fontsize: 24
+    panel_letter_fontsize: 17
+    legend_fontsize: 13
+    legend_title_fontsize: 15
+    colorbar_label_fontsize: 11
+    colorbar_tick_fontsize: 10
+    project_label_fontsize: 9
+    axis_label_fontsize: 11
+
+plots:
+  novoplasty_summary:
+    enabled: false
+    point_size: 15
+    title_fontsize: 18
+    panel_letter_fontsize: 15
+    legend_fontsize: 12
+    legend_title_fontsize: 14
+    range_line: '#B0E4CC'
+    row_background: '#EEEEEE'
+  genome_size_heatmap:
+    enabled: false
+    cmap: viridis
+    mismatch_alpha: 0.25
+    title_fontsize: 20
+    panel_letter_fontsize: 15
+  pilon_heatmap:
+    enabled: false
+    mismatch_alpha: 0.25
+    metrics_per_row: 2
+    gene_rows_per_metric: 2
+    category_column_spacing: 0.08
+    category_row_spacing: 0.16
+    gene_row_spacing: 0.18
+    gene_block_spacing: 0.025
+    category_title_height: 0.13
+    colorbar_width: 0.025
+  pilon_before_after_heatmap:
+    enabled: false
+    mismatch_alpha: 0.25
+    metrics_per_row: 2
+    gene_rows_per_metric: 2
+    category_column_spacing: 0.08
+    category_row_spacing: 0.16
+    gene_row_spacing: 0.18
+    gene_block_spacing: 0.025
+    category_title_height: 0.13
+    colorbar_width: 0.025
+    stage_bar_offset: 0.03
+  marker_length_heatmaps:
+    enabled: false
+    annotate: true
+    cmap: cividis
+    mismatch_alpha: 0.35
+    annotation_size: 7
+    title_fontsize: 20
+    legend_fontsize: 20
+    legend_title_fontsize: 13
+    x_tick_size: 10
+    y_tick_size: 10
+    bar_linewidth: 10
+    maximum_figure_width: 26
+    maximum_figure_height: 24
+
+genbank:
+  enabled: true
+  folder_name: genbanks
+  suffix: .rotated.gb
+  feature_types:
+  - CDS
+  - rRNA
+  - tRNA
+  - D-loop
+  - misc_feature
+  - regulatory
+  include_unknown_markers: false
+
+marker_snp_analysis:
+  enabled: true
+  only_when_circularized: true
+  overwrite: false
+  minimum_sequences: 2
+  minimum_projects: 2
+  extraction:
+    concurrency: 8
+    feature_types:
+    - CDS
+    - rRNA
+    - tRNA
+    - misc_feature
+    - regulatory
+    infer_control_region: true
+    representative_strategy: matching_seed_then_modal
+    preferred_seed_inputs: []
+    sequence_id_order: project_then_kmer
+  mafft:
+    binary: mafft
+    mode: fftns2
+    concurrency: 4
+    threads_per_job: 4
+    extra_args: []
+  snp_matrix:
+    enabled: true
+    output_folder: snp_matrices
+    concurrency: 4
+    format: png
+    dpi: 300
+    only_true_snps: true
+    label_template: '{project_label} | K-mer {kmer}'
+    project_labels: {}
+    project_order: []
+    project_sort_ascending: true
+    kmer_sort_ascending: true
+    reference_project: ITV38290
+    reference_kmer: 20
+    reference_sequence_id: null
+    columns_per_panel: 60
+    title_fontsize: 18
+    panel_title_fontsize: 11
+    legend_fontsize: 10
+    annotation_fontsize: 8
+    x_tick_fontsize: 8
+    y_tick_fontsize: 9
+    row_height: 0.42
+    cell_width: 0.62
+    minimum_panel_width: 8
+    maximum_figure_width: 32
+    alternate_project_border: true
+    first_project_has_border: true
+    project_border_color: '#111111'
+    project_border_linewidth: 2.0
+    separator_color: '#d0d0d0'
+    separator_linewidth: 0.7
+    base_colors:
+      A: '#4daf4a'
+      C: '#377eb8'
+      G: '#ff7f00'
+      T: '#e41a1c'
+      '-': '#bdbdbd'
+      N: '#f0f0f0'
+    save_table: true
+    top: 0.91
+    bottom: 0.04
+    left: 0.22
+    right: 0.98
+    hspace: 0.3
+    save_image: false
+
+trf:
+  enabled: true
+  output_folder: trf_analysis
+  binary: trf
+  overwrite: false
+  concurrency: 12
+  timeout: 3600
+  match: 2
+  mismatch: 7
+  delta: 7
+  match_probability: 80
+  indel_probability: 10
+  min_score: 50
+  max_period: 500
+  suppress_html: true
+  flanking: false
+  masked: false
+  no_redundancy: false
+  max_tr_length_millions: null
+
+html_report:
+  enabled: true
+  output_file: moCURA_report.html
+  title: moCURA interactive report
+  max_repeat_families: 18
+  chart_library: d3_cdn
+  snp_renderer: d3
+  snp_columns_per_panel: 60
+  snp_project_gap: 12
+  snp_compact_max_columns: 14
+  logo_path: assets/mocura_logo.svg
+  logo_alt: moCURA logo
+  metadata_path: null
+  pilon_stack_threshold: 10
+  pilon_height_per_group: 22
+  pilon_max_height: 900
+  maptiler_style_url: https://api.maptiler.com/maps/outdoor-v4/style.json
+  maptiler_api_key: 8wnOsKBVxR6W3DrA6WyD
+  map_single_point_zoom: 16
+  map_fit_max_zoom: 17
+  map_max_zoom: 20

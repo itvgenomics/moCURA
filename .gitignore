@@ -1,3 +1,6 @@
 __pycache__/
 example_output/
 TODO
+*.sif
+dev/
+.vscode/

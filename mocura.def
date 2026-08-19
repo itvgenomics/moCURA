@@ -1,0 +1,64 @@
+Bootstrap: docker
+From: condaforge/miniforge3:latest
+
+%labels
+    Author "moCURA - Luan Rabelo and Renato Moreira-Oliveira"
+    Description "moCURA organellar assembly reporting"
+    Version 1.1
+
+%files
+    environment.yml /opt/mocura/environment.yml
+    config.yml /opt/mocura/config.yml
+    mocura.py /opt/mocura/mocura.py
+    moCURA /opt/mocura/moCURA
+    assets /opt/mocura/assets
+
+%post
+    set -eu
+
+    mkdir -p /data/input /data/output /config /work/tmp /work/tmp/runtime /work/tmp/matplotlib /work/tmp/cache
+
+    /opt/conda/bin/conda env create --file /opt/mocura/environment.yml
+    /opt/conda/bin/conda clean --all --yes
+
+    /opt/conda/envs/mocura_env/bin/python -m compileall -q /opt/mocura/mocura.py /opt/mocura/moCURA
+
+    find /opt/mocura -type d -name '__pycache__' -prune -exec rm -rf '{}' '+'
+    
+    chmod 0755 /opt/mocura/mocura.py
+
+%environment
+    export PATH="/opt/conda/envs/mocura_env/bin:/opt/conda/bin:${PATH}"
+    export PYTHONPATH="/opt/mocura:${PYTHONPATH:-}"
+    export MPLBACKEND="Agg"
+    export PYTHONUNBUFFERED="1"
+    export LANG="C.UTF-8"
+    export LC_ALL="C.UTF-8"
+
+%runscript
+    exec python /opt/mocura/mocura.py "$@"
+
+%help
+    Build from the project root, because %files uses project-relative paths:
+
+        singularity build mocura.sif mocura.def
+
+    If your installation requires fakeroot:
+
+        singularity build --fakeroot mocura.sif mocura.def
+
+    Test the built image:
+
+        singularity test mocura.sif
+
+    Run directly:
+
+        singularity run \
+            --bind /host/results:/data/input:ro \
+            --bind /host/output:/data/output:rw \
+            --bind /host/config.yml:/config/config.yml \
+            mocura.sif \
+            --results-dir /data/input \
+            --output-dir /data/output \
+            --config /config/config.yml \
+            --only-circularized

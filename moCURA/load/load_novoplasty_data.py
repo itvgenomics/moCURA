@@ -5,10 +5,10 @@ import re
 
 import pandas as pd
 
-from .read_text_async import read_text_async
-from .to_integer import to_integer
-from .standardized_gene_name import standardized_gene_name
-from .gather_records import gather_records
+from ..utils.read_text_async import read_text_async
+from ..utils.to_integer import to_integer
+from ..standardization.standardized_gene_name import standardized_gene_name
+from ..utils.gather_records import gather_records
 
 NOVOPLASTY_COLUMNS = [
     "Project name",
