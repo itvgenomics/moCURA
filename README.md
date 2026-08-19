@@ -1031,5 +1031,4 @@ The SNP workflow has an `overwrite` setting. If a run was terminated while an al
 
 **Luan Rabelo and Renato Moreira-Oliveira**  
 Instituto Tecnológico Vale
-
 The project is part of the Brazilian Biodiversity Genomics Consortium, GBB.
