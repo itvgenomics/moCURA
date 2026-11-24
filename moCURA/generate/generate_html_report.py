@@ -200,7 +200,11 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .metric { padding: 16px; }
 .metric-label { display: flex; gap: 6px; align-items: center; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-size: 11px; }
 .metric-value { margin-top: 5px; color: #020617; font-size: 24px; font-weight: 700; }
-.info-dot { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: #e2e8f0; color: #475569; font-size: 10px; font-weight: 800; cursor: help; text-transform: none; letter-spacing: 0; }
+/* Info icon: Font Awesome Free v7.3.1 "circle-info" by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc. */
+.info-dot { display: inline-block; flex: 0 0 auto; width: 16px; height: 16px; vertical-align: -3px; font-size: 0; line-height: 0; color: transparent; overflow: hidden; cursor: help; text-transform: none; letter-spacing: 0; background-color: #64748b;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM288 224C288 206.3 302.3 192 320 192C337.7 192 352 206.3 352 224C352 241.7 337.7 256 320 256C302.3 256 288 241.7 288 224zM280 288L328 288C341.3 288 352 298.7 352 312L352 400L360 400C373.3 400 384 410.7 384 424C384 437.3 373.3 448 360 448L280 448C266.7 448 256 437.3 256 424C256 410.7 266.7 400 280 400L304 400L304 336L280 336C266.7 336 256 325.3 256 312C256 298.7 266.7 288 280 288z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM288 224C288 206.3 302.3 192 320 192C337.7 192 352 206.3 352 224C352 241.7 337.7 256 320 256C302.3 256 288 241.7 288 224zM280 288L328 288C341.3 288 352 298.7 352 312L352 400L360 400C373.3 400 384 410.7 384 424C384 437.3 373.3 448 360 448L280 448C266.7 448 256 437.3 256 424C256 410.7 266.7 400 280 400L304 400L304 336L280 336C266.7 336 256 325.3 256 312C256 298.7 266.7 288 280 288z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.info-dot:hover { background-color: var(--brand); }
 .info-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 12px; }
 .info-card { padding: 14px 15px; border-left: 4px solid var(--brand); }
 .info-card:nth-child(2) { border-left-color: var(--secondary); }
@@ -228,7 +232,12 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .chart-subtitle { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
 .chart { min-height: 410px; width: 100%; overflow: hidden; }
 .chart svg { display: block; width: 100%; height: auto; }
-.tooltip { position: fixed; z-index: 100; pointer-events: none; opacity: 0; background: rgba(15,23,42,.94); color: white; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; max-width: 320px; }
+.tooltip { position: fixed; z-index: 10000; pointer-events: none; opacity: 0; background: #000; color: #fff; padding: 8px 11px; border-radius: 8px; font-size: 12px; line-height: 1.5; max-width: 340px; text-align: justify; hyphens: auto; }
+/* Tooltips (Tippy.js): black, justified text. */
+.tippy-box[data-theme~='mocura'] { background-color: #000; color: #fff; font-size: 12px; line-height: 1.5; border-radius: 8px; box-shadow: 0 10px 28px rgba(0,0,0,.28); }
+.tippy-box[data-theme~='mocura'] > .tippy-content { padding: 8px 11px; text-align: justify; hyphens: auto; }
+.tippy-box[data-theme~='mocura'] > .tippy-arrow { color: #000; }
+.tippy-box[data-theme~='mocura'] b, .tippy-box[data-theme~='mocura'] strong { color: #fff; }
 .table-card { margin-top: 16px; overflow: hidden; }
 .table-toolbar { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 14px; border-bottom: 1px solid var(--border); }
 .table-title { white-space: nowrap; }
@@ -248,6 +257,13 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .table-scroll { max-height: 650px; overflow: auto; }
 .resizable-table { table-layout: fixed; width: max-content; min-width: 100%; border-collapse: collapse; }
 .resizable-table th { position: sticky; overflow: visible; }
+table .pinned { position: sticky; z-index: 3; background-color: inherit; }
+thead th.pinned { z-index: 7; background: #e2e8f0; }
+table .pinned-last { box-shadow: 1px 0 0 #cbd5e1; }
+.table-scroll tbody tr:nth-child(odd) td.pinned { background-color: #fff; }
+.table-scroll tbody tr:nth-child(even) td.pinned { background-color: var(--stripe); }
+.table-scroll tbody tr:hover td.pinned { background-color: var(--brand-soft); }
+.ranking-table tr.recommended td.pinned { background-color: #e7f6ef !important; }
 .resizable-table th.sticky-col, .resizable-table td.sticky-col { position: sticky; z-index: 5; }
 .resizable-table thead th.sticky-col { background: #e2e8f0; z-index: 7; }
 .resizable-table tbody td.sticky-col { box-shadow: 1px 0 0 #dbe3ea; }
@@ -407,10 +423,31 @@ code { word-break: break-all; font-size: 11px; }
 .section-bar .nav a { padding: 6px 10px; font-size: 12px; }
 .section-bar .species-toggle { padding: 6px 10px; }
 .section-bar .species-toggle { margin-left: 0; flex: 0 0 auto; }
-.recommendation-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(330px,1fr)); gap: 12px; margin-top: 14px; }
-.reco-card { padding: 14px 16px; border-top: 4px solid #029E73; display: flex; flex-direction: column; gap: 8px; cursor: help; }
-.reco-card.hidden-pick { border-top-color: #DE8F05; }
-.reco-card.no-pick { border-top-color: #94a3b8; }
+.recommendation-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 10px; padding: 0 14px 14px; }
+.reco-card { padding: 12px 16px; border-left: 5px solid #029E73; display: grid; grid-template-columns: minmax(260px,1.25fr) 104px minmax(320px,1.6fr); gap: 8px 22px; align-items: center; cursor: help; }
+.reco-card.hidden-pick { border-left-color: #DE8F05; }
+.reco-card.no-pick { border-left-color: #94a3b8; display: block; }
+.reco-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.reco-card .reco-components { grid-template-columns: auto 1fr auto auto 1fr auto; gap: 3px 10px; }
+.reco-details { margin-top: 14px; }
+.reco-details > summary, .ranking-details > summary { list-style: none; display: flex; align-items: center; gap: 10px; }
+.reco-details > summary::-webkit-details-marker, .ranking-details > summary::-webkit-details-marker { display: none; }
+.reco-details > summary::before, .ranking-details > summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid #475569; border-bottom: 2px solid #475569; transform: rotate(-45deg); transition: transform .15s ease; flex: 0 0 auto; }
+.reco-details[open] > summary::before, .ranking-details[open] > summary::before { transform: rotate(45deg); }
+.reco-details > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: #0f172a; }
+.summary-count { color: var(--muted); font-weight: 500; font-size: 12px; }
+.paths-card { margin-top: 14px; padding: 12px 14px; }
+.paths-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 8px; }
+.paths-head .chart-title { margin: 0; }
+.paths-options { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.paths-options label { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid #cbd5e1; border-radius: 999px; font-size: 12px; font-weight: 650; color: #475569; cursor: pointer; }
+.paths-options label:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); color: #075985; }
+.paths-options input { accent-color: var(--brand); margin: 0; }
+.copy-button { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--brand); border-radius: 8px; background: var(--brand); color: #fff; padding: 7px 13px; font-size: 12px; font-weight: 750; }
+.copy-button.copied { background: #029E73; border-color: #029E73; }
+.copy-button svg { width: 14px; height: 14px; }
+#recommendedPaths { width: 100%; resize: vertical; min-height: 70px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 11px; font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #0f172a; background: #f8fafc; white-space: pre; overflow: auto; }
+.paths-note { margin-top: 6px; color: var(--muted); font-size: 11.5px; }
 .reco-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
 .reco-project { font-size: 13.5px; }
 .reco-score { font-size: 26px; font-weight: 800; color: #05624b; font-variant-numeric: tabular-nums; }
@@ -432,6 +469,12 @@ code { word-break: break-all; font-size: 11px; }
 .heatmap-toggle input { accent-color: var(--brand); width: 16px; height: 16px; }
 .concordance-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 14px; margin-top: 14px; }
 .concordance-card { padding: 14px; }
+.concordance-card svg { display: block; width: 100%; height: auto; }
+.rscu-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 2px 0 8px; font-size: 11.5px; color: #475569; }
+.rscu-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.rscu-legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.rscu-scroll { overflow-x: auto; }
+.rscu-scroll svg { display: block; }
 .composition-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 4px 0 10px; font-size: 12px; color: #475569; font-weight: 700; }
 .composition-controls select { max-width: 640px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 8px; font-size: 12px; background: #fff; }
 .project-picker { margin-top: 16px; position: relative; }
@@ -466,7 +509,9 @@ code { word-break: break-all; font-size: 11px; }
 .quality-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 14px; font-size: 12px; color: #475569; }
 .quality-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .quality-legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
-#qualityTable { min-width: 0; width: 100%; font-size: 12.5px; }
+#qualityTable { min-width: 100%; width: max-content; font-size: 12.5px; }
+#qualityTable thead tr.column-head th { min-width: 84px; }
+#qualityTable thead tr.column-head th.q-sticky { min-width: 190px; }
 #qualityTable thead tr.column-head th { cursor: help; }
 #qualityTable td.q-num { text-align: right; font-variant-numeric: tabular-nums; }
 #qualityTable th.q-sticky, #qualityTable td.q-run { position: sticky; left: 0; z-index: 3; }
@@ -477,10 +522,11 @@ code { word-break: break-all; font-size: 11px; }
 #qualityTable thead tr.column-head th { top: 31px; text-transform: none; letter-spacing: 0; font-size: 11.5px; white-space: normal; line-height: 1.25; vertical-align: bottom; border-left: 1px solid #f1f5f9; }
 #qualityTable tbody td { vertical-align: middle; }
 #qualityTable td.q-run { text-align: left; white-space: nowrap; }
-#qualityTable td.q-alerts { text-align: left; white-space: normal; min-width: 200px; max-width: 260px; }
+#qualityTable td.q-alerts { text-align: left; white-space: normal; min-width: 280px; max-width: 420px; }
 #qualityTable td.q-alerts .alert-chip { white-space: normal; max-width: 100%; font-size: 10.5px; }
 #qualityTable .data-bar-cell { min-width: 0; }
 #qualityTable tr.q-project td { background: #e8f3f9 !important; text-align: left; font-size: 13px; border-top: 14px solid var(--bg); }
+tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-block; }
 #qualityTable td.q-ok { background: #e7f6ef !important; color: #05624b; }
 #qualityTable td.q-warn { background: #fff4e0 !important; color: #92400e; font-weight: 650; }
 #qualityTable td.q-bad { background: #fde8e4 !important; color: #9a3412; font-weight: 700; }
@@ -489,7 +535,10 @@ code { word-break: break-all; font-size: 11px; }
 .snp-toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 12px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: #fff; font-size: 12px; color: #475569; }
 .snp-toolbar label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer; }
 .snp-toolbar input { accent-color: var(--brand); width: 16px; height: 16px; }
-.snp-hidden-note { margin: 0 14px 12px; padding: 8px 12px; border-left: 3px solid #DE8F05; background: #fffbeb; border-radius: 0 8px 8px 0; color: #92400e; font-size: 12px; line-height: 1.5; }
+.snp-hidden-note { margin: 10px 14px 4px; padding: 0; border-left: 3px solid #DE8F05; background: #fffbeb; border-radius: 0 8px 8px 0; color: #92400e; font-size: 12px; line-height: 1.5; }
+.snp-hidden-note > summary { cursor: pointer; padding: 8px 12px; }
+.snp-hidden-note ul { margin: 0; padding: 0 14px 10px 32px; max-height: 220px; overflow: auto; }
+.snp-hidden-note li { margin: 2px 0; }
 .snp-reference-control { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #475569; font-weight: 700; }
 .snp-reference-control select { max-width: 520px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 8px; background: #fff; font-size: 12px; }
 @media (max-width: 1000px) {
@@ -571,11 +620,28 @@ code { word-break: break-all; font-size: 11px; }
   </div>
 
   <section id="recommendation" class="section">
-    <h2>Recommended assembly per sample <span class="info-dot" data-tooltip="A transparent weighted score combines annotation completeness, integrity alerts, junction support, coverage uniformity, Pilon confirmed bases, membership of the majority concordance group and closeness to the modal genome length. Only circularized assemblies can be recommended. Nothing is discarded.">i</span></h2>
+    <h2>Recommendation <span class="info-dot" data-tooltip="A transparent weighted score combines annotation completeness, integrity alerts, junction support, coverage uniformity, Pilon confirmed bases, membership of the majority concordance group and closeness to the modal genome length. Only circularized assemblies can be recommended. Nothing is discarded.">i</span></h2>
     <div id="recommendationSubtitle" class="section-note"></div>
-    <div id="recommendationCards" class="recommendation-grid"></div>
+    <div class="card paths-card">
+      <div class="paths-head">
+        <div class="chart-title">Files of the recommended assemblies <span class="info-dot" data-tooltip="Absolute paths of the files of the recommended assembly of every project in the current filters, one per line, ready to paste into a terminal (for example after cp or scp). Pilon FASTA is the polished sequence; the rotated GenBank starts at rrnS.">i</span></div>
+        <div class="paths-options" role="radiogroup" aria-label="File type">
+          <label><input type="radio" name="pathKind" value="Pilon FASTA" checked> Pilon FASTA</label>
+          <label><input type="radio" name="pathKind" value="Rotated GenBank"> Rotated GenBank</label>
+          <label><input type="radio" name="pathKind" value="GenBank"> GenBank</label>
+          <label><input type="radio" name="pathKind" value="all"> All files</label>
+        </div>
+        <button id="copyRecommendedPaths" class="copy-button" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg><span>Copy paths</span></button>
+      </div>
+      <textarea id="recommendedPaths" readonly spellcheck="false" aria-label="Paths of the recommended assemblies"></textarea>
+      <div id="recommendedPathsNote" class="paths-note"></div>
+    </div>
+    <details id="recommendationDetails" class="card reco-details">
+      <summary>Recommended assembly per sample <span id="recommendationCount" class="summary-count"></span></summary>
+      <div id="recommendationCards" class="recommendation-grid"></div>
+    </details>
     <details class="card table-card ranking-details">
-      <summary>Full ranking and score breakdown</summary>
+      <summary>Full ranking and score breakdown <span id="rankingCount" class="summary-count"></span></summary>
       <div id="rankingWeights" class="ranking-weights"></div>
       <div class="table-scroll"><table id="rankingTable" class="assembly-table ranking-table"><thead id="rankingHead"></thead><tbody id="rankingBody"></tbody></table></div>
     </details>
@@ -620,7 +686,7 @@ code { word-break: break-all; font-size: 11px; }
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
               <input id="assemblySearch" type="search" placeholder="Search project, species, location, seed, K-mer or value...">
             </div>
-            <div class="assembly-table-help"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 7h8M8 17h8M5 12h14"></path><path d="m8 9-3 3 3 3M16 9l3 3-3 3"></path></svg><span>Hold the right mouse button and drag horizontally to scroll the table.</span></div>
+            <div class="assembly-table-help"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 7h8M8 17h8M5 12h14"></path><path d="m8 9-3 3 3 3M16 9l3 3-3 3"></path></svg><span>Hold the right mouse button and drag to scroll the table.</span></div>
           </div>
         </div>
       </div>
@@ -632,7 +698,7 @@ code { word-break: break-all; font-size: 11px; }
     <h2>Pilon polishing <span class="info-dot" data-tooltip="Summarizes Pilon coverage, confirmation and sequence corrections for the filtered runs.">i</span></h2>
     <div class="section-note">Interactive replacements for the static Pilon summary figures.</div>
     <div id="pilonPrimaryGrid" class="chart-grid pilon-grid">
-      <div class="card chart-card"><div class="chart-title">Pilon metrics</div><div class="chart-subtitle">One row per project (per seed when a single project is selected). Each metric column is normalized from 0–100% across the rows shown; the tooltip keeps the measured median.</div><label class="heatmap-toggle"><input id="pilonShowValues" type="checkbox"> Show values in the cells</label><div id="pilonMetricsHeatmap" class="chart" style="min-height:0"></div></div>
+      <div class="card chart-card"><div class="chart-title">Pilon metrics</div><div class="chart-subtitle">One row per project (per seed when a single project is selected), with the median of its runs. Every column has its own unit and its own colour scale, from the lowest to the highest value in that column; the range is written under each title.</div><label class="heatmap-toggle"><input id="pilonShowValues" type="checkbox"> Show values in the cells</label><div id="pilonMetricsHeatmap" class="chart" style="min-height:0"></div></div>
       <div class="card chart-card"><div class="chart-title">Genome length before and after Pilon</div><div class="chart-subtitle">Median comparison.</div><div id="pilonBeforeAfterChart" class="chart"></div></div>
     </div>
     <div class="card chart-card" style="margin-top:16px"><div class="chart-title">Pilon corrections</div><div class="chart-subtitle">SNPs, insertions and deletions.</div><div id="pilonCorrectionsChart" class="chart"></div></div>
@@ -651,7 +717,7 @@ code { word-break: break-all; font-size: 11px; }
     <div class="quality-note">Coverage and read recruitment come from the reads NOVOPlasty used to build each assembly (<code>Assembled_reads</code>). They tend to agree with the assembly by construction, so they flag problems but do not independently validate it.</div>
     <div class="card chart-card">
       <div class="chart-title">Gene completeness <span class="info-dot" data-tooltip="Each row is one assembly, each column one of the 37 mitochondrial genes annotated by MITOS2. Partial at origin marks genes kept only as a fragment because they cross the contig origin.">i</span></div>
-      <div class="chart-subtitle">37 genes from MITOS2: present, absent, duplicated or kept only as a fragment at the contig origin. The last column compares the gene order with the most common order in the project.</div>
+      <div class="chart-subtitle">37 genes from MITOS2: present, absent, duplicated or kept only as a fragment at the contig origin. Assemblies are grouped by project, then by Seed + K-mer (shaded blocks); the rows of a block are its assembly copies. The last column compares the gene order with the most common order in the project.</div>
       <div class="completeness-scroll"><div id="completenessHeatmap" class="chart"></div></div>
     </div>
     <div class="card table-card" style="margin-top:16px">
@@ -696,9 +762,14 @@ code { word-break: break-all; font-size: 11px; }
     <div id="compositionSubtitle" class="section-note"></div>
     <div class="card chart-card" style="margin-top:12px">
       <div class="chart-title">Relative synonymous codon usage</div>
-      <div class="chart-subtitle">RSCU = observed count / mean count of the synonymous codons of that amino acid. 1 means no preference; above 1, the codon is used more than its synonyms. Terminal stop codons and incomplete codons are left out.</div>
-      <div class="composition-controls"><label for="rscuSelect">Assembly</label><select id="rscuSelect"></select></div>
-      <div id="rscuChart" class="chart" style="min-height:0"></div>
+      <div class="chart-subtitle">RSCU = observed count / mean count of the synonymous codons of that amino acid. 1 means no preference; above 1, the codon is used more than its synonyms. Terminal stop codons and incomplete codons are left out. Amino acids with six codons are split into their two codon boxes (for example Leu CTN and Leu TTR).</div>
+      <div class="composition-controls">
+        <label for="rscuView">View</label>
+        <select id="rscuView"><option value="stacked">One assembly: stacked bars per amino acid</option><option value="heatmap">Compare assemblies: heatmap of every codon</option></select>
+        <label for="rscuSelect" id="rscuSelectLabel">Assembly</label><select id="rscuSelect"></select>
+      </div>
+      <div id="rscuLegend" class="rscu-legend"></div>
+      <div class="rscu-scroll"><div id="rscuChart" class="chart" style="min-height:0"></div></div>
     </div>
     <div class="card table-card">
       <div class="table-toolbar"><div><div class="table-title">Composition per assembly</div><div id="compositionCount" class="table-count"></div></div></div>
@@ -734,7 +805,7 @@ code { word-break: break-all; font-size: 11px; }
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
               <input id="repeatSearch" type="search" placeholder="Search project, species, location, seed, K-mer or repeat value...">
             </div>
-            <div class="assembly-table-help"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 7h8M8 17h8M5 12h14"></path><path d="m8 9-3 3 3 3M16 9l3 3-3 3"></path></svg><span>Hold the right mouse button and drag horizontally to scroll the table.</span></div>
+            <div class="assembly-table-help"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 7h8M8 17h8M5 12h14"></path><path d="m8 9-3 3 3 3M16 9l3 3-3 3"></path></svg><span>Hold the right mouse button and drag to scroll the table.</span></div>
           </div>
         </div>
       </div>
@@ -1206,12 +1277,20 @@ function clearChart(id) { d3.select('#'+id).selectAll('*').remove(); }
 function emptyChart(id, message) { clearChart(id); d3.select('#'+id).append('div').attr('class','empty').text(message); }
 
 function hover(event, html) {
+  const tip=cursorTooltip();
+  if(tip){
+    cursorPoint={x:event.clientX,y:event.clientY};
+    if(html!==cursorHtml){ cursorHtml=html; tip.setContent(html); }
+    if(!tip.state.isVisible)tip.show();
+    else if(tip.popperInstance)tip.popperInstance.update();
+    return;
+  }
   tooltip.innerHTML = html;
   tooltip.style.opacity = 1;
-  tooltip.style.left = `${Math.min(window.innerWidth - 330, event.clientX + 14)}px`;
+  tooltip.style.left = `${Math.min(window.innerWidth - 350, event.clientX + 14)}px`;
   tooltip.style.top = `${Math.min(window.innerHeight - 140, event.clientY + 14)}px`;
 }
-function unhover() { tooltip.style.opacity = 0; }
+function unhover() { if(cursorTip)cursorTip.hide(); tooltip.style.opacity = 0; }
 
 let projectPickerDraft=new Set();
 
@@ -1812,14 +1891,19 @@ function svgLabelWidth(labels,fontSize=10.5) {
   return d3.max(labels,label=>text(label).length)*fontSize*.56||60;
 }
 
+// Each column has its own unit (×, %, count) and its own min–max colour scale.
+const PILON_METRICS=[
+  {column:'Pilon Coverage',label:'Coverage',unit:'×',format:value=>`${d3.format(',.1f')(value)}×`,help:'Median read depth Pilon reported for the assemblies (× = reads per base).'},
+  {column:'Pilon Confirmed %',label:'Confirmed bases',unit:'%',format:value=>`${d3.format('.2f')(value)}%`,help:'Median percentage of bases Pilon confirmed with the reads.'},
+  {column:'Pilon Corrected snps',label:'SNPs fixed',unit:'n',format:value=>d3.format(',.1~f')(value),help:'Median number of substitutions Pilon corrected.'},
+  {column:'Pilon Corrected insertions',label:'Insertions fixed',unit:'n',format:value=>d3.format(',.1~f')(value),help:'Median number of insertions Pilon corrected.'},
+  {column:'Pilon Corrected deletions',label:'Deletions fixed',unit:'n',format:value=>d3.format(',.1~f')(value),help:'Median number of deletions Pilon corrected.'}
+];
+
 function renderPilonMetrics() {
   const rows=REPORT.summary.filter(matches);
   const groupCol=singleSelectedProject() ? 'Seed Input' : 'Project name';
   const groups=unique(rows,groupCol);
-  const metrics=['Pilon Coverage','Pilon Confirmed %','Pilon Corrected snps','Pilon Corrected insertions','Pilon Corrected deletions'];
-  const formats={'Pilon Coverage':value=>`${d3.format(',.1f')(value)}×`,'Pilon Confirmed %':value=>`${d3.format('.2f')(value)}%`};
-  const formatValue=(metric,value)=>(formats[metric]||(v=>d3.format(',.1~f')(v)))(value);
-
   if(!groups.length){
     return emptyChart('pilonMetricsHeatmap','No Pilon data.');
   }
@@ -1828,53 +1912,61 @@ function renderPilonMetrics() {
   const container=document.getElementById('pilonMetricsHeatmap');
   const width=Math.max(520,container.clientWidth||900);
   const labels=groups.map(group=>groupCol==='Project name'?projectDisplayText(projectRecord(group)):text(group));
-  const rowHeight=Math.max(18,Math.min(34,560/groups.length));
-  const margin={top:40,right:86,bottom:12,left:Math.min(360,Math.max(110,svgLabelWidth(labels)+22))};
+  const rowHeight=Math.max(18,Math.min(30,560/groups.length));
+  const margin={top:36,right:0,bottom:30,left:Math.min(360,Math.max(110,svgLabelWidth(labels)+16))};
   const height=margin.top+groups.length*rowHeight+margin.bottom;
   const svg=d3.select('#pilonMetricsHeatmap').append('svg').attr('viewBox',`0 0 ${width} ${height}`).attr('width',width).attr('height',height);
-  const x=d3.scaleBand().domain(metrics).range([margin.left,width-margin.right]).padding(.04);
-  const y=d3.scaleBand().domain(groups.map(text)).range([margin.top,height-margin.bottom]).padding(.06);
+  const x=d3.scaleBand().domain(PILON_METRICS.map(metric=>metric.column)).range([margin.left,width-margin.right]).padding(0);
+  const y=d3.scaleBand().domain(groups.map(text)).range([margin.top,height-margin.bottom]).padding(0);
+  const color=d3.scaleSequential(d3.interpolateGnBu).domain([0,1]);
   const cells=[];
 
-  metrics.forEach(metric=>{
-    const med=groupMedian(rows,groupCol,metric);
-    const extent=d3.extent([...med.values()]);
+  PILON_METRICS.forEach(metric=>{
+    const med=groupMedian(rows,groupCol,metric.column);
+    const values=[...med.values()].filter(value=>value!==null);
+    const extent=d3.extent(values);
+    metric.extent=extent;
     groups.forEach(group=>{
       const actual=med.get(text(group));
-      if(actual===undefined)return;
-      const normalized=extent[0]===extent[1]?50:100*(actual-extent[0])/(extent[1]-extent[0]);
-      cells.push({group,metric,actual,norm:normalized});
+      if(actual===undefined||actual===null)return;
+      const position=extent[0]===extent[1]?null:(actual-extent[0])/(extent[1]-extent[0]);
+      cells.push({group,metric,actual,position});
     });
+    // Column title with its unit and the range of the colour scale.
+    const cx=x(metric.column)+x.bandwidth()/2;
+    svg.append('text').attr('x',cx).attr('y',14).attr('text-anchor','middle').attr('font-size',11).attr('font-weight',700).attr('fill','#0f172a').attr('data-help',metric.help).text(`${metric.label} (${metric.unit})`);
+    svg.append('text').attr('x',cx).attr('y',28).attr('text-anchor','middle').attr('font-size',9.5).attr('fill','#64748b')
+      .text(values.length?(extent[0]===extent[1]?`all ${metric.format(extent[0])}`:`${metric.format(extent[0])} → ${metric.format(extent[1])}`):'no data');
   });
 
-  const color=d3.scaleSequential(d3.interpolateGnBu).domain([0,100]);
   svg.append('g').selectAll('rect').data(cells).join('rect')
-    .attr('x',cell=>x(cell.metric)).attr('y',cell=>y(text(cell.group)))
-    .attr('width',x.bandwidth()).attr('height',y.bandwidth()).attr('fill',cell=>color(cell.norm))
-    .on('mousemove',(event,cell)=>hover(event,`${groupCol==='Project name'?projectDisplayHtml(projectRecord(cell.group)):`<strong>${esc(cell.group)}</strong>`}<br>${esc(cell.metric)}: ${formatValue(cell.metric,cell.actual)} (median)<br>Relative scale: ${d3.format('.0f')(cell.norm)}%`))
+    .attr('x',cell=>x(cell.metric.column)).attr('y',cell=>y(text(cell.group)))
+    .attr('width',x.bandwidth()).attr('height',y.bandwidth()).attr('fill',cell=>cell.position===null?'#e2e8f0':color(cell.position))
+    .on('mousemove',(event,cell)=>hover(event,`${groupCol==='Project name'?projectDisplayHtml(projectRecord(cell.group)):`<strong>${esc(cell.group)}</strong>`}<br>${esc(cell.metric.label)}: <b>${cell.metric.format(cell.actual)}</b> (median)<br>${cell.position===null?'Same value in every row (grey)':`Column range: ${cell.metric.format(cell.metric.extent[0])} to ${cell.metric.format(cell.metric.extent[1])}`}`))
     .on('mouseleave',unhover);
+  // Thin separators between metric columns: each column is a separate scale.
+  PILON_METRICS.slice(1).forEach(metric=>svg.append('line').attr('x1',x(metric.column)).attr('x2',x(metric.column)).attr('y1',margin.top).attr('y2',height-margin.bottom).attr('stroke','#ffffff').attr('stroke-width',2));
 
   if(pilonShowValues&&y.bandwidth()>=12){
     svg.append('g').selectAll('text').data(cells).join('text')
-      .attr('x',cell=>x(cell.metric)+x.bandwidth()/2).attr('y',cell=>y(text(cell.group))+y.bandwidth()/2+3.5)
+      .attr('x',cell=>x(cell.metric.column)+x.bandwidth()/2).attr('y',cell=>y(text(cell.group))+y.bandwidth()/2+3.5)
       .attr('text-anchor','middle').attr('font-size',Math.min(11,y.bandwidth()*.55)).attr('font-weight',650)
-      .attr('fill',cell=>cell.norm>55?'#ffffff':'#0f172a').attr('pointer-events','none')
-      .text(cell=>formatValue(cell.metric,cell.actual));
+      .attr('fill',cell=>cell.position!==null&&cell.position>.55?'#ffffff':'#0f172a').attr('pointer-events','none')
+      .text(cell=>cell.metric.format(cell.actual));
   }
 
-  svg.append('g').attr('class','axis').attr('transform',`translate(0,${margin.top})`).call(d3.axisTop(x).tickSize(0)).selectAll('text').attr('font-size',10.5).attr('fill','#334155');
-  const yAxis=svg.append('g').attr('class','axis').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).tickSize(0));
+  const yAxis=svg.append('g').attr('class','axis').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).tickSize(0).tickPadding(6));
+  yAxis.select('.domain').remove();
   yAxis.selectAll('text').attr('font-size',10.5);
   if(groupCol==='Project name')styleProjectAxisTicks(yAxis);
 
-  const legendHeight=Math.max(60,height-margin.top-margin.bottom);
-  const legendWidth=14, legendX=width-margin.right+22, legendY=margin.top;
-  const legendScale=d3.scaleLinear().domain([0,100]).range([legendHeight,0]);
-  const gradient=svg.append('defs').append('linearGradient').attr('id','pilonMetricsGradient').attr('x1','0%').attr('x2','0%').attr('y1','100%').attr('y2','0%');
-  d3.range(0,101,10).forEach(value=>gradient.append('stop').attr('offset',`${value}%`).attr('stop-color',color(value)));
-  svg.append('rect').attr('x',legendX).attr('y',legendY).attr('width',legendWidth).attr('height',legendHeight).attr('fill','url(#pilonMetricsGradient)').attr('stroke','#cbd5e1').attr('stroke-width',.7);
-  svg.append('g').attr('class','axis').attr('transform',`translate(${legendX+legendWidth},${legendY})`).call(d3.axisRight(legendScale).tickValues(legendHeight>100?[0,25,50,75,100]:[0,100]).tickFormat(value=>`${value}%`));
-  svg.append('text').attr('x',legendX+legendWidth/2).attr('y',legendY-9).attr('text-anchor','middle').attr('font-size',9).attr('font-weight',650).attr('fill','#64748b').text('Relative');
+  // Horizontal legend: the colour is the position inside each column's own range, not a percentage.
+  const legendWidth=180, legendX=margin.left, legendY=height-14;
+  const gradient=svg.append('defs').append('linearGradient').attr('id','pilonMetricsGradient');
+  d3.range(0,1.01,.1).forEach(value=>gradient.append('stop').attr('offset',`${Math.round(value*100)}%`).attr('stop-color',color(value)));
+  svg.append('text').attr('x',legendX).attr('y',legendY+8).attr('font-size',9.5).attr('fill','#64748b').text('Column minimum');
+  svg.append('rect').attr('x',legendX+92).attr('y',legendY).attr('width',legendWidth).attr('height',9).attr('rx',2).attr('fill','url(#pilonMetricsGradient)');
+  svg.append('text').attr('x',legendX+100+legendWidth).attr('y',legendY+8).attr('font-size',9.5).attr('fill','#64748b').text('Column maximum · grey: same value in every row · each column uses its own unit and scale');
 }
 
 function renderGroupedBars(id, groups, series, yLabel, projectGroups=false, valueFormat=',.2~f', unit='') {
@@ -2272,7 +2364,9 @@ function organpipeRows(key){return (ORGANPIPE[key]||[]).filter(matches);}
 function drawCoverageTrack(svg,genome,x,top,height,genomeLength) {
   const item=coverageWindowsFor(genome);
   const baselineY=top+height;
-  svg.append('text').attr('x',x.range()[0]-30).attr('y',top+height/2+3.5).attr('text-anchor','end').attr('font-size',8.5).attr('font-weight',700).attr('fill','#94a3b8').text('Depth');
+  // Rotated so it stays clear of the tick values of the depth axis.
+  const labelX=x.range()[0]-38, labelY=top+height/2;
+  svg.append('text').attr('x',labelX).attr('y',labelY).attr('transform',`rotate(-90,${labelX},${labelY})`).attr('text-anchor','middle').attr('font-size',8.5).attr('font-weight',700).attr('fill','#94a3b8').text('Depth');
   if(!item||!(item.Windows||[]).length){
     svg.append('text').attr('x',x.range()[0]).attr('y',top+height/2+3).attr('font-size',8.5).attr('fill','#94a3b8').text('No rotated depth file');
     return;
@@ -2343,22 +2437,41 @@ function renderCompletenessHeatmap() {
   const container=document.getElementById('completenessHeatmap');
   const width=Math.max(640,container.clientWidth||1100);
   const rowHeight=16, top=104, orderWidth=78;
-  const labelWidth=Math.round(Math.min(360,Math.max(230,width*.24)));
+  // Projects get a titled gap; each Seed + K-mer combination inside a project gets a smaller gap.
+  const projectGap=30, runGap=9;
+  const labelWidth=Math.round(Math.min(300,Math.max(190,width*.2)));
   const cell=Math.max(12,(width-labelWidth-orderWidth-12)/genes.length);
   const gridRight=labelWidth+genes.length*cell;
-  const height=top+rows.length*rowHeight+16;
+  let cursor=top, previousProject=null, previousRun=null;
+  const layout=rows.map(row=>{
+    const project=text(row['Project name']), run=`${project}\0${text(row['Seed Input'])}\0${text(row['K-mer'])}`;
+    let header=null;
+    if(project!==previousProject){ if(previousProject!==null)cursor+=projectGap; else cursor+=projectGap-8; header=cursor-8; }
+    else if(run!==previousRun)cursor+=runGap;
+    previousProject=project; previousRun=run;
+    const item={row,y:cursor,header,newRun:run};
+    cursor+=rowHeight;
+    return item;
+  });
+  const height=cursor+16;
   const svg=d3.select('#completenessHeatmap').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
   genes.forEach((gene,index)=>{
     svg.append('text').attr('transform',`translate(${labelWidth+index*cell+cell/2+3},${top-6}) rotate(-60)`).attr('font-size',10).attr('fill','#334155').text(gene);
   });
   svg.append('text').attr('x',gridRight+10).attr('y',top-8).attr('font-size',10).attr('font-weight',700).attr('fill','#334155').text('Gene order');
-  let previousProject=null;
-  rows.forEach((row,r)=>{
-    const y=top+r*rowHeight;
-    if(r%2===0)svg.append('rect').attr('x',0).attr('y',y).attr('width',width).attr('height',rowHeight).attr('fill','#f8fafc');
-    if(previousProject!==null&&text(row['Project name'])!==previousProject)svg.append('line').attr('x1',0).attr('x2',width).attr('y1',y).attr('y2',y).attr('stroke','#94a3b8').attr('stroke-width',1);
-    previousProject=text(row['Project name']);
-    svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-4).attr('text-anchor','end').attr('font-size',10).attr('fill','#0f172a').text(assemblyRowLabel(row));
+  // Shade each Seed + K-mer block so the groups read as units.
+  d3.groups(layout,item=>item.newRun).forEach(([,items],index)=>{
+    const first=items[0].y, last=items[items.length-1].y+rowHeight;
+    svg.append('rect').attr('x',4).attr('y',first-2).attr('width',width-8).attr('height',last-first+4).attr('rx',5).attr('fill',index%2?'#f8fafc':'#eef4f8');
+  });
+  layout.forEach(({row,y,header})=>{
+    if(header!==null){
+      const location=locationText(projectRecord(row['Project name']));
+      const title=svg.append('text').attr('x',8).attr('y',header).attr('font-size',11.5).attr('fill','#0f172a');
+      setSvgProjectLabel(title,projectRecord(row['Project name']),{suffix:location?`  ·  ${location}`:''});
+      svg.append('line').attr('x1',8).attr('x2',width-8).attr('y1',header+5).attr('y2',header+5).attr('stroke','#94a3b8').attr('stroke-width',.8);
+    }
+    svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-4).attr('text-anchor','end').attr('font-size',10).attr('fill','#0f172a').text(`${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`);
     genes.forEach((gene,c)=>{
       const status=text(row[gene])||'Absent';
       svg.append('rect').attr('x',labelWidth+c*cell+1).attr('y',y+1).attr('width',cell-2).attr('height',rowHeight-2).attr('rx',2).attr('fill',completenessColors[status]||'#cbd5e1')
@@ -2452,10 +2565,6 @@ function renderQualityTable() {
   document.getElementById('qualityTableHead').innerHTML=
     `<tr class="group-head">${groups.map(([group,items],index)=>`<th colspan="${items.length}" class="${index===0?'q-sticky':''}">${esc(group)}</th>`).join('')}</tr>`
     +`<tr class="column-head">${columns.map((column,index)=>`<th data-help="${esc(column.help)}" class="${index===0?'q-sticky':''}">${esc(column.label)}</th>`).join('')}</tr>`;
-  document.querySelectorAll('#qualityTableHead [data-help]').forEach(element=>{
-    element.addEventListener('mousemove',event=>hover(event,`<b>${esc(element.textContent)}</b><br>${esc(element.dataset.help)}`));
-    element.addEventListener('mouseleave',unhover);
-  });
 
   const withAlerts=baseRows.filter(row=>(alerts.get(text(row.Assembly))||[]).length).length;
   document.getElementById('qualityTableCount').textContent=`${rows.length} of ${baseRows.length} assembl${baseRows.length===1?'y':'ies'} shown · ${withAlerts} with alerts · hover a column title for its definition`;
@@ -2467,7 +2576,7 @@ function renderQualityTable() {
 
   const fmt=(value,format)=>num(value)===null?'—':d3.format(format)(num(value));
   const maxMismatch=d3.max(rows,row=>num((recruitment.get(text(row.Assembly))||{})['Percent below threshold'],0))||0;
-  const cell=(content,cls='',title='')=>`<td class="${cls}"${title?` title="${esc(title)}"`:''}>${content}</td>`;
+  const cell=(content,cls='',title='')=>`<td class="${cls}"${title?` data-tooltip="${esc(title)}"`:''}>${content}</td>`;
   const junctionClass={'Supported':'q-ok','Weak':'q-warn','Unsupported':'q-bad'};
   let previousProject=null;
   document.getElementById('qualityTableBody').innerHTML=rows.map(row=>{
@@ -2478,7 +2587,8 @@ function renderQualityTable() {
       previousProject=text(row['Project name']);
       const projectRows=rows.filter(item=>text(item['Project name'])===previousProject);
       const flagged=projectRows.filter(item=>(alerts.get(text(item.Assembly))||[]).length).length;
-      header=`<tr class="q-project"><td colspan="${columns.length}">${projectDisplayHtml(projectRecord(previousProject))} <span class="table-count">· ${projectRows.length} assembl${projectRows.length===1?'y':'ies'} · ${flagged} with alerts</span></td></tr>`;
+      const location=locationText(projectRecord(previousProject));
+      header=`<tr class="q-project"><td colspan="${columns.length}"><span class="row-head">${projectDisplayHtml(projectRecord(previousProject))}${location?` · ${esc(location)}`:''} <span class="table-count">· ${projectRows.length} assembl${projectRows.length===1?'y':'ies'} · ${flagged} with alerts</span></span></td></tr>`;
     }
     const summaryRow=summaryByRunKey.get(rowKey(row));
     const circular=summaryRow?summaryRow.Circularized===true:null;
@@ -2494,7 +2604,7 @@ function renderQualityTable() {
     const support=junction?text(junction['Junction support']):'';
     const coordinate=cov['Coordinate system']&&!text(cov['Coordinate system']).startsWith('C')?' <span class="q-sub">(A) pre-Pilon</span>':'';
     const mismatchBar=mismatch===null||maxMismatch<=0?0:Math.min(100,100*mismatch/maxMismatch);
-    const chips=assemblyAlerts.map(a=>`<span class="alert-chip ${esc(a.Severity)}" title="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
+    const chips=assemblyAlerts.map(a=>`<span class="alert-chip ${esc(a.Severity)}" data-tooltip="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
     const integrityText=integrity?`${num(integrity.Errors,0)} / ${num(integrity.Warnings,0)}`:'—';
     return header+'<tr>'+[
       cell(`<strong>${esc(row['Seed Input'])}</strong> · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}`,'q-run'),
@@ -2523,15 +2633,16 @@ function renderIntegrityTable() {
   const all=organpipeRows('integrity_issues');
   const rows=sortAssemblyRows(all.filter(row=>showInfo||text(row.Severity)!=='info').filter(row=>!query||[row['Project name'],row['Seed Input'],`k${text(row['K-mer'])}`,row.Assembly,row.Marker,row.Check,row.Detail].map(text).join(' ').toLowerCase().includes(query)));
   const severityClass={error:'q-bad',warning:'q-warn',info:''};
-  const columns=['Project / species','Seed · K-mer · copy','Gene','Check','Severity','Detail','Position'];
+  const columns=['Project / species','Location','Seed · K-mer · copy','Gene','Check','Severity','Detail','Position'];
   document.getElementById('integrityHead').innerHTML=`<tr>${columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>`;
   const counts=d3.rollup(all,v=>v.length,row=>text(row.Severity));
   const code=(ORGANPIPE.settings_phase2||{});
   document.getElementById('integrityCount').textContent=`${rows.length} shown · ${counts.get('error')||0} errors, ${counts.get('warning')||0} warnings, ${counts.get('info')||0} informative · genetic code ${text(code.genetic_code||'—')} (${text(code.genetic_code_source||'')})`;
   const shown=rows.slice(0,1500);
-  document.getElementById('integrityBody').innerHTML=shown.map(row=>`<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td>${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</td><td><strong>${esc(row.Marker)}</strong></td><td>${esc(row.Check)}</td><td class="${severityClass[text(row.Severity)]||''}">${esc(row.Severity)}</td><td style="text-align:left;white-space:normal;min-width:260px">${esc(row.Detail)}</td><td>${esc(row.Start)}–${esc(row.End)} (${esc(row.Strand)})</td></tr>`).join('')
-    +(rows.length>shown.length?`<tr><td colspan="7" class="table-count">${rows.length-shown.length} more rows in annotation_integrity/annotation_integrity_issues.tsv</td></tr>`:'')
-    || '<tr><td colspan="7" class="table-count" style="padding:16px">No integrity issue for the current filters.</td></tr>';
+  document.getElementById('integrityBody').innerHTML=shown.map(row=>`<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td style="text-align:left">${esc(locationText(projectRecord(row['Project name'])))}</td><td>${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</td><td><strong>${esc(row.Marker)}</strong></td><td>${esc(row.Check)}</td><td class="${severityClass[text(row.Severity)]||''}">${esc(row.Severity)}</td><td style="text-align:left;white-space:normal;min-width:260px">${esc(row.Detail)}</td><td>${esc(row.Start)}–${esc(row.End)} (${esc(row.Strand)})</td></tr>`).join('')
+    +(rows.length>shown.length?`<tr><td colspan="8" class="table-count">${rows.length-shown.length} more rows in annotation_integrity/annotation_integrity_issues.tsv</td></tr>`:'')
+    || '<tr><td colspan="8" class="table-count" style="padding:16px">No integrity issue for the current filters.</td></tr>';
+  pinColumns(document.getElementById('integrityTable'),2);
 }
 
 function renderConcordance() {
@@ -2555,9 +2666,14 @@ function renderConcordance() {
     const groupsCount=new Set(rows.map(row=>row.Group)).size;
     card.innerHTML=`<div class="chart-title" style="font-size:13.5px">${projectDisplayHtml(projectRecord(project))}</div><div class="chart-subtitle">${rows.length} assemblies · ${groupsCount} group${groupsCount===1?'':'s'} · majority group ${esc(rows[0]['Majority group'])} with ${rows.filter(row=>row['In majority group']===true).length} assemblies</div>`;
     const holder=document.createElement('div'); card.appendChild(holder);
+    // The matrix fills the card: columns share the width, rows keep a readable height.
     const width=Math.max(480,holder.clientWidth||card.clientWidth-28||900);
-    const labelWidth=190, top=12, right=150;
-    const cell=Math.max(6,Math.min(22,(width-labelWidth-right)/rows.length));
+    const labelWidth=190, right=96;
+    const cellWidth=(width-labelWidth-right)/rows.length;
+    const cell=Math.max(10,Math.min(24,cellWidth));
+    const shortLabel=row=>`${text(row['Seed Input'])} k${text(row['K-mer'])} _${text(row['Assembly copy'])}`;
+    const showColumnLabels=cellWidth>=9;
+    const top=showColumnLabels?Math.min(110,16+d3.max(rows,row=>shortLabel(row).length)*4.2):12;
     const height=top+rows.length*cell+12;
     const svg=d3.select(holder).append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
     const defs=svg.append('defs');
@@ -2568,18 +2684,23 @@ function renderConcordance() {
       svg.append('text').attr('x',labelWidth-6).attr('y',top+i*cell+cell/2+3.5).attr('text-anchor','end').attr('font-size',Math.min(10.5,cell*.8)).attr('font-weight',inMajority?400:750).attr('fill',inMajority?'#334155':'#D55E00').text(`${label}${inMajority?'':` (group ${row.Group})`}`)
         .on('mousemove',event=>hover(event,`<b>${esc(label)}</b><br>Group ${esc(row.Group)} (${esc(row['Group size'])} assemblies)${inMajority?' · majority':''}<br>Genome ${d3.format(',')(num(row['Genome length'],0))} bp${row['Reverse-complemented']===true?' · reverse-complemented for the alignment':''}<br>Mean identity to the majority group: ${row['Mean identity to majority %']===null?'—':`${d3.format('.4f')(num(row['Mean identity to majority %']))}%`}`)).on('mouseleave',unhover);
       rows.forEach((other,j)=>{
-        const x=labelWidth+j*cell, y=top+i*cell;
-        if(i===j){svg.append('rect').attr('x',x).attr('y',y).attr('width',cell-1).attr('height',cell-1).attr('fill','#0f172a');return;}
+        const x=labelWidth+j*cellWidth, y=top+i*cell;
+        if(i===j){svg.append('rect').attr('x',x).attr('y',y).attr('width',cellWidth-1).attr('height',cell-1).attr('fill','#0f172a');return;}
         const pair=getPair(text(row.Assembly),text(other.Assembly));
         if(!pair)return;
         const identity=num(pair['Identity %']);
         const lowCoverage=num(pair['Coverage %'],100)<num((ORGANPIPE.settings_phase2||{}).group_min_coverage,95);
-        svg.append('rect').attr('x',x).attr('y',y).attr('width',cell-1).attr('height',cell-1).attr('fill',identity===null?'#e2e8f0':color(Math.max(minimum,identity)))
+        svg.append('rect').attr('x',x).attr('y',y).attr('width',cellWidth-1).attr('height',cell-1).attr('fill',identity===null?'#e2e8f0':color(Math.max(minimum,identity)))
           .on('mousemove',event=>hover(event,`<b>${esc(label)}</b><br>vs ${esc(text(other['Seed Input']))} · k${esc(other['K-mer'])} · _${esc(other['Assembly copy'])}<br>Identity ${identity===null?'—':d3.format('.4f')(identity)+'%'} over ${d3.format(',')(num(pair['Compared columns'],0))} columns<br>Coverage ${d3.format('.2f')(num(pair['Coverage %'],0))}% · ${esc(pair.Indels)} indel events`)).on('mouseleave',unhover);
-        if(lowCoverage)svg.append('rect').attr('x',x).attr('y',y).attr('width',cell-1).attr('height',cell-1).attr('fill',`url(#hatch-${project})`).attr('pointer-events','none');
+        if(lowCoverage)svg.append('rect').attr('x',x).attr('y',y).attr('width',cellWidth-1).attr('height',cell-1).attr('fill',`url(#hatch-${project})`).attr('pointer-events','none');
       });
     });
-    const legendX=labelWidth+rows.length*cell+18;
+    if(showColumnLabels)rows.forEach((row,j)=>{
+      const cx=labelWidth+j*cellWidth+cellWidth/2;
+      const inMajority=row['In majority group']===true;
+      svg.append('text').attr('x',cx).attr('y',top-5).attr('transform',`rotate(-50,${cx},${top-5})`).attr('font-size',Math.min(10,Math.max(8,cellWidth*.7))).attr('fill',inMajority?'#475569':'#D55E00').attr('font-weight',inMajority?400:700).text(shortLabel(row));
+    });
+    const legendX=labelWidth+rows.length*cellWidth+18;
     const legend=svg.append('g').attr('transform',`translate(${legendX},${top})`);
     const legendHeight=Math.min(140,Math.max(60,rows.length*cell));
     const gradientId=`concordanceGradient-${project}`;
@@ -2606,41 +2727,136 @@ function renderComposition() {
   let previous=null;
   document.getElementById('compositionBody').innerHTML=rows.map(row=>{
     let header='';
-    if(text(row['Project name'])!==previous){previous=text(row['Project name']);header=`<tr class="q-project"><td colspan="${columns.length}" style="text-align:left;background:#e8f3f9">${projectDisplayHtml(projectRecord(previous))}</td></tr>`;}
+    if(text(row['Project name'])!==previous){previous=text(row['Project name']);const location=locationText(projectRecord(previous));header=`<tr class="q-project"><td colspan="${columns.length}" style="text-align:left;background:#e8f3f9"><span class="row-head">${projectDisplayHtml(projectRecord(previous))}${location?` · ${esc(location)}`:''}</span></td></tr>`;}
     return header+`<tr>${columns.map(([,render])=>`<td>${render(row)}</td>`).join('')}</tr>`;
   }).join('');
+  pinColumns(document.getElementById('compositionTable'),1);
 
+  renderRscu();
+}
+
+const AMINO_ACID_NAMES={A:'Ala',R:'Arg',N:'Asn',D:'Asp',C:'Cys',Q:'Gln',E:'Glu',G:'Gly',H:'His',I:'Ile',L:'Leu',K:'Lys',M:'Met',F:'Phe',P:'Pro',S:'Ser',T:'Thr',W:'Trp',Y:'Tyr',V:'Val','*':'Stop'};
+const RSCU_SEGMENT_COLORS=['#0173B2','#DE8F05','#029E73','#CC78BC'];
+let rscuView='stacked';
+
+// Codon families: the codons of one amino acid sharing the first two bases (a codon box).
+function rscuFamilies(rscu) {
+  const families=d3.groups(rscu.codons.map((codon,index)=>({codon,index,aa:rscu.amino_acids[index]})),item=>`${item.aa}\0${item.codon.slice(0,2)}`)
+    .map(([key,items])=>{
+      const aa=items[0].aa, thirds=new Set(items.map(item=>item.codon[2]));
+      const third=thirds.size===4?'N':(thirds.size===2&&thirds.has('T')&&thirds.has('C')?'Y':(thirds.size===2&&thirds.has('A')&&thirds.has('G')?'R':[...thirds].join('/')));
+      items.sort((a,b)=>'TCAG'.indexOf(a.codon[2])-'TCAG'.indexOf(b.codon[2]));
+      return {key,aa,name:AMINO_ACID_NAMES[aa]||aa,box:`${items[0].codon.slice(0,2)}${third}`,items};
+    });
+  const boxes=d3.rollup(families,v=>v.length,family=>family.aa);
+  families.forEach(family=>{ family.label=boxes.get(family.aa)>1?`${family.name} ${family.box}`:family.name; });
+  return families.sort((a,b)=>a.name.localeCompare(b.name)||a.box.localeCompare(b.box));
+}
+
+function rscuAssemblyLabel(row) {
+  return `${projectDisplayText(projectRecord(row['Project name']))} · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`;
+}
+
+function renderRscu() {
   const rscu=ORGANPIPE.rscu||{codons:[],assemblies:[]};
   const select=document.getElementById('rscuSelect');
+  const legend=document.getElementById('rscuLegend');
   const available=sortAssemblyRows((rscu.assemblies||[]).filter(matches));
-  if(!available.length){select.innerHTML='';emptyChart('rscuChart','No codon usage for the current filters.');return;}
+  document.getElementById('rscuView').value=rscuView;
+  const stacked=rscuView==='stacked';
+  select.style.display=stacked?'':'none';
+  document.getElementById('rscuSelectLabel').style.display=stacked?'':'none';
+  if(!available.length){select.innerHTML='';legend.innerHTML='';emptyChart('rscuChart','No codon usage for the current filters.');return;}
   const recommended=new Set(organpipeRows('scores').filter(row=>row.Recommended===true).map(row=>text(row.Assembly)));
   if(!rscuSelection||!available.some(row=>text(row.Assembly)===rscuSelection))rscuSelection=text((available.find(row=>recommended.has(text(row.Assembly)))||available[0]).Assembly);
-  select.innerHTML=available.map(row=>`<option value="${esc(row.Assembly)}" ${text(row.Assembly)===rscuSelection?'selected':''}>${esc(projectDisplayText(projectRecord(row['Project name'])))} · ${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}${recommended.has(text(row.Assembly))?' (recommended)':''}</option>`).join('');
-  const item=available.find(row=>text(row.Assembly)===rscuSelection);
+  select.innerHTML=available.map(row=>`<option value="${esc(row.Assembly)}" ${text(row.Assembly)===rscuSelection?'selected':''}>${esc(rscuAssemblyLabel(row))}${recommended.has(text(row.Assembly))?' (recommended)':''}</option>`).join('');
+  const families=rscuFamilies(rscu);
   clearChart('rscuChart');
+  if(stacked)renderRscuStacked(rscu,families,available.find(row=>text(row.Assembly)===rscuSelection));
+  else renderRscuHeatmap(rscu,families,available,recommended);
+}
+
+function renderRscuStacked(rscu,families,item) {
+  const legend=document.getElementById('rscuLegend');
+  legend.innerHTML=RSCU_SEGMENT_COLORS.map((color,index)=>`<span><i style="background:${color}"></i>${['1st','2nd','3rd','4th'][index]} codon of the box (order under each bar)</span>`).join('')+'<span>Dashed line: RSCU of a box with no preference</span>';
   const container=document.getElementById('rscuChart');
-  const width=Math.max(640,container.clientWidth||1100), height=300;
-  const margin={top:16,right:12,bottom:70,left:44};
-  const svg=d3.select('#rscuChart').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
-  const x=d3.scaleBand().domain(rscu.codons).range([margin.left,width-margin.right]).padding(.12);
+  const width=Math.max(760,container.clientWidth||1100);
+  const maxCodons=d3.max(families,family=>family.items.length)||4;
+  const codonRow=13;
+  const margin={top:14,right:12,bottom:30+maxCodons*codonRow+22,left:48};
+  const plotHeight=260;
+  const height=margin.top+plotHeight+margin.bottom;
   const values=item.RSCU.map(value=>num(value,0));
-  const y=d3.scaleLinear().domain([0,Math.max(2,d3.max(values))]).nice().range([height-margin.bottom,margin.top]);
-  const aminoAcids=[...new Set(rscu.amino_acids)];
-  const aaColor=d3.scaleOrdinal(aminoAcids,[...palette,...palette]);
-  svg.append('g').attr('class','axis').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5));
-  svg.append('line').attr('x1',margin.left).attr('x2',width-margin.right).attr('y1',y(1)).attr('y2',y(1)).attr('stroke','#0f172a').attr('stroke-dasharray','4,3').attr('stroke-opacity',.5);
-  rscu.codons.forEach((codon,index)=>{
-    const aa=rscu.amino_acids[index];
-    svg.append('rect').attr('x',x(codon)).attr('y',y(values[index])).attr('width',x.bandwidth()).attr('height',y(0)-y(values[index])).attr('fill',aaColor(aa))
-      .on('mousemove',event=>hover(event,`<b>${esc(codon)}</b> → ${esc(aa)}<br>RSCU ${d3.format('.3f')(values[index])}<br>${esc(item.Counts[index])} codons`)).on('mouseleave',unhover);
-    svg.append('text').attr('transform',`translate(${x(codon)+x.bandwidth()/2},${height-margin.bottom+6}) rotate(-90)`).attr('text-anchor','end').attr('font-size',8.5).attr('font-family','ui-monospace, monospace').attr('fill','#475569').text(codon);
+  const counts=item.Counts.map(value=>num(value,0));
+  const totals=families.map(family=>d3.sum(family.items,codon=>values[codon.index]));
+  const svg=d3.select('#rscuChart').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
+  const x=d3.scaleBand().domain(families.map(family=>family.key)).range([margin.left,width-margin.right]).paddingInner(.22).paddingOuter(.1);
+  const y=d3.scaleLinear().domain([0,Math.max(4,d3.max(totals)||0)]).nice().range([margin.top+plotHeight,margin.top]);
+  svg.append('g').attr('class','grid-line').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickSize(-(width-margin.left-margin.right)).tickFormat(''));
+  svg.append('g').attr('class','axis').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6));
+  svg.append('text').attr('transform','rotate(-90)').attr('x',-(margin.top+plotHeight/2)).attr('y',13).attr('text-anchor','middle').attr('font-size',10.5).attr('fill','#64748b').text('RSCU (stacked within each codon box)');
+  families.forEach(family=>{
+    const bx=x(family.key), bw=x.bandwidth();
+    let base=0;
+    family.items.forEach((codon,position)=>{
+      const value=values[codon.index];
+      svg.append('rect').attr('x',bx).attr('y',y(base+value)).attr('width',bw).attr('height',Math.max(0,y(base)-y(base+value))).attr('fill',RSCU_SEGMENT_COLORS[position%4]).attr('stroke','#fff').attr('stroke-width',.6)
+        .on('mousemove',event=>hover(event,`<b>${esc(codon.codon)}</b> · ${esc(family.label)}<br>RSCU ${d3.format('.3f')(value)} · ${d3.format(',')(counts[codon.index])} codons<br>${value>1.05?'Used more than its synonyms':(value<.95?'Used less than its synonyms':'No preference')}`)).on('mouseleave',unhover);
+      base+=value;
+    });
+    // Without preference every codon has RSCU 1, so the stack of a box equals its number of codons.
+    const expected=family.items.length;
+    svg.append('line').attr('x1',bx-2).attr('x2',bx+bw+2).attr('y1',y(expected)).attr('y2',y(expected)).attr('stroke','#0f172a').attr('stroke-dasharray','3,2').attr('stroke-opacity',.55).attr('pointer-events','none');
+    const labelY=margin.top+plotHeight+14;
+    svg.append('text').attr('x',bx+bw/2).attr('y',labelY).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',700).attr('fill','#0f172a').text(family.name);
+    if(family.label!==family.name)svg.append('text').attr('x',bx+bw/2).attr('y',labelY+11).attr('text-anchor','middle').attr('font-size',8.5).attr('fill','#64748b').attr('font-family','ui-monospace, monospace').text(family.box);
+    family.items.forEach((codon,position)=>{
+      const cy=labelY+24+position*codonRow;
+      svg.append('rect').attr('x',bx+bw/2-17).attr('y',cy-8).attr('width',8).attr('height',8).attr('rx',1.5).attr('fill',RSCU_SEGMENT_COLORS[position%4]);
+      svg.append('text').attr('x',bx+bw/2-6).attr('y',cy).attr('font-size',8.8).attr('font-family','ui-monospace, monospace').attr('fill','#334155').text(codon.codon);
+    });
   });
-  d3.groups(rscu.codons.map((codon,index)=>({codon,aa:rscu.amino_acids[index]})),d=>d.aa).forEach(([aa,items])=>{
-    const start=x(items[0].codon), end=x(items[items.length-1].codon)+x.bandwidth();
-    svg.append('text').attr('x',(start+end)/2).attr('y',height-8).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',700).attr('fill','#334155').text(aa);
+  svg.append('text').attr('x',margin.left).attr('y',height-6).attr('font-size',10).attr('fill','#64748b').text(`${rscuAssemblyLabel(item)} · ${d3.format(',')(d3.sum(counts))} codons counted`);
+}
+
+function renderRscuHeatmap(rscu,families,assemblies,recommended) {
+  const legend=document.getElementById('rscuLegend');
+  const maximum=Math.max(2,d3.max(assemblies,row=>d3.max(row.RSCU,value=>num(value,0)))||2);
+  const color=d3.scaleDiverging(t=>d3.interpolateRdBu(1-t)).domain([0,1,maximum]);
+  legend.innerHTML=`<span><i style="background:${color(0)}"></i>0, codon not used</span><span><i style="background:${color(1)};border:1px solid #cbd5e1"></i>1, no preference</span><span><i style="background:${color(maximum)}"></i>${d3.format('.1f')(maximum)}, strongly preferred</span><span>Rows marked ★ are the recommended assemblies. An assembly whose row stands out from the others of its project deserves a look.</span>`;
+  const container=document.getElementById('rscuChart');
+  const width=Math.max(900,container.clientWidth||1100);
+  const columns=families.flatMap(family=>family.items.map(codon=>({...codon,family})));
+  const labelWidth=Math.min(380,Math.max(220,svgLabelWidth(assemblies.map(rscuAssemblyLabel),10)+28));
+  const cellWidth=Math.max(11,(width-labelWidth-12)/columns.length);
+  const rowHeight=14, top=78;
+  let cursor=top, previous=null;
+  const layout=assemblies.map(row=>{ if(previous!==null&&text(row['Project name'])!==previous)cursor+=8; previous=text(row['Project name']); const item={row,y:cursor}; cursor+=rowHeight; return item; });
+  const height=cursor+12;
+  const svgWidth=labelWidth+columns.length*cellWidth+12;
+  const svg=d3.select('#rscuChart').append('svg').attr('width',svgWidth).attr('height',height).attr('viewBox',`0 0 ${svgWidth} ${height}`);
+  let offset=0;
+  families.forEach((family,index)=>{
+    const x0=labelWidth+offset*cellWidth, w=family.items.length*cellWidth;
+    svg.append('rect').attr('x',x0).attr('y',4).attr('width',w-2).attr('height',14).attr('rx',3).attr('fill',index%2?'#e2e8f0':'#cbd5e1');
+    svg.append('text').attr('x',x0+w/2-1).attr('y',14.5).attr('text-anchor','middle').attr('font-size',w>34?9.5:8).attr('font-weight',700).attr('fill','#0f172a').text(w>40?family.label:family.name)
+      .attr('data-help',`${family.label}: ${family.items.map(item=>item.codon).join(', ')}`);
+    family.items.forEach((codon,j)=>{
+      const cx=x0+(j+.5)*cellWidth;
+      svg.append('text').attr('x',cx).attr('y',top-4).attr('transform',`rotate(-90,${cx},${top-4})`).attr('font-size',8.5).attr('font-family','ui-monospace, monospace').attr('fill','#475569').text(codon.codon);
+    });
+    offset+=family.items.length;
   });
-  svg.append('text').attr('transform','rotate(-90)').attr('x',-(height-margin.bottom+margin.top)/2).attr('y',12).attr('text-anchor','middle').attr('font-size',10.5).attr('fill','#64748b').text('RSCU');
+  layout.forEach(({row,y})=>{
+    const isPick=recommended.has(text(row.Assembly));
+    const label=svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-3.5).attr('text-anchor','end').attr('font-size',9.5).attr('fill','#0f172a').attr('font-weight',isPick?700:400);
+    setSvgProjectLabel(label,projectRecord(row['Project name']),{suffix:` · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}${isPick?' ★':''}`});
+    columns.forEach((codon,c)=>{
+      const value=num(row.RSCU[codon.index],0);
+      svg.append('rect').attr('x',labelWidth+c*cellWidth).attr('y',y).attr('width',cellWidth-.6).attr('height',rowHeight-.6).attr('fill',color(value))
+        .on('mousemove',event=>hover(event,`<b>${esc(codon.codon)}</b> · ${esc(codon.family.label)}<br>${esc(rscuAssemblyLabel(row))}<br>RSCU ${d3.format('.3f')(value)} · ${d3.format(',')(num(row.Counts[codon.index],0))} codons`)).on('mouseleave',unhover);
+    });
+  });
 }
 
 function fmtNum(value,format) { return num(value)===null?'—':d3.format(format)(num(value)); }
@@ -2656,34 +2872,70 @@ function scoreBreakdownHtml(row) {
   return `<b>Score ${fmtNum(row.Score,'.1f')}</b> (weighted mean × 100)<br>${SCORE_COMPONENTS.map(([column,label])=>`${label}: ${num(row[column])===null?naText:d3.format('.2f')(num(row[column]))}`).join('<br>')}<br><br>${esc(row['Score breakdown'])}`;
 }
 
-function renderRecommendation() {
-  const cards=document.getElementById('recommendationCards');
+function recommendedPicks() {
   const all=ORGANPIPE.scores||[];
-  const subtitle=document.getElementById('recommendationSubtitle');
   const projects=[...state.projects].filter(project=>all.some(row=>text(row['Project name'])===project)).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
-  if(!all.length||!projects.length){
-    subtitle.textContent='No assembly score for this run (it needs the OrganPipe quality analyses).';
-    cards.innerHTML='';document.getElementById('rankingBody').innerHTML='';document.getElementById('rankingHead').innerHTML='';
-    document.getElementById('recommendation').style.display=all.length?'':'none';
-    return;
-  }
-  document.getElementById('recommendation').style.display='';
-  subtitle.textContent='The highest-scoring circularized assembly of each project. Hover a card for the score breakdown; open the full ranking below for every assembly. The score ranks, it does not discard: check the alerts of the chosen assembly before keeping it.';
-  cards.innerHTML=projects.map(project=>{
+  return projects.map(project=>{
     const ranked=all.filter(row=>text(row['Project name'])===project).sort((a,b)=>num(a['Rank in project'],1e9)-num(b['Rank in project'],1e9));
     const inView=ranked.filter(matches);
     const overall=ranked.find(row=>row.Recommended===true);
     const pick=overall&&inView.includes(overall)?overall:inView.find(row=>row.Eligible===true);
+    return {project,ranked,inView,overall,pick};
+  });
+}
+
+const PATH_KINDS=['Pilon FASTA','Rotated GenBank','GenBank'];
+function renderRecommendedPaths(picks) {
+  const kind=(document.querySelector('input[name="pathKind"]:checked')||{}).value||'Pilon FASTA';
+  const kinds=kind==='all'?PATH_KINDS:[kind];
+  const lines=[], missing=[];
+  picks.filter(item=>item.pick).forEach(({project,pick})=>{
+    kinds.forEach(column=>{
+      const path=text(pick[column]).trim();
+      if(path)lines.push(path); else missing.push(`${project} (${column})`);
+    });
+  });
+  const area=document.getElementById('recommendedPaths');
+  area.value=lines.join('\n');
+  area.rows=Math.max(3,Math.min(12,lines.length));
+  const note=document.getElementById('recommendedPathsNote');
+  const projects=picks.filter(item=>item.pick).length;
+  note.textContent=`${lines.length} path${lines.length===1?'':'s'} for ${projects} project${projects===1?'':'s'} with a recommended assembly in the current filters.`
+    +(missing.length?` Not found on disk when the report was built: ${missing.join(', ')}.`:'')
+    +(picks.some(item=>!item.pick)?` ${picks.filter(item=>!item.pick).length} project(s) have no circularized assembly to recommend.`:'');
+}
+
+function renderRecommendation() {
+  const cards=document.getElementById('recommendationCards');
+  const all=ORGANPIPE.scores||[];
+  const subtitle=document.getElementById('recommendationSubtitle');
+  const picks=recommendedPicks();
+  if(!all.length||!picks.length){
+    subtitle.textContent='No assembly score for this run (it needs the OrganPipe quality analyses).';
+    cards.innerHTML='';document.getElementById('rankingBody').innerHTML='';document.getElementById('rankingHead').innerHTML='';
+    document.getElementById('recommendedPaths').value='';
+    document.getElementById('recommendation').style.display=all.length?'':'none';
+    return;
+  }
+  document.getElementById('recommendation').style.display='';
+  subtitle.textContent='The highest-scoring circularized assembly of each project. Copy the files of the recommended assemblies below, open the cards for the score of each pick, or the full ranking for every assembly. The score ranks, it does not discard: check the alerts of the chosen assembly before keeping it.';
+  renderRecommendedPaths(picks);
+  document.getElementById('recommendationCount').textContent=`· ${picks.filter(item=>item.pick).length} of ${picks.length} projects`;
+  cards.innerHTML=picks.map(({project,ranked,inView,overall,pick})=>{
     const eligible=ranked.filter(row=>row.Eligible===true).length;
     const cls=!pick?'no-pick':(pick===overall?'':'hidden-pick');
-    if(!pick)return `<div class="card reco-card no-pick"><div class="reco-project">${projectDisplayHtml(projectRecord(project))}</div><div class="reco-meta">No circularized assembly ${overall?'in the current filters':'in this project'}. ${ranked.length} assemblies were scored.</div></div>`;
+    const location=locationText(projectRecord(project));
+    if(!pick)return `<div class="card reco-card no-pick"><div class="reco-project">${projectDisplayHtml(projectRecord(project))}${location?` · ${esc(location)}`:''}</div><div class="reco-meta">No circularized assembly ${overall?'in the current filters':'in this project'}. ${ranked.length} assemblies were scored.</div></div>`;
     const runnerUp=inView.filter(row=>row!==pick&&row.Eligible===true)[0];
     const bars=SCORE_COMPONENTS.map(([column,label])=>{const value=num(pick[column]);return `<span>${label}</span><span class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></span><span>${value===null?'NA':d3.format('.2f')(value)}</span>`;}).join('');
     const alerts=(ORGANPIPE.alerts||[]).filter(row=>text(row.Assembly)===text(pick.Assembly)).map(row=>row['Alert type']);
     return `<div class="card reco-card ${cls}" data-assembly="${esc(pick.Assembly)}">
-      <div class="reco-head"><div class="reco-project">${projectDisplayHtml(projectRecord(project))}</div><div class="reco-score">${fmtNum(pick.Score,'.1f')}<small> / 100</small></div></div>
-      <div class="reco-assembly">${esc(pick['Seed Input'])} · K-mer ${esc(pick['K-mer'])} · copy _${esc(pick['Assembly copy'])}</div>
-      <div class="reco-meta">${pick===overall?'Recommended':'Best in the current filters; the overall pick ('+esc(overall?`${overall['Seed Input']} · k${overall['K-mer']} · _${overall['Assembly copy']}`:'none')+') is filtered out'} · ${eligible} of ${ranked.length} assemblies circularized${runnerUp?` · next: ${esc(runnerUp['Seed Input'])} · k${esc(runnerUp['K-mer'])} (${fmtNum(runnerUp.Score,'.1f')})`:''}${alerts.length?`<br>Alerts: ${esc([...new Set(alerts)].join(', '))}`:''}</div>
+      <div class="reco-info">
+        <div class="reco-project">${projectDisplayHtml(projectRecord(project))}${location?` <span class="table-count">· ${esc(location)}</span>`:''}</div>
+        <div class="reco-assembly">${esc(pick['Seed Input'])} · K-mer ${esc(pick['K-mer'])} · copy _${esc(pick['Assembly copy'])}</div>
+        <div class="reco-meta">${pick===overall?'Recommended':'Best in the current filters; the overall pick ('+esc(overall?`${overall['Seed Input']} · k${overall['K-mer']} · _${overall['Assembly copy']}`:'none')+') is filtered out'} · ${eligible} of ${ranked.length} assemblies circularized${runnerUp?` · next: ${esc(runnerUp['Seed Input'])} · k${esc(runnerUp['K-mer'])} (${fmtNum(runnerUp.Score,'.1f')})`:''}${alerts.length?`<br>Alerts: ${esc([...new Set(alerts)].join(', '))}`:''}</div>
+      </div>
+      <div class="reco-score">${fmtNum(pick.Score,'.1f')}<small> / 100</small></div>
       <div class="reco-components">${bars}</div>
     </div>`;
   }).join('');
@@ -2696,12 +2948,30 @@ function renderRecommendation() {
   const weights=(ORGANPIPE.settings_phase2||{}).score_weights||{};
   document.getElementById('rankingWeights').textContent=`Weights: ${SCORE_COMPONENTS.map(([,label,key])=>`${label} ${weights[key]??'—'}`).join(' · ')} (assembly_score.weights in config.yml). NA components count as ${(ORGANPIPE.settings_phase2||{}).score_na_value??'not counted'} (assembly_score.na_value).`;
   const rows=all.filter(matches).sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true})||num(a['Rank in project'],0)-num(b['Rank in project'],0));
-  document.getElementById('rankingHead').innerHTML=`<tr><th>Rank</th><th>Project / species</th><th>Seed · K-mer · copy</th><th>Circular</th><th>Score</th>${SCORE_COMPONENTS.map(([,label])=>`<th>${esc(label)}</th>`).join('')}</tr>`;
-  document.getElementById('rankingBody').innerHTML=rows.map(row=>`<tr class="${row.Recommended===true?'recommended':''}" data-assembly="${esc(row.Assembly)}"><td>${esc(row['Rank in project'])}${row.Recommended===true?' ★':''}</td><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td>${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</td><td class="${row.Circularized===true?'':'table-count'}">${row.Circularized===true?'Yes':'No'}</td><td><strong>${fmtNum(row.Score,'.1f')}</strong></td>${SCORE_COMPONENTS.map(([column])=>{const value=num(row[column]);return `<td class="component-cell">${value===null?'NA':d3.format('.2f')(value)}<div class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></div></td>`;}).join('')}</tr>`).join('');
+  document.getElementById('rankingCount').textContent=`· ${rows.length} assemblies`;
+  document.getElementById('rankingHead').innerHTML=`<tr><th>Project / species</th><th>Location</th><th>Rank</th><th>Seed · K-mer · copy</th><th>Circular</th><th>Score</th>${SCORE_COMPONENTS.map(([,label])=>`<th>${esc(label)}</th>`).join('')}</tr>`;
+  document.getElementById('rankingBody').innerHTML=rows.map(row=>`<tr class="${row.Recommended===true?'recommended':''}" data-assembly="${esc(row.Assembly)}"><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td style="text-align:left">${esc(locationText(projectRecord(row['Project name'])))}</td><td>${esc(row['Rank in project'])}${row.Recommended===true?' ★':''}</td><td>${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</td><td class="${row.Circularized===true?'':'table-count'}">${row.Circularized===true?'Yes':'No'}</td><td><strong>${fmtNum(row.Score,'.1f')}</strong></td>${SCORE_COMPONENTS.map(([column])=>{const value=num(row[column]);return `<td class="component-cell">${value===null?'NA':d3.format('.2f')(value)}<div class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></div></td>`;}).join('')}</tr>`).join('');
   document.querySelectorAll('#rankingBody tr[data-assembly]').forEach(tr=>{
     const row=all.find(item=>text(item.Assembly)===tr.dataset.assembly);
     tr.addEventListener('mousemove',event=>hover(event,scoreBreakdownHtml(row)));
     tr.addEventListener('mouseleave',unhover);
+  });
+  pinColumns(document.getElementById('rankingTable'),2);
+}
+
+function initRecommendedPaths() {
+  document.querySelectorAll('input[name="pathKind"]').forEach(input=>input.addEventListener('change',()=>renderRecommendedPaths(recommendedPicks())));
+  const button=document.getElementById('copyRecommendedPaths');
+  button.addEventListener('click',async()=>{
+    const area=document.getElementById('recommendedPaths');
+    const label=button.querySelector('span');
+    let copied=false;
+    try{ await navigator.clipboard.writeText(area.value); copied=true; }
+    catch(error){ area.focus(); area.select(); try{ copied=document.execCommand('copy'); }catch(inner){ copied=false; } }
+    label.textContent=copied?'Copied':'Select and copy (Ctrl+C)';
+    button.classList.toggle('copied',copied);
+    if(!copied){ area.focus(); area.select(); }
+    setTimeout(()=>{ label.textContent='Copy paths'; button.classList.remove('copied'); },1800);
   });
 }
 
@@ -2711,9 +2981,10 @@ function renderProvenance() {
   const benchmarks=(ORGANPIPE.benchmarks||[]).filter(row=>state.projects.has(text(row['Project name'])));
   if(!rows.length&&!benchmarks.length){body.innerHTML='<div class="table-count">Provenance was disabled for this run.</div>';return;}
   const groups=d3Group(rows,row=>text(row.Category));
-  const table=(items,cols)=>`<div class="table-scroll" style="max-height:420px"><table class="assembly-table"><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${items.map(item=>`<tr>${cols.map(c=>`<td>${esc(item[c])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const table=(items,cols)=>`<div class="table-scroll" style="max-height:420px"><table class="assembly-table${cols[0]==='Project name'?' pin-first':''}"><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${items.map(item=>`<tr>${cols.map(c=>`<td>${esc(item[c])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   body.innerHTML=[...groups.entries()].map(([category,items])=>`<h3 style="margin:16px 0 6px;font-size:14px">${esc(category)}</h3>${table(items,['Item','Value'])}`).join('')
     +(benchmarks.length?`<h3 style="margin:16px 0 6px;font-size:14px">OrganPipe benchmarks</h3>${table(benchmarks,['Project name','Rule','Runs','Wall time (s)','CPU time (s)','Max RSS (MB)'])}`:'<h3 style="margin:16px 0 6px;font-size:14px">OrganPipe benchmarks</h3><div class="table-count">No Snakemake benchmark files were found.</div>');
+  body.querySelectorAll('table.pin-first').forEach(table=>pinColumns(table,1));
 }
 
 function renderOrganpipeSections() {
@@ -3063,8 +3334,7 @@ function snpLengthBar(svg,x,y,width,row,alignmentLength,flagged) {
 
 function renderSnpPanel(container, display, panel, panelIndex, panelCount, context) {
   const labelWidth = 300;
-  const rowHeight = 29;
-  const projectGap = Math.max(0,num(REPORT_CONFIG.snp_project_gap,12));
+  const rowHeight = 28;
   const containerWidth=Math.max(480,(container.clientWidth||900)-16);
   const matrixX = labelWidth + 16;
   const panelPositions=display.labels.slice(panel.start,panel.end);
@@ -3086,17 +3356,15 @@ function renderSnpPanel(container, display, panel, panelIndex, panelCount, conte
   const markerScale=d3.scaleLinear().domain([1,Math.max(2,referenceLength)]).range([barX,barX+barWidth]).clamp(true);
   const markerStart=numOrNull(referenceRow.marker_start), markerEnd=numOrNull(referenceRow.marker_end);
 
-  let yCursor = topSpace;
+  // Every row has the same height; a line (not a gap) separates projects.
   let previousProject = null;
   const rowLayout = displayedRows.map((row,index)=>{
     const isReference = row.sequence_id === referenceId;
-    if(!isReference && previousProject !== null && text(row.project) !== text(previousProject)) yCursor += projectGap;
-    const layout = {row,index,y:yCursor,isReference};
-    yCursor += rowHeight;
+    const newProject = !isReference && previousProject !== null && text(row.project) !== text(previousProject);
     if(!isReference) previousProject = row.project;
-    return layout;
+    return {row,index,y:topSpace+index*rowHeight,isReference,newProject};
   });
-  const height = yCursor + 14;
+  const height = topSpace + displayedRows.length*rowHeight + 14;
   const svg = d3.select(container).append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
 
   svg.append('text').attr('x',10).attr('y',20).attr('font-size',12).attr('font-weight',700).attr('fill','#0f172a').text(panelCount>1?`Panel ${panelIndex+1} of ${panelCount} · columns ${panel.start+1}–${panel.end}`:'SNP positions');
@@ -3134,6 +3402,9 @@ function renderSnpPanel(container, display, panel, panelIndex, panelCount, conte
     const background = layout.isReference ? '#dbeafe' : (layout.index%2===0 ? '#f1f5f9' : '#ffffff');
     svg.append('rect').attr('x',0).attr('y',layout.y).attr('width',width).attr('height',rowHeight).attr('fill',background);
   });
+  rowLayout.filter(layout=>layout.newProject||layout.index===1).forEach(layout=>{
+    svg.append('line').attr('x1',0).attr('x2',width).attr('y1',layout.y).attr('y2',layout.y).attr('stroke',layout.index===1?'#93c5fd':'#94a3b8').attr('stroke-width',1);
+  });
 
   rowLayout.forEach(layout=>{
     const row = layout.row;
@@ -3142,7 +3413,7 @@ function renderSnpPanel(container, display, panel, panelIndex, panelCount, conte
     const issues=context.issues.get(row.sequence_id)||[];
     const labelSubParts = [`Seed ${text(row.seed)}`, `K-mer ${text(row.kmer)}`];
     if(text(row.location)) labelSubParts.push(text(row.location));
-    const labelSelection=svg.append('text').attr('x',10).attr('y',y+12).attr('font-size',10.3).attr('fill','#0f172a');
+    const labelSelection=svg.append('text').attr('x',10).attr('y',y+12.5).attr('font-size',10.3).attr('fill','#0f172a');
     setSvgProjectLabel(labelSelection,labelRow,{prefix:layout.isReference?'Reference · ':'',suffix:issues.length?'  ⚠':''});
     svg.append('text').attr('x',10).attr('y',y+24).attr('font-size',9).attr('fill','#64748b').text(labelSubParts.join(' · '));
     snpLengthBar(svg,labelWidth-74,y+19,70,row,display.alignment_length,issues.length>0);
@@ -3153,7 +3424,7 @@ function renderSnpPanel(container, display, panel, panelIndex, panelCount, conte
       const base = row.displayStates[panel.start+j] || 'N';
       const x = matrixX+j*cellWidth;
       const missing=base===SNP_MISSING;
-      svg.append('rect').attr('x',x).attr('y',y+2).attr('width',cellWidth-2).attr('height',rowHeight-4).attr('rx',3).attr('fill',snpBaseColors[base] || '#cbd5e1').attr('stroke',missing?'#94a3b8':'#ffffff').attr('stroke-width',missing?0.8:0.6).attr('stroke-dasharray',missing?'2,2':null)
+      svg.append('rect').attr('x',x).attr('y',y+3).attr('width',cellWidth-2).attr('height',rowHeight-6).attr('rx',3).attr('fill',snpBaseColors[base] || '#cbd5e1').attr('stroke',missing?'#94a3b8':'#ffffff').attr('stroke-width',missing?0.8:0.6).attr('stroke-dasharray',missing?'2,2':null)
         .on('mousemove',event=>hover(event,`${rowInfo}<br>Reference position: ${esc(displayReferencePosition(position))}<br>State: ${missing?'no data (the sequence ends before this position)':esc(base)}`))
         .on('mouseleave',unhover);
       if(!missing)svg.append('text').attr('x',x+(cellWidth-2)/2).attr('y',y+rowHeight/2+4).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',700).attr('fill','#111827').attr('pointer-events','none').text(base);
@@ -3207,10 +3478,10 @@ function renderSnpMatrices() {
 
     const flaggedShown=rows.filter(row=>!clean(row)||warnings.has(row.sequence_id));
     const reasons=row=>[...(issues.get(row.sequence_id)||[]),...(warnings.get(row.sequence_id)||[])].join('; ');
-    const notes=[];
-    if(hidden.length)notes.push(`<b>${hidden.length} sequence${hidden.length===1?'':'s'} hidden</b> because ${hidden.length===1?'it':'they'} could create false SNPs: ${hidden.map(row=>`${esc(projectDisplayText({project:row.project,species:row.species}))} · ${esc(row.seed)} · k${esc(row.kmer)} (${esc((issues.get(row.sequence_id)||[]).join('; '))})`).join(' — ')}.`);
-    if(flaggedShown.length)notes.push(`<b>⚠ ${flaggedShown.length} sequence${flaggedShown.length===1?'':'s'} shown with a warning</b>: ${flaggedShown.map(row=>`${esc(projectDisplayText({project:row.project,species:row.species}))} · ${esc(row.seed)} · k${esc(row.kmer)} (${esc(reasons(row))})`).join(' — ')}. Dashed cells are positions where the sequence ends, not deletions.`);
-    if(notes.length){const note=document.createElement('div');note.className='snp-hidden-note';note.innerHTML=notes.join('<br>');card.appendChild(note);}
+    const noteItem=(row,reason)=>`<li>${projectDisplayHtml({project:row.project,species:row.species})} · ${esc(row.seed)} · k${esc(row.kmer)}: ${esc(reason)}</li>`;
+    const addNote=(summary,items)=>{const note=document.createElement('details');note.className='snp-hidden-note';note.innerHTML=`<summary>${summary}</summary><ul>${items}</ul>`;card.appendChild(note);};
+    if(hidden.length)addNote(`<b>${hidden.length} sequence${hidden.length===1?'':'s'} hidden</b> because ${hidden.length===1?'it':'they'} could create false SNPs. Open the list for the reasons.`,hidden.map(row=>noteItem(row,(issues.get(row.sequence_id)||[]).join('; '))).join(''));
+    if(flaggedShown.length)addNote(`<b>⚠ ${flaggedShown.length} sequence${flaggedShown.length===1?'':'s'} shown with a warning.</b> Dashed cells are positions where the sequence ends, not deletions.`,flaggedShown.map(row=>noteItem(row,reasons(row))).join(''));
 
     const panels=splitSnpPositions({positions:display.positions},columnsPerPanel);
     panels.forEach((panel,index)=>{
@@ -3643,11 +3914,105 @@ function initResizableTable(table, columns) {
 function enableRightButtonDragScroll(container) {
   if(!container || container.dataset.rightDragEnabled==='1')return;
   container.dataset.rightDragEnabled='1';
-  let dragging=false,startX=0,startScroll=0;
-  container.addEventListener('mousedown',event=>{ if(event.button!==2)return; dragging=true; startX=event.clientX; startScroll=container.scrollLeft; container.classList.add('dragging'); event.preventDefault(); });
-  window.addEventListener('mousemove',event=>{ if(!dragging)return; container.scrollLeft=startScroll-(event.clientX-startX); event.preventDefault(); });
+  let dragging=false,startX=0,startY=0,startLeft=0,startTop=0;
+  container.addEventListener('mousedown',event=>{ if(event.button!==2)return; dragging=true; startX=event.clientX; startY=event.clientY; startLeft=container.scrollLeft; startTop=container.scrollTop; container.classList.add('dragging'); unhover(); event.preventDefault(); });
+  window.addEventListener('mousemove',event=>{ if(!dragging)return; container.scrollLeft=startLeft-(event.clientX-startX); container.scrollTop=startTop-(event.clientY-startY); event.preventDefault(); });
   window.addEventListener('mouseup',event=>{ if(!dragging || event.button!==2)return; dragging=false; container.classList.remove('dragging'); });
   container.addEventListener('contextmenu',event=>event.preventDefault());
+}
+
+// Every table can be scrolled by holding the right mouse button and dragging.
+const DRAG_HINT='<div class="assembly-table-help"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 7h8M8 17h8M5 12h14"></path><path d="m8 9-3 3 3 3M16 9l3 3-3 3"></path></svg><span>Hold the right mouse button and drag to scroll the table.</span></div>';
+function enableTableDragScroll() {
+  document.querySelectorAll('.table-scroll').forEach(enableRightButtonDragScroll);
+  document.querySelectorAll('.table-card .table-toolbar').forEach(toolbar=>{
+    if(!toolbar.querySelector('.assembly-table-help'))toolbar.insertAdjacentHTML('beforeend',DRAG_HINT);
+  });
+}
+
+// Keep the first columns (species and location) in place while the table scrolls sideways.
+// Tables inside a closed <details> have no width yet: pin them again when it opens.
+document.addEventListener('toggle',event=>{
+  if(!event.target.open)return;
+  event.target.querySelectorAll('table').forEach(table=>{ if(table._pinCount)pinColumns(table,table._pinCount); });
+},true);
+
+function pinColumns(table, count) {
+  if(!table||count<1)return;
+  table._pinCount=count;
+  const apply=()=>{
+    if(!table.getClientRects().length)return;
+    const headRows=[...table.querySelectorAll('thead tr')];
+    const reference=headRows[headRows.length-1];
+    if(!reference)return;
+    const offsets=[];
+    let left=0, column=0;
+    for(const cell of reference.children){
+      if(column>=count)break;
+      offsets[column]=left; left+=cell.getBoundingClientRect().width; column+=cell.colSpan||1;
+    }
+    table.querySelectorAll('tr').forEach(row=>{
+      let index=0;
+      [...row.children].forEach(cell=>{
+        const span=cell.colSpan||1;
+        const pinned=span===1&&index<count&&offsets[index]!==undefined;
+        cell.classList.toggle('pinned',pinned);
+        cell.classList.toggle('pinned-last',pinned&&index===count-1);
+        cell.style.left=pinned?`${offsets[index]}px`:'';
+        index+=span;
+      });
+    });
+  };
+  requestAnimationFrame(apply);
+}
+
+// ---------------- tooltips (Tippy.js) ----------------
+const TIPPY_CDNS=[
+  ['https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js','https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy-bundle.umd.min.js'],
+  ['https://unpkg.com/@popperjs/core@2.11.8/dist/umd/popper.min.js','https://unpkg.com/tippy.js@6.3.7/dist/tippy-bundle.umd.min.js']
+];
+async function loadTippy() {
+  if(window.tippy)return true;
+  for(const [popper,tippyUrl] of TIPPY_CDNS){
+    try{
+      if(!window.Popper)await loadExternalScript(popper);
+      await loadExternalScript(tippyUrl);
+      if(window.tippy)return true;
+    }catch(error){ console.warn(error.message); }
+  }
+  return false;
+}
+
+const TIPPY_BASE={theme:'mocura',allowHTML:true,maxWidth:380,appendTo:()=>document.body,zIndex:10000};
+let cursorTip=null, cursorPoint={x:0,y:0}, cursorHtml='';
+function cursorTooltip() {
+  if(cursorTip||!window.tippy)return cursorTip;
+  const anchor=document.createElement('span');
+  anchor.setAttribute('aria-hidden','true');
+  anchor.style.cssText='position:fixed;left:0;top:0;width:0;height:0;pointer-events:none';
+  document.body.appendChild(anchor);
+  cursorTip=tippy(anchor,{...TIPPY_BASE,trigger:'manual',placement:'right-start',offset:[0,16],arrow:false,duration:[80,0],hideOnClick:false,
+    getReferenceClientRect:()=>({width:0,height:0,top:cursorPoint.y,bottom:cursorPoint.y,left:cursorPoint.x,right:cursorPoint.x,x:cursorPoint.x,y:cursorPoint.y}),
+    popperOptions:{modifiers:[{name:'flip',options:{fallbackPlacements:['left-start','right-end','left-end']}},{name:'preventOverflow',options:{padding:8,altAxis:true}}]}});
+  return cursorTip;
+}
+
+function initStaticTooltips() {
+  if(window.tippy&&tippy.delegate){
+    tippy.delegate(document.body,{...TIPPY_BASE,target:'[data-tooltip],[data-tooltip-html],[data-help]',delay:[60,0],
+      content:reference=>reference.dataset.tooltipHtml
+        || (reference.dataset.help?`<b>${esc(reference.textContent)}</b><br>${esc(reference.dataset.help)}`:esc(reference.dataset.tooltip||''))});
+    return;
+  }
+  document.body.addEventListener('mouseover',event=>{
+    const element=event.target.closest('[data-tooltip],[data-tooltip-html],[data-help]');
+    if(!element)return;
+    const content=element.dataset.tooltipHtml||(element.dataset.help?`<b>${esc(element.textContent)}</b><br>${esc(element.dataset.help)}`:esc(element.dataset.tooltip||''));
+    hover(event,content);
+    const move=moveEvent=>hover(moveEvent,content);
+    element.addEventListener('mousemove',move);
+    element.addEventListener('mouseleave',()=>{ unhover(); element.removeEventListener('mousemove',move); },{once:true});
+  });
 }
 
 function initStickyFilterLogo() {
@@ -3674,14 +4039,6 @@ function initStickyFilterLogo() {
   requestAnimationFrame(update);
 }
 
-function initStaticTooltips() {
-  document.querySelectorAll('[data-tooltip],[data-tooltip-html]').forEach(element=>{
-    const content=()=>element.dataset.tooltipHtml || esc(element.dataset.tooltip || '');
-    element.addEventListener('mouseenter',event=>hover(event,content()));
-    element.addEventListener('mousemove',event=>hover(event,content()));
-    element.addEventListener('mouseleave',unhover);
-  });
-}
 
 function initSectionNavigation() {
   const links=[...document.querySelectorAll('.nav-link')];
@@ -3711,12 +4068,13 @@ function renderAll() {
   renderMarkerHeatmap();
   renderRepeatTable();
   renderSnpMatrices();
+  enableTableDragScroll();
 }
 
 async function start() {
   try {
     await loadD3();
-    await loadMapLibre();
+    await Promise.all([loadMapLibre(),loadTippy()]);
     abbreviateSpecies=false;
     document.getElementById('abbreviateSpecies').checked=false;
     renderTabs();
@@ -3727,8 +4085,8 @@ async function start() {
     initProjectPicker();
     initMarkerCategoryControls();
     initSamplingMapControls();
-    enableRightButtonDragScroll(document.getElementById('assemblyTableScroll'));
-    enableRightButtonDragScroll(document.getElementById('repeatTableScroll'));
+    initRecommendedPaths();
+    enableTableDragScroll();
     initSectionNavigation();
 
     document.addEventListener('click',closeMultiSelects);
@@ -3760,7 +4118,8 @@ document.getElementById('snpIncludeIncomplete').addEventListener('change',event=
 document.getElementById('qualitySearch').addEventListener('input',renderQualityTable);
 document.getElementById('integritySearch').addEventListener('input',renderIntegrityTable);
 document.getElementById('integrityShowInfo').addEventListener('change',renderIntegrityTable);
-document.getElementById('rscuSelect').addEventListener('change',event=>{ rscuSelection=event.target.value; renderComposition(); });
+document.getElementById('rscuSelect').addEventListener('change',event=>{ rscuSelection=event.target.value; renderRscu(); });
+document.getElementById('rscuView').addEventListener('change',event=>{ rscuView=event.target.value; renderRscu(); });
 document.getElementById('pilonShowValues').addEventListener('change',event=>{ pilonShowValues=event.target.checked; renderPilonMetrics(); });
 document.getElementById('qualityOnlyAlerts').addEventListener('change',renderQualityTable);
 document.getElementById('repeatSearch').addEventListener('input',renderRepeatTable);

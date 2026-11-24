@@ -155,3 +155,14 @@ def test_ranking_never_recommends_open_assemblies():
     assert ranked.loc["closed", "Recommended"] and not ranked.loc["open", "Recommended"]
     assert ranked.loc["open", "Score"] > ranked.loc["closed", "Score"]
     assert ranked.loc["open", "Rank in project"] == 2
+
+
+def test_ranking_lists_the_files_of_each_assembly(fixture_path):
+    import os
+    import pandas as pd
+
+    job = {**job_for(fixture_path), "paths": {"rotated_genbank": fixture_path("ITV38325", "rotated.gb"), "genbank": None, "pilon_dir": None}}
+    table = build_assembly_score(jobs=[job], completeness_dataframe=pd.DataFrame({"Assembly": [job["Assembly"]], "Genes present": [37]}))
+    row = table.iloc[0]
+    assert row["Rotated GenBank"] == os.path.abspath(fixture_path("ITV38325", "rotated.gb"))
+    assert row["GenBank"] is None and row["Pilon FASTA"] is None

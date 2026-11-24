@@ -26,6 +26,7 @@ below the eligible ones; nothing is removed.
 """
 
 import logging
+import os
 from collections import Counter
 
 import pandas as pd
@@ -41,10 +42,13 @@ COMPONENT_LABELS = {
     "coverage": "Coverage uniformity", "pilon": "Pilon confirmed bases", "concordance": "Majority concordance group",
     "length": "Closeness to modal length",
 }
+# Files of each assembly, so the recommended ones can be copied straight from the report.
+PATH_COLUMNS = ["Pilon FASTA", "GenBank", "Rotated GenBank"]
 SCORE_COLUMNS = ASSEMBLY_ID_COLUMNS + [
     "Circularized", "Eligible", "Score", "Rank in project", "Recommended",
     *[f"{label} (0-1)" for label in COMPONENT_LABELS.values()],
     "Genome length", "Modal genome length", "Score breakdown",
+    *PATH_COLUMNS,
 ]
 
 
@@ -60,6 +64,17 @@ def value(row, column):
         return None
     item = row.get(column)
     return None if item is None or (isinstance(item, float) and pd.isna(item)) else item
+
+
+def assembly_files(**kwargs):
+    """Absolute paths of the Pilon FASTA, GenBank and rotated GenBank of one job (None when missing)."""
+
+    job = kwargs.get("job", {})
+    paths = job.get("paths", {}) or {}
+    pilon_dir = paths.get("pilon_dir")
+    fasta = os.path.join(pilon_dir, f"{job['Assembly']}.fasta") if pilon_dir else None
+    files = {"Pilon FASTA": fasta, "GenBank": paths.get("genbank"), "Rotated GenBank": paths.get("rotated_genbank")}
+    return {column: os.path.abspath(path) if path and os.path.isfile(path) else None for column, path in files.items()}
 
 
 def weighted_score(**kwargs):
@@ -149,6 +164,7 @@ def build_assembly_score(**kwargs):
             "Genome length": lengths[name],
             "Modal genome length": mode,
             "Score breakdown": breakdown,
+            **assembly_files(job=job),
         })
 
     dataframe = pd.DataFrame(rows)

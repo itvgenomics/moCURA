@@ -739,7 +739,7 @@ Features include:
 - fixed `Project / Species` and `Location` columns;
 - resizable columns by dragging the header border;
 - horizontal scrolling;
-- right-mouse-button drag scrolling;
+- right-mouse-button drag scrolling, horizontal and vertical (every table of the report);
 - search across project, species, seed, K-mer and table values;
 - in-cell proportional bars for selected numerical variables.
 
@@ -752,8 +752,14 @@ The interactive Pilon section contains:
 - Pilon SNP/insertion/deletion corrections.
 
 The cards are stacked one per row.
-- **Pilon metrics** has one row per project (per seed when a single project is selected) and one column per metric, so long species names stay horizontal and the chart grows with the number of projects. `Show values in the cells` writes the medians inside the heatmap. It is off by default, because with many rows the numbers become unreadable.
+- **Pilon metrics** has one row per project (per seed when a single project is selected) and one column per metric, so long species names stay horizontal and the chart grows with the number of projects. Each column has its own unit (coverage in ×, confirmed bases in %, corrections as counts) and its own colour scale from its minimum to its maximum, written under the column title; a column with the same value in every row is grey. `Show values in the cells` writes the medians inside the heatmap. It is off by default, because with many rows the numbers become unreadable.
 - **Bar charts** reserve room for the full project names, and their tooltips give genome lengths in whole base pairs.
+
+### Tooltips and tables
+
+Every tooltip uses [Tippy.js](https://atomiks.github.io/tippyjs/) 6.3.7 (with Popper 2.11.8, loaded from cdnjs or unpkg): black, with justified text. The info icons are the Font Awesome Free `circle-info` icon. Without network access the report falls back to its own tooltip with the same look.
+
+Every table can be scrolled by holding the right mouse button and dragging, and the columns with the species and the location stay in place while the table scrolls sideways (assembly data, repeats, full ranking, annotation integrity). Tables grouped by project (quality, composition) keep the project title, with species and location, visible instead.
 
 ### Genome structure and tandem-repeat positions
 
@@ -821,7 +827,8 @@ Features include:
 
 - actual nucleotide state for every sequence at every true-SNP column;
 - explicit gaps;
-- grouping by project;
+- grouping by project: every row has the same height and a line separates projects (`snp_project_gap` is kept in `config.yml` for compatibility but no longer adds space);
+- hidden and flagged sequences listed in collapsible notes under the marker title, with the reason for each one;
 - species and locality labels from metadata;
 - selectable reference sequence for each marker;
 - coordinates recalculated from the selected reference;
@@ -851,23 +858,28 @@ The first section of the report shows one card per selected project:
 - how many assemblies are circularized, the next best assembly and the alerts of the recommended one;
 - the score breakdown, in a tooltip over the card.
 
-When the filters hide the overall pick, the card shows the best assembly in the current view and says so. `Full ranking and score breakdown` lists every assembly in view, ranked within its project, with the weights used.
+The cards sit one per row inside `Recommended assembly per sample`, collapsed by default. When the filters hide the overall pick, the card shows the best assembly in the current view and says so. `Full ranking and score breakdown`, also collapsed, lists every assembly in view, ranked within its project, with the weights used; the species and location columns stay in place while the table scrolls sideways.
+
+`Files of the recommended assemblies`, above the cards, lists the absolute paths of the recommended assembly of every project in the current filters, one per line, with a `Copy paths` button. Choose the Pilon FASTA (polished sequence), the rotated GenBank, the GenBank or all three. The paths come from the `Pilon FASTA`, `GenBank` and `Rotated GenBank` columns of the `Recommendation` sheet; a file missing when the report was built is named under the field.
 
 ### Assembly quality
 
 Built from the OrganPipe quality analyses and filtered by the same project, seed, K-mer, status and repeat filters as the rest of the report:
 
-- **Gene completeness**: one row per assembly and one column per mitochondrial gene (present, absent, duplicated, partial at origin), plus whether the gene order matches the project mode.
-- **Quality per assembly**: one row per assembly copy, grouped by project, with columns grouped by source: annotation (genes found, gene order, integrity errors/warnings), coverage (mean depth, CV, bases below the depth threshold, weakest window), read recruitment (reads aligned, reads below the identity threshold, assembly covered), Pilon (corrections, unresolved breaks), junction support and alerts. The thresholds in the column titles come from `config.yml`. Cells are green when within the expected range, orange when worth checking and red for a problem; columns without a fixed threshold are left uncoloured. The first column stays visible while scrolling sideways. `How to read this table` (collapsed) explains every column, each title has a tooltip, and the table can be searched or limited to assemblies with alerts.
+- **Gene completeness**: one row per assembly and one column per mitochondrial gene (present, absent, duplicated, partial at origin), plus whether the gene order matches the project mode. Rows are grouped under a project title, and each Seed + K-mer combination is a separate shaded block.
+- **Quality per assembly**: one row per assembly copy, grouped by project, with columns grouped by source: annotation (genes found, gene order, integrity errors/warnings), coverage (mean depth, CV, bases below the depth threshold, weakest window), read recruitment (reads aligned, reads below the identity threshold, assembly covered), Pilon (corrections, unresolved breaks), junction support and alerts. The thresholds in the column titles come from `config.yml`. Cells are green when within the expected range, orange when worth checking and red for a problem; columns without a fixed threshold are left uncoloured. The table is as wide as its columns need and scrolls sideways; the first column and the project title (species and location) stay visible while scrolling. `How to read this table` (collapsed) explains every column, each title has a tooltip, and the table can be searched or limited to assemblies with alerts.
 - **Annotation integrity**: every error and warning with gene, position and detail; informative checks (incomplete stop codons) can be shown with a checkbox.
-- **Concordance**: one identity matrix per project, ordered by group. Assemblies outside the majority group are labelled in red; hatched cells compare less than the minimum coverage.
-- **Genome structure** gains a depth track on the same coordinate scale, with a depth axis (0, median and the top of the scale), a dashed median line and the mean, median and weakest window written under the assembly name. It also gets Pilon change marks above the plus strand and hatched bands for unresolved Pilon breaks.
+- **Concordance**: one identity matrix per project, ordered by group and as wide as the card, with the assemblies labelled on both axes. Assemblies outside the majority group are labelled in red; hatched cells compare less than the minimum coverage.
+- **Genome structure** gains a depth track on the same coordinate scale, with a depth axis (0, median and the top of the scale, labelled vertically so it never covers the values), a dashed median line and the mean, median and weakest window written under the assembly name. It also gets Pilon change marks above the plus strand and hatched bands for unresolved Pilon breaks.
 - **Overview** shows a read QC card per project when fastp reports are available.
 - **Provenance**, collapsed at the end of the report, lists run time, peak memory, versions, arguments, effective configuration and OrganPipe benchmarks.
 
 ### Sequence composition
 
-GC %, AT and GC skews of every genome and of the protein-coding genes by strand, and an RSCU chart of the selected assembly, the recommended one by default. Bars are grouped by amino acid, and a dashed line marks RSCU 1, no preference.
+GC %, AT and GC skews of every genome and of the protein-coding genes by strand, and the RSCU of the protein-coding genes in two views:
+
+- **One assembly** (the recommended one by default): one stacked bar per amino acid, the usual layout of mitogenome papers. Amino acids with six codons are split into their two codon boxes (Leu CTN and Leu TTR, Ser TCN and Ser AGY); the codons of each box are listed under the bar in the colour of their segment, and a dashed line marks the height of a box with no preference.
+- **Compare assemblies**: a heatmap with one row per assembly in view and one column per codon, grouped by amino acid. Blue is below 1, white is 1 (no preference) and red is above 1. An assembly whose row stands out from the others of its project, such as an alternative `_2` copy, deserves a look.
 
 ### Sampling map
 
