@@ -1,4 +1,4 @@
-"""Phase 1: read what OrganPipe already produces and turn it into curation tables.
+"""Phases 1 and 2: OrganPipe outputs and the curation analyses built on them.
 
 Each analysis has its own ``config.yml`` section with an ``enabled`` key. A
 missing file logs a warning and leaves the corresponding values empty; it never
@@ -20,8 +20,13 @@ from ..load.load_mitos2_data import EXPECTED_MARKERS, load_mitos2_data
 from ..load.load_nhmmer_data import load_nhmmer_data
 from ..load.load_recruitment_data import IDENTITY_BINS, load_recruitment_data
 from ..load.organpipe_layout import find_organpipe_assemblies
-from .assembly_alerts import build_assembly_alerts
+from .annotation_integrity import genetic_code_from_organpipe, load_annotation_integrity
+from .assembly_alerts import build_assembly_alerts, summary_lookup
+from .assembly_concordance import run_assembly_concordance
+from .assembly_score import build_assembly_score
+from .junction_support import load_junction_support
 from .provenance import load_benchmarks
+from .sequence_composition import load_sequence_composition
 
 
 def write_tsv(**kwargs):
@@ -165,6 +170,65 @@ async def run_organpipe_qc(**kwargs):
         benchmarks = load_benchmarks(organpipe_dir=organpipe_dir, projects=projects)
         save("provenance", "benchmarks.tsv", "benchmarks", benchmarks)
 
+    # ---- Phase 2 ----
+    summary_rows = summary_lookup(dataframe=summary_dataframe)
+    circular_lookup = {key: bool(row.get("Circularized")) for key, row in summary_rows.items() if pd.notna(row.get("Circularized"))}
+    pilon_lookup = {key: float(row.get("Pilon Confirmed %")) for key, row in summary_rows.items() if pd.notna(row.get("Pilon Confirmed %"))}
+    configured_code = section("annotation_integrity").get("genetic_code")
+    organpipe_code = genetic_code_from_organpipe(organpipe_dir=organpipe_dir)
+    genetic_code = int(configured_code or organpipe_code or 2)
+    html["settings_phase2"] = {"genetic_code": genetic_code, "genetic_code_source": "config.yml" if configured_code else ("OrganPipe config" if organpipe_code else "default (2, vertebrate mitochondrial)")}
+    junction = integrity_issues = integrity = concordance_pairs = concordance = composition = rscu = scores = pd.DataFrame()
+
+    if jobs and enabled("junction_validation"):
+        junction_config = section("junction_validation")
+        junction = await load_junction_support(jobs=jobs, concurrency=concurrency, settings=junction_config, circular_lookup=circular_lookup)
+        save("junction_validation", "junction_support.tsv", "junction", junction)
+
+    if jobs and enabled("annotation_integrity"):
+        integrity_issues, integrity = await load_annotation_integrity(
+            jobs=jobs, concurrency=concurrency, genetic_code=genetic_code, origin_dataframe=origin,
+            length_deviation_percent=section("annotation_integrity").get("length_deviation_percent", 10),
+        )
+        save("annotation_integrity", "annotation_integrity_issues.tsv", "integrity_issues", integrity_issues)
+        save("annotation_integrity", "annotation_integrity_summary.tsv", "integrity", integrity)
+
+    if jobs and enabled("assembly_concordance"):
+        concordance_config = section("assembly_concordance")
+        mafft_config = {**(section("marker_snp_analysis").get("mafft", {}) or {}), **(concordance_config.get("mafft", {}) or {})}
+        concordance_pairs, concordance = await run_assembly_concordance(
+            jobs=jobs, output_dir=os.path.join(output_dir, folder("assembly_concordance", "assembly_concordance")),
+            mafft_config=mafft_config, overwrite=concordance_config.get("overwrite", False),
+            group_identity_threshold=concordance_config.get("group_identity_threshold", 99.5),
+            group_min_coverage=concordance_config.get("group_min_coverage", 95),
+            max_sequences=concordance_config.get("max_sequences", 150),
+        )
+        save("assembly_concordance", "concordance_pairs.tsv", "concordance_pairs", concordance_pairs)
+        save("assembly_concordance", "concordance_groups.tsv", "concordance", concordance)
+
+    if jobs and enabled("sequence_composition"):
+        composition, rscu = await load_sequence_composition(jobs=jobs, concurrency=concurrency, genetic_code=genetic_code)
+        save("sequence_composition", "composition.tsv", "composition", composition)
+        save("sequence_composition", "rscu.tsv", "rscu", rscu)
+
+    if jobs and enabled("assembly_score"):
+        score_config = section("assembly_score")
+        scores = build_assembly_score(
+            jobs=jobs, weights=score_config.get("weights", {}), length_tolerance_percent=score_config.get("length_tolerance_percent", 5),
+            na_value=score_config.get("na_value", 0.5),
+            circular_lookup=circular_lookup, pilon_lookup=pilon_lookup, completeness_dataframe=completeness,
+            integrity_dataframe=integrity, junction_dataframe=junction, coverage_dataframe=coverage, concordance_dataframe=concordance,
+        )
+        save("assembly_score", "recommendation.tsv", "scores", scores)
+
+    html["settings_phase2"].update({
+        "score_weights": {**{"completeness": 3, "integrity": 2, "junction": 2, "coverage": 1, "pilon": 1, "concordance": 2, "length": 1},
+                          **(section("assembly_score").get("weights", {}) or {})},
+        "group_min_coverage": section("assembly_concordance").get("group_min_coverage", 95),
+        "score_na_value": section("assembly_score").get("na_value", 0.5),
+        "group_identity_threshold": section("assembly_concordance").get("group_identity_threshold", 99.5),
+    })
+
     if jobs and enabled("assembly_alerts"):
         alerts = build_assembly_alerts(
             jobs=jobs,
@@ -174,6 +238,9 @@ async def run_organpipe_qc(**kwargs):
             coverage_dataframe=coverage,
             breaks_dataframe=breaks,
             nhmmer_dataframe=nhmmer,
+            junction_dataframe=junction,
+            integrity_dataframe=integrity,
+            concordance_dataframe=concordance,
             low_coverage_percent=section("coverage_profile").get("low_coverage_alert_percent", 5),
         )
         save("assembly_alerts", "assembly_alerts.tsv", "alerts", alerts)
@@ -189,10 +256,21 @@ async def run_organpipe_qc(**kwargs):
         ("read_qc", "Read QC"),
         ("benchmarks", "Benchmarks"),
         ("alerts", "Assembly Alerts"),
+        ("scores", "Recommendation"),
+        ("junction", "Junction Support"),
+        ("integrity", "Annotation Integrity"),
+        ("integrity_issues", "Integrity Issues"),
+        ("concordance", "Concordance"),
+        ("concordance_pairs", "Concordance Pairs"),
+        ("composition", "Composition"),
+        ("rscu", "RSCU"),
     ]
     excel_sheets = [(sheet, tables[key]) for key, sheet in sheet_names if key in tables and not tables[key].empty]
 
-    html.update({key: tables.get(key, pd.DataFrame()) for key in ("completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment", "nhmmer", "read_qc", "benchmarks", "alerts")})
+    html.update({key: tables.get(key, pd.DataFrame()) for key in (
+        "completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment", "nhmmer", "read_qc", "benchmarks", "alerts",
+        "junction", "integrity", "integrity_issues", "concordance", "concordance_pairs", "composition", "rscu", "scores",
+    )})
     html["coverage_windows"] = windows
     html["identity_histograms"] = histograms
     html["settings"] = {

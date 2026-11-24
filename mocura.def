@@ -21,6 +21,9 @@ From: condaforge/miniforge3:latest
     /opt/conda/bin/conda env create --file /opt/mocura/environment.yml
     /opt/conda/bin/conda clean --all --yes
 
+    # pysam reads the rotated BAMs for the circularization-junction check.
+    /opt/conda/envs/mocura_env/bin/python -c "import pysam"
+
     /opt/conda/envs/mocura_env/bin/python -m compileall -q /opt/mocura/mocura.py /opt/mocura/moCURA
 
     find /opt/mocura -type d -name '__pycache__' -prune -exec rm -rf '{}' '+'

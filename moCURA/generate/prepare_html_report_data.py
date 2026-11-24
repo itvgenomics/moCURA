@@ -600,7 +600,30 @@ def augment_snp_matrices(**kwargs):
 ORGANPIPE_TABLES = (
     "completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment",
     "nhmmer", "read_qc", "benchmarks", "alerts", "provenance",
+    "junction", "integrity", "integrity_issues", "concordance", "concordance_pairs", "composition", "scores",
 )
+
+
+def compact_rscu(**kwargs):
+    """One record per assembly with the RSCU values in a fixed codon order."""
+
+    dataframe = kwargs.get("dataframe")
+    if dataframe is None or dataframe.empty:
+        return {"codons": [], "amino_acids": [], "assemblies": []}
+    order = dataframe[["Codon", "Amino acid"]].drop_duplicates().sort_values(["Amino acid", "Codon"])
+    codons = order["Codon"].tolist()
+    identity = ["Project name", "Seed order", "Seed Input", "K-mer", "Assembly copy", "Assembly"]
+    assemblies = []
+    for _, group in dataframe.groupby("Assembly", sort=False):
+        values = dict(zip(group["Codon"], group["RSCU"]))
+        counts = dict(zip(group["Codon"], group["Count"]))
+        first = group.iloc[0]
+        assemblies.append({
+            **{column: clean_scalar(first[column]) for column in identity},
+            "RSCU": [clean_scalar(values.get(codon)) for codon in codons],
+            "Counts": [clean_scalar(counts.get(codon)) for codon in codons],
+        })
+    return {"codons": codons, "amino_acids": order["Amino acid"].tolist(), "assemblies": assemblies}
 
 
 def organpipe_report_data(**kwargs):
@@ -618,6 +641,8 @@ def organpipe_report_data(**kwargs):
         ],
         "identity_histograms": list(organpipe.get("identity_histograms", []) or []),
         "settings": dict(organpipe.get("settings", {}) or {}),
+        "settings_phase2": dict(organpipe.get("settings_phase2", {}) or {}),
+        "rscu": compact_rscu(dataframe=organpipe.get("rscu")),
     }
 
     for key in ORGANPIPE_TABLES:

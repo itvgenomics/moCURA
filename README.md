@@ -40,6 +40,7 @@ The current report is designed to support comparisons across many projects, seed
 - [Interactive input guide](#interactive-input-guide)
 - [SLURM](#slurm)
 - [Troubleshooting](#troubleshooting)
+- [Future work](#future-work)
 - [Development team](#development-team)
 
 ## Main features
@@ -109,6 +110,8 @@ The supplied Conda environment contains the main runtime dependencies:
 - `openpyxl=3.1.5`
 - `pandas=3.0.3`
 - `pip=26.1.2`
+- `pysam=0.24.1` (reads the rotated BAMs for the junction check)
+- `pytest=9.2.0`
 - `python=3.14`
 - `pyyaml=6.0.3`
 - `seaborn=0.13.2`
@@ -349,12 +352,15 @@ Older OrganPipe runs write `results/{sample}/{step}/...`; current runs add an as
 | `nhmmer/{seed}_kmer{k}/{asm}/intergenes_filter.tblout.out` | tRNA, rRNA and origin hits outside annotated features | after Pilon |
 | `{organpipe_dir}/resources/{sample}/rawreads/fastp.json` | read QC per sample | |
 | `{organpipe_dir}/benchmarks/{sample}/**` | Snakemake wall time, CPU time and memory per rule | |
+| `images/{seed}_kmer{k}/{asm}.rotated_mapping.bam` | reads crossing the circularization junction (pysam) | rotated |
+| `genbanks/{asm}.rotated.gb` (fallback `{asm}.gb`) | annotation integrity, concordance alignment, composition and RSCU | rotated (fallback: after Pilon) |
+| `{organpipe_dir}/config/config.yaml` | `genetic_code` for translation, when `annotation_integrity.genetic_code` is null | |
 
 Positions are moved to the rotated genome with the rotation offset: `rotated = ((after_Pilon − 1 − offset) mod length) + 1`. Positions before Pilon are first shifted by the indels listed in `.changes`.
 
 Every file is optional. A missing file logs one summary warning per analysis and leaves the values empty; the run continues. With no OrganPipe quality files, the existing sheets and report sections are unchanged.
 
-**Limitation.** The OrganPipe BAM, depth and BLAST files are built from NOVOPlasty's own `Assembled_reads`. Coverage and read recruitment computed from them tend to agree with the assembly by construction: they flag problems but do not validate it independently. The code reads the rotated BAM path so a BAM of raw reads can be plugged in later; that mapping is not part of moCURA yet.
+**Limitation.** The OrganPipe BAM, depth and BLAST files are built from NOVOPlasty's own `Assembled_reads`. Coverage, read recruitment and junction support computed from them tend to agree with the assembly by construction: they flag problems but do not validate it independently. `junction_validation.bam_template` already accepts another BAM (for example raw reads mapped on the rotated genome); producing that mapping is not part of moCURA.
 
 ## Metadata
 ##### [:rocket: Go to Contents Overview](#contents-overview)
@@ -587,7 +593,103 @@ assembly_alerts:
 
 The existing sheets (`Summary`, `GenBank Files`, `Marker Lengths`, `TRF Summary`, `TRF Repeats`) and their columns are unchanged. In particular, `Marker length`, `Start` and `End` keep the raw annotation; the origin-corrected 12S length is reported only in `Origin Check`, and the marker SNP workflow still uses the annotated sequence.
 
-Alerts never remove an assembly. Current alert types: circularized with several contigs, annotated but not rotated (no `rrnS`), gene crosses the origin, missing genes, duplicated genes, gene order differs from the project mode (compared on the genes each assembly has), unresolved Pilon break, low coverage and unannotated intergenic nhmmer hit.
+Alerts never remove an assembly. Current alert types: circularized with several contigs, annotated but not rotated (no `rrnS`), gene crosses the origin, missing genes, duplicated genes, gene order differs from the project mode (compared on the genes each assembly has), unresolved Pilon break, low coverage, unannotated intergenic nhmmer hit, junction without support, weak junction support, annotation integrity errors and outside the majority group.
+
+### Curation analyses (Phase 2)
+
+```yaml
+junction_validation:
+  enabled: true
+  output_folder: junction_validation
+  min_flank: 20                    # bases a read must align on each side of the junction
+  min_mapping_quality: 20
+  supported_min_spanning_reads: 10
+  weak_min_spanning_reads: 3
+  weak_min_flanking_pairs: 3
+  max_insert_size: 1000            # wrap-around pairs when the junction is on the origin
+  bam_template: null               # another BAM, e.g. "{results_dir}/{project}/raw/{assembly}.bam"
+
+annotation_integrity:
+  enabled: true
+  output_folder: annotation_integrity
+  genetic_code: null               # null: OrganPipe config/config.yaml, then 2
+  length_deviation_percent: 10
+
+assembly_concordance:
+  enabled: true
+  output_folder: assembly_concordance
+  group_identity_threshold: 99.5   # %
+  group_min_coverage: 95           # % of the longer genome compared
+  max_sequences: 150
+  overwrite: false
+  mafft: {}                        # defaults to marker_snp_analysis.mafft
+
+sequence_composition:
+  enabled: true
+  output_folder: sequence_composition
+
+assembly_score:
+  enabled: true
+  output_folder: assembly_score
+  length_tolerance_percent: 5
+  na_value: 0.5                    # value of an NA component; null leaves it out
+  weights:
+    completeness: 3
+    integrity: 2
+    junction: 2
+    coverage: 1
+    pilon: 1
+    concordance: 2
+    length: 1
+```
+
+| Analysis | Excel sheet | TSV files | HTML |
+| --- | --- | --- | --- |
+| Junction support | `Junction Support` | `junction_validation/junction_support.tsv` | Quality table: Junction column; alerts |
+| Annotation integrity | `Annotation Integrity`, `Integrity Issues` | `annotation_integrity/annotation_integrity_summary.tsv`, `annotation_integrity_issues.tsv` | Quality table: Integrity column; Annotation integrity table; Assembly data: `Integrity alerts` column |
+| Concordance | `Concordance`, `Concordance Pairs` | `assembly_concordance/concordance_groups.tsv`, `concordance_pairs.tsv`, `alignments/` | Quality: identity matrix per project |
+| Composition and codon usage | `Composition`, `RSCU` | `sequence_composition/composition.tsv`, `rscu.tsv` | Composition section |
+| Score and recommendation | `Recommendation` | `assembly_score/recommendation.tsv` | Recommendation section at the top |
+
+**Junction support.** OrganPipe rotates the polished genome so it starts at rrnS and maps the reads on the rotated sequence. The start of the polished contig (`genbanks/{asm}.gb`) is searched in the rotated genome, written twice to allow for the circle and also as its reverse complement; that position is where NOVOPlasty closed the circle. When it is an internal position, moCURA counts reads aligned across it with at least `min_flank` bases on each side, and proper pairs with one mate on each side. When NOVOPlasty already wrote the genome starting at rrnS (it does when run with a reference), the junction falls on the origin, or within `min_flank` bases of it. Then the evidence is reads that bwa-mem split between the last and the first bases (primary plus supplementary alignment), and pairs whose forward mate maps in the last `max_insert_size` bases and reverse mate in the first. The result is Supported, Weak or Unsupported. It is NA for assemblies that are not circularized or have no BAM.
+
+**Annotation integrity.** Every gene of the rotated GenBank is checked, with each protein-coding gene translated with the genetic code:
+
+| Check | Severity |
+| --- | --- |
+| Internal stop codon | error |
+| CDS length not a multiple of 3 that is not an incomplete stop | error |
+| Start codon outside the start codons of the code | warning |
+| No stop codon | warning |
+| Gene crossing the contig origin | warning |
+| Length more than `length_deviation_percent` away from the mode of that gene in the project | warning |
+| Incomplete stop codon (T or TA) | info: in animal mitochondria it is completed to TAA by polyadenylation |
+
+**Concordance.** The rotated genomes of each project are aligned with MAFFT (`--adjustdirection`; identical genomes are aligned once). For each pair:
+- identity: identical bases over the columns where both genomes have a base;
+- coverage: those columns over the length of the longer genome;
+- indel events.
+
+Assemblies are linked when identity ≥ `group_identity_threshold` and coverage ≥ `group_min_coverage`. The connected groups are reported, and the largest is the majority group. The coverage condition keeps a partial genome, which matches perfectly over the part it has, out of the majority group.
+
+**Composition.** Reported for each genome:
+- GC %, AT skew = (A − T)/(A + T) and GC skew = (G − C)/(G + C);
+- the same indices for the protein-coding genes on each strand, each read 5'→3' on its coding strand;
+- RSCU of the protein-coding genes, without terminal stop codons and incomplete codons.
+
+**Score.** Each indicator becomes a component between 0 and 1:
+
+| Component | Value |
+| --- | --- |
+| Completeness | genes present / 37 |
+| Integrity | 1 / (1 + errors and warnings) |
+| Junction | Supported 1, Weak 0.5, Unsupported 0 |
+| Coverage | (1 − min(CV, 1)) × (1 − share of bases below the depth threshold) |
+| Pilon | confirmed % / 100 |
+| Concordance | 1 in the majority group, 0 outside |
+| Length | 1 at the modal genome length of the project, falling to 0 at `length_tolerance_percent` away |
+
+The score is the weighted mean × 100. A component that is NA counts as `na_value` (0.5), so missing evidence does not beat a failed check. Circularization is eliminatory: only circularized assemblies can be recommended. Every assembly still gets a score and a rank; nothing is discarded.
 
 ## Interactive HTML report
 ##### [:rocket: Go to Contents Overview](#contents-overview)
@@ -595,7 +697,7 @@ The report is divided into the following main sections.
 
 ### Layout
 
-Filters and the list of sections sit in a fixed column on the left, so they stay reachable without covering the charts. On narrow screens (below 1000 px) the column moves above the report. Every chart takes its own row and the full width of its card.
+The filters sit in a fixed column on the left. The section links and `Abbreviate species` stay in a slim bar at the top of the content. On narrow screens (below 1000 px) the filter column moves above the report. The four Assembly overview charts share one row, with the project names in the first one. The other charts take their own row and the full width of their card. Table search boxes span the width of their card.
 
 ### Project selection
 
@@ -624,7 +726,7 @@ The overview includes summary cards and four linked NOVOPlasty metrics:
 - Smallest contig
 - Average organelle coverage
 
-Each metric has its own full-width card, with the project/species names on the left of the chart.
+The four charts sit side by side in one row, always in four columns, sharing the same project rows. The project/species names appear once, on the left of the first chart.
 
 Hovering over a run fades unrelated points. Clicking a point isolates the same project, seed and K-mer combination across all four metrics; clicking it again restores the complete view.
 
@@ -649,7 +751,9 @@ The interactive Pilon section contains:
 - genome length before and after Pilon;
 - Pilon SNP/insertion/deletion corrections.
 
-The cards are stacked one per row, and chart height increases with the number of displayed groups, so dozens of projects are not compressed into small side-by-side panels.
+The cards are stacked one per row.
+- **Pilon metrics** has one row per project (per seed when a single project is selected) and one column per metric, so long species names stay horizontal and the chart grows with the number of projects. `Show values in the cells` writes the medians inside the heatmap. It is off by default, because with many rows the numbers become unreadable.
+- **Bar charts** reserve room for the full project names, and their tooltips give genome lengths in whole base pairs.
 
 ### Genome structure and tandem-repeat positions
 
@@ -657,7 +761,7 @@ Assemblies are grouped by identical Seed Input and K-mer combinations.
 
 Within a group, projects share a common coordinate scale so differences in marker structure and tandem repeats can be compared directly.
 
-The left information area identifies the project/species and locality and lists every tandem repeat on its own line: length, copy number × period and the consensus sequence. The consensus is also written next to the repeat block on the TRF track (long sequences are shortened with `…`). Repeat tooltips include:
+The left information area identifies the project/species and locality and lists every tandem repeat on its own line, for example `Repeat 1: 70 bp = 35.5 copies of 2 bp, consensus TA`: the repeat array is 70 bp long and made of 35.5 copies of a 2 bp unit whose consensus is TA. The consensus is also written next to the repeat block on the TRF track (long sequences are shortened with `…`). Repeat tooltips include:
 
 - genomic coordinates;
 - Repeat length;
@@ -740,15 +844,30 @@ When an alignment column occurs before the first nucleotide of the selected refe
 
 Reference selection affects both SNP coordinate labels and the SNP summary used by the sampling map.
 
+### Recommendation
+
+The first section of the report shows one card per selected project:
+- the recommended assembly, its score and the bar of each score component;
+- how many assemblies are circularized, the next best assembly and the alerts of the recommended one;
+- the score breakdown, in a tooltip over the card.
+
+When the filters hide the overall pick, the card shows the best assembly in the current view and says so. `Full ranking and score breakdown` lists every assembly in view, ranked within its project, with the weights used.
+
 ### Assembly quality
 
 Built from the OrganPipe quality analyses and filtered by the same project, seed, K-mer, status and repeat filters as the rest of the report:
 
 - **Gene completeness**: one row per assembly and one column per mitochondrial gene (present, absent, duplicated, partial at origin), plus whether the gene order matches the project mode.
-- **Quality per assembly**: one row per assembly copy, grouped by project, with columns grouped by source: annotation (genes found, gene order), coverage (mean depth, CV, bases below the depth threshold, weakest window), read recruitment (reads aligned, reads below the identity threshold, assembly covered), Pilon (corrections, unresolved breaks) and alerts. The thresholds in the column titles come from `config.yml`. Cells are green when within the expected range, orange when worth checking and red for a problem; columns without a fixed threshold are left uncoloured. A guide above the table explains every column, each title has a tooltip, and the table can be searched or limited to assemblies with alerts.
-- **Genome structure** gains a depth track on the same coordinate scale, Pilon change marks above the plus strand and hatched bands for unresolved Pilon breaks.
+- **Quality per assembly**: one row per assembly copy, grouped by project, with columns grouped by source: annotation (genes found, gene order, integrity errors/warnings), coverage (mean depth, CV, bases below the depth threshold, weakest window), read recruitment (reads aligned, reads below the identity threshold, assembly covered), Pilon (corrections, unresolved breaks), junction support and alerts. The thresholds in the column titles come from `config.yml`. Cells are green when within the expected range, orange when worth checking and red for a problem; columns without a fixed threshold are left uncoloured. The first column stays visible while scrolling sideways. `How to read this table` (collapsed) explains every column, each title has a tooltip, and the table can be searched or limited to assemblies with alerts.
+- **Annotation integrity**: every error and warning with gene, position and detail; informative checks (incomplete stop codons) can be shown with a checkbox.
+- **Concordance**: one identity matrix per project, ordered by group. Assemblies outside the majority group are labelled in red; hatched cells compare less than the minimum coverage.
+- **Genome structure** gains a depth track on the same coordinate scale, with a depth axis (0, median and the top of the scale), a dashed median line and the mean, median and weakest window written under the assembly name. It also gets Pilon change marks above the plus strand and hatched bands for unresolved Pilon breaks.
 - **Overview** shows a read QC card per project when fastp reports are available.
 - **Provenance**, collapsed at the end of the report, lists run time, peak memory, versions, arguments, effective configuration and OrganPipe benchmarks.
+
+### Sequence composition
+
+GC %, AT and GC skews of every genome and of the protein-coding genes by strand, and an RSCU chart of the selected assembly, the recommended one by default. Bars are grouped by amino acid, and a dashed line marks RSCU 1, no preference.
 
 ### Sampling map
 
@@ -899,7 +1018,7 @@ mocura_output/
         └── ...
 ```
 
-Static figure folders appear only when their respective `plots.*.enabled` setting is true.
+Static figure folders appear only when their respective `plots.*.enabled` setting is true. With OrganPipe files, each quality and curation analysis adds its own folder (`mitos2_completeness/`, `coverage_profile/`, `pilon_changes/`, `read_recruitment/`, `assembly_alerts/`, `provenance/`, `junction_validation/`, `annotation_integrity/`, `assembly_concordance/`, `sequence_composition/`, `assembly_score/`).
 
 ## Large datasets and HPC recommendations
 ##### [:rocket: Go to Contents Overview](#contents-overview)
@@ -1019,7 +1138,7 @@ singularity run \
 
 ### Tests
 
-Unit tests for the OrganPipe parsers use small excerpts of the example dataset in `tests/fixtures/`. nhmmer, fastp and Snakemake benchmark files are not in the example dataset; their fixtures in `tests/fixtures/format_examples/` follow the documented formats.
+Unit tests for the OrganPipe parsers use small excerpts of the example dataset in `tests/fixtures/`. nhmmer, fastp and Snakemake benchmark files are not in the example dataset; their fixtures in `tests/fixtures/format_examples/` follow the documented formats. The Phase 2 tests use the rotated GenBank of one ITV38325 assembly and the reads of its rotated BAM within 1 kb of either end (`tests/fixtures/ITV38325/rotated.gb`, `rotated_origin.bam`).
 
 ```bash
 conda activate mocura_env
@@ -1057,13 +1176,13 @@ singularity run \
     --threads 12
 ```
 
-Reference run (image built from `mocura.def` with SingularityCE 4.1.1, Python 3.14.10, MAFFT 7.525, TRF 4.09.1, 12 threads; with the default configuration all OrganPipe quality analyses are on):
+Reference run (image built from `mocura.def` with SingularityCE 4.1.1, Python 3.14.10, MAFFT 7.525, TRF 4.09.1, pysam 0.24.1, 12 threads; with the default configuration all OrganPipe quality and curation analyses are on):
 
 | Check | Result |
 | --- | --- |
 | Exit status | 0 |
-| Wall time | 48 s (35 s before the OrganPipe quality analyses) |
-| Peak memory | 364 MB (284 MB before) |
+| Wall time | 57–128 s depending on the disk cache (35 s before the OrganPipe analyses, 48 s with Phase 1 only); reading the 192 rotated BAMs for the junction check takes most of the difference |
+| Peak memory | 437 MB (284 MB before the OrganPipe analyses, 364 MB with Phase 1 only) |
 | Warnings | 7 for `pilon/INVALIDSEED_1` folders (expected); one each for missing nhmmer tables, fastp reports and Snakemake benchmarks |
 | `Summary` sheet | 489 rows (unchanged by the quality analyses) |
 | `GenBank Files` sheet | 192 rows |
@@ -1075,7 +1194,12 @@ Reference run (image built from `mocura.def` with SingularityCE 4.1.1, Python 3.
 | `Coverage` | 192 from rotated depth, 94 from pre-Pilon depth (assemblies without rotation) |
 | `Pilon Changes` / `Pilon Breaks` | 145 insertions in 93 assemblies / 76 unresolved breaks |
 | `Read Recruitment` | 286 assemblies; median 2.3% of reads below 98% identity |
-| `Assembly Alerts` | 593 alerts in 216 assemblies |
+| `Junction Support` | 144 supported (104 internal junctions, 40 on the rotated origin), 47 unsupported, 1 weak, 94 NA (not rotated). Unsupported junctions are all in genomes of 14.5–15.6 kb; supported ones have a median of 16,533 bp |
+| `Annotation Integrity` | 12 errors, all in ND1 of the ITV38323 k85 assemblies (a 1 bp ND1 in six `_1` copies, a 268 bp ND1 out of frame in six `_2` copies), 237 warnings in 168 assemblies, 1,079 incomplete stop codons (informative) |
+| `Concordance` | 6 projects aligned (ITV38302 has a single rotated genome); 45 assemblies outside the majority group of their sample |
+| `Composition` | complete genomes: median GC 36.4%, AT skew 0.135, GC skew −0.345 |
+| `Recommendation` | one assembly per project; scores from 60.8 (ITV38302) to 98.1 (ITV38307) |
+| `Assembly Alerts` | 698 alerts in 220 assemblies |
 
 The same run with the Conda environment outside the container produced identical sheets, apart from the file-path columns and the Provenance values.
 
@@ -1223,6 +1347,15 @@ marker SNP analysis requires the pipeline to be running in circularized-only mod
 
 The SNP workflow has an `overwrite` setting. If a run was terminated while an alignment was being written, inspect the marker alignment and log before reusing it. Deleting the affected incomplete alignment before rerunning is safer than treating a partial file as valid.
 
+
+## Future work
+
+Not implemented yet:
+- **Species identification** against BOLD or NCBI. It needs network access.
+- **Heteroplasmy.** OrganPipe leaves the NOVOPlasty MAF empty; a pileup on the BAM is an alternative.
+- **Other assemblers and plastomes:** GetOrganelle, MitoHiFi, and plastomes annotated with CPGAVAS2 or Chloe.
+- **table2asn validation for mitogenomes.** OrganPipe only runs it for chloroplasts.
+- **Junction support from raw reads.** `bam_template` is ready to receive such a BAM; producing the mapping is not part of moCURA.
 
 ## Development team
 

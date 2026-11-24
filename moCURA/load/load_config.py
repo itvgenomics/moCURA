@@ -138,6 +138,51 @@ DEFAULT_CONFIG = {
         "enabled": True,
         "output_folder": "assembly_alerts",
     },
+    "junction_validation": {
+        "enabled": True,
+        "output_folder": "junction_validation",
+        "min_flank": 20,
+        "min_mapping_quality": 20,
+        "supported_min_spanning_reads": 10,
+        "weak_min_spanning_reads": 3,
+        "weak_min_flanking_pairs": 3,
+        "max_insert_size": 1000,
+        "bam_template": None,
+    },
+    "annotation_integrity": {
+        "enabled": True,
+        "output_folder": "annotation_integrity",
+        "genetic_code": None,
+        "length_deviation_percent": 10,
+    },
+    "assembly_concordance": {
+        "enabled": True,
+        "output_folder": "assembly_concordance",
+        "group_identity_threshold": 99.5,
+        "group_min_coverage": 95,
+        "max_sequences": 150,
+        "overwrite": False,
+        "mafft": {},
+    },
+    "sequence_composition": {
+        "enabled": True,
+        "output_folder": "sequence_composition",
+    },
+    "assembly_score": {
+        "enabled": True,
+        "output_folder": "assembly_score",
+        "length_tolerance_percent": 5,
+        "na_value": 0.5,
+        "weights": {
+            "completeness": 3,
+            "integrity": 2,
+            "junction": 2,
+            "coverage": 1,
+            "pilon": 1,
+            "concordance": 2,
+            "length": 1,
+        },
+    },
 }
 
 

@@ -1429,7 +1429,7 @@ var IN = [
   ["i_changes", ["Pilon .changes", ".changes do Pilon", ".changes de Pilon"], "now"], ["i_rgb", ".rotated.gb", "now"],
   ["i_gb", ["unrotated .gb", ".gb não rotacionado", ".gb sin rotar"], "now"],
   ["i_mitos", ["MITOS2: result.* and ignored.mitos", "MITOS2: result.* e ignored.mitos", "MITOS2: result.* e ignored.mitos"], "now"],
-  ["i_depth", ".rotated.depth", "now"], ["i_blast", ".rotated.blastn.out", "now"], ["i_bam", ".rotated_mapping.bam", "f2"],
+  ["i_depth", ".rotated.depth", "now"], ["i_blast", ".rotated.blastn.out", "now"], ["i_bam", ".rotated_mapping.bam", "now"],
   ["i_nhmmer", "nhmmer tblout", "absent"], ["i_fastp", "fastp.json", "absent"],
   ["i_bench", ["Snakemake benchmarks", "benchmarks do Snakemake", "benchmarks de Snakemake"], "absent"]
 ];
@@ -1443,10 +1443,10 @@ var AN = [
   ["a_nhm", ["Intergenic alerts", "Alertas intergênicos", "Alertas intergénicas"], "now"],
   ["a_qc", ["Read QC", "QC das reads", "QC de lecturas"], "now"],
   ["a_prov", ["Benchmarks and provenance", "Benchmarks e proveniência", "Benchmarks y procedencia"], "now"],
-  ["a_junc", ["Circularization junction", "Junção de circularização", "Unión de circularización"], "f2"],
-  ["a_int", ["Annotation integrity", "Integridade da anotação", "Integridad de la anotación"], "f2"],
-  ["a_conc", ["Concordance and composition", "Concordância e composição", "Concordancia y composición"], "f2"],
-  ["a_score", ["Score and recommendation", "Pontuação e recomendação", "Puntuación y recomendación"], "f2"]
+  ["a_junc", ["Circularization junction", "Junção de circularização", "Unión de circularización"], "now"],
+  ["a_int", ["Annotation integrity", "Integridade da anotação", "Integridad de la anotación"], "now"],
+  ["a_conc", ["Concordance and composition", "Concordância e composição", "Concordancia y composición"], "now"],
+  ["a_score", ["Score and recommendation", "Pontuação e recomendação", "Puntuación y recomendación"], "now"]
 ];
 var OUT = [["o_xlsx", "moCURA_summary.xlsx", "now"], ["o_tsv", ["TSVs in subfolders", "TSVs em subpastas", "TSV en subcarpetas"], "now"], ["o_html", "moCURA_report.html", "now"]];
 var EDGES = [
@@ -1648,7 +1648,7 @@ var FILES = [
         { re: /\t100\.000/, f: ["Identity (column 3)", "Identidade (coluna 3)", "Identidad (columna 3)"], to: ["Identity distribution, % below threshold", "Distribuição de identidade, % abaixo do limiar", "Distribución de identidad, % bajo el umbral"], w: W.rec },
         { re: /\t8891\t8741/, f: ["Target start and end (9, 10)", "Início e fim no alvo (9, 10)", "Inicio y fin en el objetivo (9, 10)"], to: ["Target coverage", "Cobertura do alvo", "Cobertura del objetivo"], w: W.rec }
       ] },
-    { id: "rbam", name: "{seed}_kmer{k}/{asm}.rotated_mapping.bam", lvl: true, st: "f2", count: ["296 files, no .bai", "296 arquivos, sem .bai", "296 archivos, sin .bai"], coord: "C", fmt: FMT.bam,
+    { id: "rbam", name: "{seed}_kmer{k}/{asm}.rotated_mapping.bam", lvl: true, st: "now", count: ["296 files, no .bai", "296 arquivos, sem .bai", "296 archivos, sin .bai"], coord: "C", fmt: FMT.bam,
       title: ["Rotated BAM", "BAM rotacionado", "BAM rotado"],
       how: ["<code>pysam</code>; indexed into <code>--output-dir</code> when there is no <code>.bai</code>.", "<code>pysam</code>; indexado em <code>--output-dir</code> quando não há <code>.bai</code>.", "<code>pysam</code>; se indexa en <code>--output-dir</code> cuando no hay <code>.bai</code>."],
       miss: ["Junction support = NA.", "Suporte da junção = NA.", "Soporte de la unión = NA."],
@@ -2376,11 +2376,11 @@ var OUTROWS = [
   [["Intergenic alerts", "Alertas intergênicos", "Alertas intergénicas"], "nhmmer", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["list per assembly", "lista por montagem", "lista por ensamblaje"], "f1"],
   [["Read QC", "QC das reads", "QC de lecturas"], "<code>fastp.json</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["card at the top", "cartão no topo", "tarjeta al inicio"], "f1"],
   [["Provenance", "Proveniência", "Procedencia"], ["benchmarks, environment, git", "benchmarks, ambiente, git", "benchmarks, entorno, git"], ["<code>Provenance</code> sheet", "aba <code>Provenance</code>", "hoja <code>Provenance</code>"], ["yes", "sim", "sí"], ["collapsible section at the end", "seção recolhível no fim", "sección plegable al final"], "f1"],
-  [["Junction", "Junção", "Unión"], "<code>.rotated_mapping.bam</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["column and details", "coluna e detalhes", "columna y detalles"], "f2"],
-  [["Integrity", "Integridade", "Integridad"], "<code>.rotated.gb</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["alerts column and list", "coluna de alertas e lista", "columna de alertas y lista"], "f2"],
-  [["Concordance", "Concordância", "Concordancia"], "<code>.rotated.gb</code> + MAFFT", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["identity matrix", "matriz de identidade", "matriz de identidad"], "f2"],
-  [["Composition", "Composição", "Composición"], "<code>.rotated.gb</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["table and panel", "tabela e painel", "tabla y panel"], "f2"],
-  [["Score", "Pontuação", "Puntuación"], ["all of the above", "todas acima", "todas las anteriores"], ["<code>Recommendation</code> sheet", "aba <code>Recommendation</code>", "hoja <code>Recommendation</code>"], ["yes", "sim", "sí"], ["section at the top", "seção no topo", "sección al inicio"], "f2"]
+  [["Junction", "Junção", "Unión"], "<code>.rotated_mapping.bam</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["column and details", "coluna e detalhes", "columna y detalles"], "now"],
+  [["Integrity", "Integridade", "Integridad"], "<code>.rotated.gb</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["alerts column and list", "coluna de alertas e lista", "columna de alertas y lista"], "now"],
+  [["Concordance", "Concordância", "Concordancia"], "<code>.rotated.gb</code> + MAFFT", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["identity matrix", "matriz de identidade", "matriz de identidad"], "now"],
+  [["Composition", "Composição", "Composición"], "<code>.rotated.gb</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["table and panel", "tabela e painel", "tabla y panel"], "now"],
+  [["Score", "Pontuação", "Puntuación"], ["all of the above", "todas acima", "todas las anteriores"], ["<code>Recommendation</code> sheet", "aba <code>Recommendation</code>", "hoja <code>Recommendation</code>"], ["yes", "sim", "sí"], ["section at the top", "seção no topo", "sección al inicio"], "now"]
 ];
 function buildOutTable() {
   var th = T["ou.th"][LI];

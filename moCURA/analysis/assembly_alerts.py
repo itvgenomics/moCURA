@@ -47,6 +47,9 @@ def build_assembly_alerts(**kwargs):
     coverage = rows_by_assembly(dataframe=kwargs.get("coverage_dataframe"))
     breaks = rows_by_assembly(dataframe=kwargs.get("breaks_dataframe"))
     nhmmer = rows_by_assembly(dataframe=kwargs.get("nhmmer_dataframe"))
+    junction = rows_by_assembly(dataframe=kwargs.get("junction_dataframe"))
+    integrity = rows_by_assembly(dataframe=kwargs.get("integrity_dataframe"))
+    concordance = rows_by_assembly(dataframe=kwargs.get("concordance_dataframe"))
     low_coverage_percent = float(kwargs.get("low_coverage_percent", 5))
     rows = []
 
@@ -90,5 +93,22 @@ def build_assembly_alerts(**kwargs):
         for _, item in nhmmer.get(name, pd.DataFrame()).iterrows():
             if item.get("Alert"):
                 add(job, "Unannotated intergenic hit", "warning", str(item["Alert"]))
+
+        for _, item in junction.get(name, pd.DataFrame()).iterrows():
+            if item.get("Junction support") == "Unsupported":
+                add(job, "Junction without support", "warning",
+                    f"{item['Spanning reads']} reads span the circularization junction at {item['Junction position']} (rotated) and {item['Flanking pairs']} pairs flank it.")
+            elif item.get("Junction support") == "Weak":
+                add(job, "Weak junction support", "info",
+                    f"Only {item['Spanning reads']} reads span the circularization junction at {item['Junction position']} (rotated).")
+
+        for _, item in integrity.get(name, pd.DataFrame()).iterrows():
+            if item.get("Errors", 0):
+                add(job, "Annotation integrity errors", "warning", f"{int(item['Errors'])} error(s): {item['Checks']}.")
+
+        for _, item in concordance.get(name, pd.DataFrame()).iterrows():
+            if item.get("In majority group") is False or item.get("In majority group") == False:  # noqa: E712
+                add(job, "Outside the majority group", "warning",
+                    f"Concordance group {item['Group']} ({item['Group size']} assemblies); the majority group of the sample is {item['Majority group']}.")
 
     return pd.DataFrame(rows, columns=ALERT_COLUMNS)

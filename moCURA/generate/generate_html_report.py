@@ -192,7 +192,7 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .marker-category-option:hover { border-color: #93c5fd; background: #f8fbff; }
 .marker-category-option:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); color: #075985; box-shadow: 0 0 0 3px rgba(1,115,178,.07); }
 .multi-option:has(input:checked) { background: var(--brand-soft); color: #075985; font-weight: 650; }
-.section { margin-top: 30px; scroll-margin-top: 16px; }
+.section { margin-top: 30px; scroll-margin-top: 66px; }
 .section h2 { margin: 0; color: #020617; font-size: 20px; }
 .section-note { margin-top: 4px; color: var(--muted); font-size: 13px; }
 .metrics { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px; }
@@ -210,7 +210,9 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .chart-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 16px; margin-top: 16px; }
 .pilon-grid.stacked { grid-template-columns: 1fr; }
 .pilon-grid.stacked .chart { min-height: 520px; }
-.assembly-metric-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 14px; margin-top: 14px; }
+.assembly-metric-grid { display: grid; grid-template-columns: minmax(0,1.6fr) repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 14px; align-items: stretch; }
+.assembly-metric-card .chart-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.assembly-metric-card .chart-subtitle { height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .assembly-species-card, .assembly-metric-card { padding: 10px; min-width: 0; overflow: hidden; display: flex; flex-direction: column; height: 100%; }
 
 .assembly-species-chart, .assembly-metric-chart { width: 100%; overflow: hidden; flex: 1 1 auto; }
@@ -228,14 +230,14 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .chart svg { display: block; width: 100%; height: auto; }
 .tooltip { position: fixed; z-index: 100; pointer-events: none; opacity: 0; background: rgba(15,23,42,.94); color: white; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; max-width: 320px; }
 .table-card { margin-top: 16px; overflow: hidden; }
-.table-toolbar { display: flex; justify-content: space-between; align-items: end; gap: 16px; padding: 14px; border-bottom: 1px solid var(--border); }
+.table-toolbar { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 14px; border-bottom: 1px solid var(--border); }
 .table-title { white-space: nowrap; }
-.table-tools { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; justify-content: flex-end; }
-.table-search-control { min-width: 520px; max-width: 760px; flex: 1 1 520px; }
+.table-tools { display: flex; gap: 12px; align-items: center; width: 100%; }
+.table-search-control { min-width: 0; flex: 1 1 auto; }
 .table-search-control .filter-label { justify-content: flex-start; }
 .table-search-wrap { position: relative; width: 100%; }
 .table-search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #64748b; pointer-events: none; }
-.table-search-wrap input[type="search"] { min-width: 520px; width: 100%; padding-left: 36px; }
+.table-search-wrap input[type="search"] { min-width: 0; width: 100%; padding-left: 36px; }
 .table-width-control input[type="range"] { width: 190px; accent-color: var(--brand); }
 .table-scroll { cursor: grab; }
 .table-scroll.dragging { cursor: grabbing; user-select: none; }
@@ -356,7 +358,7 @@ code { word-break: break-all; font-size: 11px; }
 .completeness-scroll { overflow-y: auto; overflow-x: hidden; max-height: 760px; }
 .completeness-scroll svg { display: block; }
 .quality-note { border-left: 3px solid var(--accent); padding: 8px 12px; background: #fff7ed; border-radius: 0 10px 10px 0; font-size: 12.5px; color: #7c2d12; margin: 10px 0 14px; }
-.alert-chip { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 7px; margin: 1px 3px 1px 0; border-radius: 999px; border: 1px solid #cbd5e1; color: #334155; white-space: nowrap; }
+.alert-chip { display: inline-block; font-size: 11px; line-height: 1.45; padding: 1px 7px; margin: 1px 3px 1px 0; border-radius: 6px; border: 1px solid #cbd5e1; color: #334155; white-space: nowrap; }
 .alert-chip.warning { border-color: #f59e0b; color: #92400e; background: #fffbeb; }
 .alert-chip.info { border-color: #93c5fd; color: #1e3a8a; background: #eff6ff; }
 .provenance-section { margin-top: 30px; }
@@ -381,7 +383,7 @@ code { word-break: break-all; font-size: 11px; }
   .filters { margin: 0 -14px; padding: 10px 14px; }
   .sticky-filter-row { grid-template-columns: 1fr; }
   .sticky-logo { display: none; }
-  .metrics, .chart-grid, .assembly-metric-grid, .image-grid, .snp-grid, .file-grid, .filter-grid { grid-template-columns: 1fr; }
+  .metrics, .chart-grid, .image-grid, .snp-grid, .file-grid, .filter-grid { grid-template-columns: 1fr; }
   .table-toolbar { flex-direction: column; align-items: stretch; }
 }
 
@@ -399,7 +401,39 @@ code { word-break: break-all; font-size: 11px; }
 .side-nav a { padding: 7px 10px; border-radius: 8px; color: #475569; font-size: 13px; font-weight: 650; border-left: 3px solid transparent; }
 .side-nav a:hover { background: var(--brand-soft); color: var(--brand); }
 .side-nav a.active { background: var(--brand-soft); color: #075985; border-left-color: var(--brand); }
-.sidebar .species-toggle { margin: auto 0 0; justify-content: center; }
+.section-bar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 10px; margin: 12px -28px 0; padding: 8px 28px; background: rgba(248,250,252,.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+.section-bar .nav { margin-top: 0; flex: 1 1 auto; flex-wrap: nowrap; }
+.section-bar .nav { gap: 5px; }
+.section-bar .nav a { padding: 6px 10px; font-size: 12px; }
+.section-bar .species-toggle { padding: 6px 10px; }
+.section-bar .species-toggle { margin-left: 0; flex: 0 0 auto; }
+.recommendation-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(330px,1fr)); gap: 12px; margin-top: 14px; }
+.reco-card { padding: 14px 16px; border-top: 4px solid #029E73; display: flex; flex-direction: column; gap: 8px; cursor: help; }
+.reco-card.hidden-pick { border-top-color: #DE8F05; }
+.reco-card.no-pick { border-top-color: #94a3b8; }
+.reco-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.reco-project { font-size: 13.5px; }
+.reco-score { font-size: 26px; font-weight: 800; color: #05624b; font-variant-numeric: tabular-nums; }
+.reco-score small { font-size: 12px; color: var(--muted); font-weight: 600; }
+.reco-assembly { font-size: 14px; font-weight: 750; color: #0f172a; }
+.reco-meta { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.reco-components { display: grid; grid-template-columns: auto 1fr auto; gap: 3px 8px; align-items: center; font-size: 11.5px; color: #475569; }
+.reco-bar { height: 7px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
+.reco-bar span { display: block; height: 100%; background: #029E73; }
+.reco-bar.na span { background: transparent; }
+.ranking-details { margin-top: 14px; }
+.ranking-details > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: #0f172a; }
+.ranking-weights { padding: 0 14px 10px; color: var(--muted); font-size: 12px; }
+.ranking-table { min-width: 1200px; }
+.ranking-table tr.recommended td { background: #e7f6ef !important; font-weight: 650; }
+.component-cell { min-width: 92px; }
+.component-cell .reco-bar { margin-top: 3px; }
+.heatmap-toggle { display: inline-flex; align-items: center; gap: 8px; margin: 2px 0 8px; font-size: 12px; font-weight: 700; color: #475569; cursor: pointer; }
+.heatmap-toggle input { accent-color: var(--brand); width: 16px; height: 16px; }
+.concordance-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 14px; margin-top: 14px; }
+.concordance-card { padding: 14px; }
+.composition-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 4px 0 10px; font-size: 12px; color: #475569; font-weight: 700; }
+.composition-controls select { max-width: 640px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 8px; font-size: 12px; background: #fff; }
 .project-picker { margin-top: 16px; position: relative; }
 .project-notice { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1px solid #93c5fd; border-radius: 12px; background: #eff6ff; color: #1e3a8a; font-size: 13.5px; text-align: left; }
 .project-notice:hover, .project-notice[aria-expanded="true"] { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(1,115,178,.10); }
@@ -432,8 +466,13 @@ code { word-break: break-all; font-size: 11px; }
 .quality-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 14px; font-size: 12px; color: #475569; }
 .quality-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .quality-legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
-#qualityTable { min-width: 0; width: 100%; }
-#qualityTable th, #qualityTable td { padding-left: 7px; padding-right: 7px; }
+#qualityTable { min-width: 0; width: 100%; font-size: 12.5px; }
+#qualityTable thead tr.column-head th { cursor: help; }
+#qualityTable td.q-num { text-align: right; font-variant-numeric: tabular-nums; }
+#qualityTable th.q-sticky, #qualityTable td.q-run { position: sticky; left: 0; z-index: 3; }
+#qualityTable td.q-run { background: #fff; box-shadow: 1px 0 0 var(--border); }
+#qualityTable thead th.q-sticky { z-index: 6; }
+#qualityTable th, #qualityTable td { padding: 6px 8px; }
 #qualityTable thead tr.group-head th { top: 0; background: #cbd5e1; color: #1e293b; text-align: center; border-left: 2px solid #f8fafc; }
 #qualityTable thead tr.column-head th { top: 31px; text-transform: none; letter-spacing: 0; font-size: 11.5px; white-space: normal; line-height: 1.25; vertical-align: bottom; border-left: 1px solid #f1f5f9; }
 #qualityTable tbody td { vertical-align: middle; }
@@ -476,22 +515,6 @@ code { word-break: break-all; font-size: 11px; }
       </div>
       <div id="filterSummary" class="filter-summary"></div>
     </div>
-    <div class="sidebar-block">
-      <div class="sidebar-heading">Sections</div>
-      <nav class="side-nav" aria-label="Report sections">
-        <a class="nav-link active" href="#overview" data-tooltip="Summary cards and guidance for the current filtered view.">Overview</a>
-        <a class="nav-link" href="#assemblies" data-tooltip="Linked NOVOPlasty assembly metrics. Hovering one run highlights the same run in all four panels.">Assemblies</a>
-        <a class="nav-link" href="#pilon" data-tooltip="Interactive polishing metrics from Pilon.">Pilon</a>
-        <a class="nav-link" href="#genome" data-tooltip="Marker and tandem-repeat positions for every assembly that passes the filters.">Genome</a>
-        <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, read recruitment and alerts read from the OrganPipe outputs.">Quality</a>
-        <a class="nav-link" href="#markers" data-tooltip="Marker lengths with an independent min–max color scale for every marker column.">Markers</a>
-        <a class="nav-link" href="#repeats" data-tooltip="TRF repeat families, genomic context and comparative table.">Repeats</a>
-        <a class="nav-link" href="#snps" data-tooltip="True-SNP matrices rendered directly with D3 in a Snipit-like layout.">SNPs</a>
-        <a class="nav-link" href="#map" data-tooltip="Sampling localities with SNP differences on the embedded geographic basemap.">Map</a>
-        <a class="nav-link" href="#provenance" data-tooltip="Run time, versions, arguments and configuration used to build this report.">Provenance</a>
-      </nav>
-    </div>
-    <label class="species-toggle" data-tooltip-html="When enabled, species labels are shortened from <em>Homo sapiens</em> to <em>H. sapiens</em> throughout the report. It is disabled by default."><input id="abbreviateSpecies" type="checkbox"> Abbreviate species <span class="info-dot">i</span></label>
   </aside>
 
 <main class="shell">
@@ -528,6 +551,35 @@ code { word-break: break-all; font-size: 11px; }
     </div>
     <div id="projectTabs" class="tabs"></div>
   </header>
+
+  <div id="sectionBar" class="section-bar">
+    <nav class="nav" aria-label="Report sections">
+      <a class="nav-link" href="#recommendation" data-tooltip="Recommended assembly per sample and the full ranking with the score breakdown.">Recommendation</a>
+      <a class="nav-link active" href="#overview" data-tooltip="Summary cards and guidance for the current filtered view.">Overview</a>
+      <a class="nav-link" href="#assemblies" data-tooltip="Linked NOVOPlasty assembly metrics. Hovering one run highlights the same run in all four panels.">Assemblies</a>
+      <a class="nav-link" href="#pilon" data-tooltip="Interactive polishing metrics from Pilon.">Pilon</a>
+      <a class="nav-link" href="#genome" data-tooltip="Marker and tandem-repeat positions for every assembly that passes the filters.">Genome</a>
+      <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, junction support, annotation integrity and concordance.">Quality</a>
+      <a class="nav-link" href="#composition" data-tooltip="GC content, skews and codon usage (RSCU).">Composition</a>
+      <a class="nav-link" href="#markers" data-tooltip="Marker lengths with an independent min–max color scale for every marker column.">Markers</a>
+      <a class="nav-link" href="#repeats" data-tooltip="TRF repeat families, genomic context and comparative table.">Repeats</a>
+      <a class="nav-link" href="#snps" data-tooltip="True-SNP matrices rendered directly with D3 in a Snipit-like layout.">SNPs</a>
+      <a class="nav-link" href="#map" data-tooltip="Sampling localities with SNP differences on the embedded geographic basemap.">Map</a>
+      <a class="nav-link" href="#provenance" data-tooltip="Run time, versions, arguments and configuration used to build this report.">Provenance</a>
+    </nav>
+    <label class="species-toggle" data-tooltip-html="When enabled, species labels are shortened from <em>Homo sapiens</em> to <em>H. sapiens</em> throughout the report. It is disabled by default."><input id="abbreviateSpecies" type="checkbox"> Abbreviate species <span class="info-dot">i</span></label>
+  </div>
+
+  <section id="recommendation" class="section">
+    <h2>Recommended assembly per sample <span class="info-dot" data-tooltip="A transparent weighted score combines annotation completeness, integrity alerts, junction support, coverage uniformity, Pilon confirmed bases, membership of the majority concordance group and closeness to the modal genome length. Only circularized assemblies can be recommended. Nothing is discarded.">i</span></h2>
+    <div id="recommendationSubtitle" class="section-note"></div>
+    <div id="recommendationCards" class="recommendation-grid"></div>
+    <details class="card table-card ranking-details">
+      <summary>Full ranking and score breakdown</summary>
+      <div id="rankingWeights" class="ranking-weights"></div>
+      <div class="table-scroll"><table id="rankingTable" class="assembly-table ranking-table"><thead id="rankingHead"></thead><tbody id="rankingBody"></tbody></table></div>
+    </details>
+  </section>
 
   <section id="overview" class="section">
     <div class="metrics">
@@ -580,7 +632,7 @@ code { word-break: break-all; font-size: 11px; }
     <h2>Pilon polishing <span class="info-dot" data-tooltip="Summarizes Pilon coverage, confirmation and sequence corrections for the filtered runs.">i</span></h2>
     <div class="section-note">Interactive replacements for the static Pilon summary figures.</div>
     <div id="pilonPrimaryGrid" class="chart-grid pilon-grid">
-      <div class="card chart-card"><div class="chart-title">Pilon metrics</div><div class="chart-subtitle">Each metric is normalized from 0–100% across the filtered groups; the tooltip preserves the measured value.</div><div id="pilonMetricsHeatmap" class="chart"></div></div>
+      <div class="card chart-card"><div class="chart-title">Pilon metrics</div><div class="chart-subtitle">One row per project (per seed when a single project is selected). Each metric column is normalized from 0–100% across the rows shown; the tooltip keeps the measured median.</div><label class="heatmap-toggle"><input id="pilonShowValues" type="checkbox"> Show values in the cells</label><div id="pilonMetricsHeatmap" class="chart" style="min-height:0"></div></div>
       <div class="card chart-card"><div class="chart-title">Genome length before and after Pilon</div><div class="chart-subtitle">Median comparison.</div><div id="pilonBeforeAfterChart" class="chart"></div></div>
     </div>
     <div class="card chart-card" style="margin-top:16px"><div class="chart-title">Pilon corrections</div><div class="chart-subtitle">SNPs, insertions and deletions.</div><div id="pilonCorrectionsChart" class="chart"></div></div>
@@ -589,7 +641,7 @@ code { word-break: break-all; font-size: 11px; }
   <section id="genome" class="section">
     <h2>Genome structure and tandem-repeat positions <span class="info-dot" data-tooltip="Every filtered rotated assembly is drawn as a separate genomic track. Colored blocks are annotated markers and orange blocks are TRF tandem repeats.">i</span></h2>
     <div class="section-note">Assemblies are grouped by identical Seed + K-mer combinations. Within each group, projects share the same coordinate scale, gene colors and repeat-family colors so differences are easy to compare. The consensus sequence of every tandem repeat is written next to its block and listed under the assembly name.</div>
-    <div class="genome-legend"><span><i style="background:#0173B2"></i>Genes on the + strand (top line) and − strand (second line)</span><span><i style="background:#DE8F05"></i>TRF tandem repeat, labelled with its consensus sequence</span><span><svg width="12" height="10" aria-hidden="true"><path d="M1,1 h10 l-5,8 z" fill="#D55E00"></path></svg>Pilon correction</span><span><i style="background:rgba(1,115,178,.35)"></i>Read depth</span><span><i style="background:rgba(213,94,0,.25)"></i>Unresolved Pilon break</span></div>
+    <div class="genome-legend"><span><i style="background:#0173B2"></i>Genes on the + strand (top line) and − strand (second line)</span><span><i style="background:#DE8F05"></i>TRF tandem repeat, labelled with its consensus sequence. "Repeat 1: 70 bp = 35.5 copies of 2 bp" reads as a 70 bp array made of 35.5 copies of a 2 bp unit</span><span><svg width="12" height="10" aria-hidden="true"><path d="M1,1 h10 l-5,8 z" fill="#D55E00"></path></svg>Pilon correction</span><span><i style="background:rgba(1,115,178,.35)"></i>Read depth</span><span><i style="background:rgba(213,94,0,.25)"></i>Unresolved Pilon break</span></div>
     <div class="card chart-card genome-scroll" style="margin-top:10px"><div id="genomeTimeline" class="chart"></div></div>
   </section>
 
@@ -606,21 +658,51 @@ code { word-break: break-all; font-size: 11px; }
       <div class="table-toolbar">
         <div><div class="table-title">Quality per assembly <span class="info-dot" data-tooltip="One row per assembly copy, grouped by project. Hover a column title for its definition, or open the guide below the title.">i</span></div><div id="qualityTableCount" class="table-count"></div></div>
         <div class="table-tools">
-          <label class="quality-only-alerts"><input id="qualityOnlyAlerts" type="checkbox"> Only assemblies with alerts</label>
-          <div class="table-search-control" style="min-width:320px;flex:0 1 420px">
+          <div class="table-search-control">
             <div class="table-search-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-              <input id="qualitySearch" type="search" placeholder="Search project, seed, K-mer or alert..." style="min-width:0">
+              <input id="qualitySearch" type="search" placeholder="Search project, seed, K-mer or alert...">
             </div>
           </div>
+          <label class="quality-only-alerts"><input id="qualityOnlyAlerts" type="checkbox"> Only assemblies with alerts</label>
         </div>
       </div>
-      <details class="quality-guide" id="qualityGuide" open>
+      <details class="quality-guide" id="qualityGuide">
         <summary>How to read this table</summary>
         <div id="qualityGuideBody" class="quality-guide-grid"></div>
       </details>
       <div class="quality-legend"><span><i style="background:#e7f6ef;border:1px solid #9fd8c0"></i>Within the expected range</span><span><i style="background:#fff4e0;border:1px solid #f5c26b"></i>Worth checking</span><span><i style="background:#fde8e4;border:1px solid #f0a28f"></i>Problem</span><span>Uncoloured cells have no fixed threshold; compare them across rows.</span></div>
       <div id="qualityTableScroll" class="table-scroll"><table id="qualityTable" class="assembly-table"><thead id="qualityTableHead"></thead><tbody id="qualityTableBody"></tbody></table></div>
+    </div>
+    <div class="card table-card" style="margin-top:16px">
+      <div class="table-toolbar">
+        <div><div class="table-title">Annotation integrity <span class="info-dot" data-tooltip="Checks of every annotated gene in the rotated GenBank: internal stop codons, frame, start and stop codons, genes crossing the origin and lengths far from the project mode.">i</span></div><div id="integrityCount" class="table-count"></div></div>
+        <div class="table-tools">
+          <div class="table-search-control"><div class="table-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input id="integritySearch" type="search" placeholder="Search assembly, gene or check..."></div></div>
+          <label class="quality-only-alerts"><input id="integrityShowInfo" type="checkbox"> Show informative checks (incomplete stop codons)</label>
+        </div>
+      </div>
+      <div class="table-scroll" style="max-height:460px"><table id="integrityTable" class="assembly-table"><thead id="integrityHead"></thead><tbody id="integrityBody"></tbody></table></div>
+    </div>
+    <div class="card chart-card" style="margin-top:16px">
+      <div class="chart-title">Concordance among assemblies of the same sample <span class="info-dot" data-tooltip="Rotated genomes of each project aligned with MAFFT. Identity excludes gap columns; coverage is the share of the longer genome compared. Linked assemblies (identity and coverage above the thresholds) form groups; the largest is the majority group.">i</span></div>
+      <div id="concordanceSubtitle" class="chart-subtitle"></div>
+      <div id="concordanceGrid" class="concordance-grid"></div>
+    </div>
+  </section>
+
+  <section id="composition" class="section">
+    <h2>Sequence composition <span class="info-dot" data-tooltip="GC content and AT/GC skews of the whole genome and of the protein-coding genes by strand, and the relative synonymous codon usage (RSCU) of the protein-coding genes.">i</span></h2>
+    <div id="compositionSubtitle" class="section-note"></div>
+    <div class="card chart-card" style="margin-top:12px">
+      <div class="chart-title">Relative synonymous codon usage</div>
+      <div class="chart-subtitle">RSCU = observed count / mean count of the synonymous codons of that amino acid. 1 means no preference; above 1, the codon is used more than its synonyms. Terminal stop codons and incomplete codons are left out.</div>
+      <div class="composition-controls"><label for="rscuSelect">Assembly</label><select id="rscuSelect"></select></div>
+      <div id="rscuChart" class="chart" style="min-height:0"></div>
+    </div>
+    <div class="card table-card">
+      <div class="table-toolbar"><div><div class="table-title">Composition per assembly</div><div id="compositionCount" class="table-count"></div></div></div>
+      <div class="table-scroll"><table id="compositionTable" class="assembly-table"><thead id="compositionHead"></thead><tbody id="compositionBody"></tbody></table></div>
     </div>
   </section>
 
@@ -852,7 +934,7 @@ const repeatBarColumns = new Map([
 ]);
 
 function text(value) { return value === null || value === undefined ? '' : String(value); }
-function num(value, fallback = null) { const n = Number(value); return Number.isFinite(n) ? n : fallback; }
+function num(value, fallback = null) { if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) return fallback; const n = Number(value); return Number.isFinite(n) ? n : fallback; }
 function esc(value) { return text(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 function unique(rows, col) { return [...new Set(rows.map(r => r[col]).filter(v => v !== null && v !== undefined && text(v) !== ''))].sort((a,b) => text(a).localeCompare(text(b), undefined, {numeric:true})); }
 function median(values) { const a = values.map(v => num(v)).filter(v => v !== null).sort((a,b) => a-b); if (!a.length) return null; const m = Math.floor(a.length/2); return a.length%2 ? a[m] : (a[m-1]+a[m])/2; }
@@ -957,6 +1039,7 @@ function tableColumnLabel(column) {
 
 function formatNumericMetric(column, numeric) {
   if (numeric === null) return '—';
+  if (column === 'Integrity alerts') return d3.format(',d')(numeric);
   if (column === 'Smallest contig' || column === 'Largest contig' || column === 'Repeat length' || column === 'Period Size' || column === 'Consensus Size') {
     return `${d3.format(',d')(Math.round(numeric))}${column.includes('contig') ? ' bp' : (column === 'Repeat length' || column === 'Consensus Size' ? ' bp' : '')}`;
   }
@@ -1489,7 +1572,7 @@ function assemblyProjectsForCurrentView() {
 }
 
 function assemblyLabelWidth(width) {
-  return Math.round(Math.min(330,Math.max(200,width*.22)));
+  return Math.round(Math.min(250,Math.max(150,width*.46)));
 }
 
 function renderAssemblySpeciesLabels() {
@@ -1525,15 +1608,16 @@ function renderAssemblyMetricChart(id, metric) {
 
   clearChart(id);
   const container=document.getElementById(id);
-  const width=Math.max(520,container.clientWidth||900);
+  const width=Math.max(220,container.clientWidth||300);
   const rowHeight=40;
   const densityHeight=64;
-  const labelWidth=assemblyLabelWidth(width);
-  const margin={top:densityHeight+18,right:18,bottom:46,left:labelWidth+12};
+  const showLabels=id==='metricTotalContigs';
+  const labelWidth=showLabels?assemblyLabelWidth(width):0;
+  const margin={top:densityHeight+18,right:14,bottom:46,left:showLabels?labelWidth+12:20};
   const height=Math.max(220,margin.top+projects.length*rowHeight+margin.bottom);
 
   const svg=d3.select('#'+id).append('svg').attr('viewBox',`0 0 ${width} ${height}`).attr('width',width).attr('height',height);
-  const pointPadding=24;
+  const pointPadding=12;
   const x=d3.scaleLinear().domain(metricDomain(rows,metric)).range([margin.left+pointPadding,width-margin.right-pointPadding]);
   if(metric!=='Total contigs') x.nice(6);
   const y=d3.scaleBand().domain(projects).range([margin.top,height-margin.bottom]).paddingInner(.12);
@@ -1545,8 +1629,10 @@ function renderAssemblyMetricChart(id, metric) {
     if(index%2===0){
       svg.append('rect').attr('x',0).attr('y',y(project)).attr('width',width-margin.right).attr('height',y.bandwidth()).attr('fill',rowBackground);
     }
-    const label=svg.append('text').attr('x',10).attr('y',y(project)+y.bandwidth()/2+4).attr('font-size',10.5).attr('fill','#475569');
-    setSvgProjectLabel(label,projectRecord(project));
+    if(showLabels){
+      const label=svg.append('text').attr('x',8).attr('y',y(project)+y.bandwidth()/2+4).attr('font-size',10.5).attr('fill','#475569');
+      setSvgProjectLabel(label,projectRecord(project));
+    }
   });
 
   if(metric==='Largest contig' || metric==='Smallest contig'){
@@ -1714,10 +1800,16 @@ function updatePilonLayout() {
   const maxHeight=Math.max(520,num(REPORT_CONFIG.pilon_max_height,900));
   const heightPerGroup=Math.max(8,num(REPORT_CONFIG.pilon_height_per_group,22));
   const dynamicHeight=Math.min(maxHeight,Math.max(410,350+Math.max(0,groupCount-8)*heightPerGroup));
-  ['pilonMetricsHeatmap','pilonBeforeAfterChart','pilonCorrectionsChart'].forEach(id=>{
+  ['pilonBeforeAfterChart','pilonCorrectionsChart'].forEach(id=>{
     const element=document.getElementById(id);
     if(element)element.style.minHeight=`${dynamicHeight}px`;
   });
+}
+
+let pilonShowValues=false;
+
+function svgLabelWidth(labels,fontSize=10.5) {
+  return d3.max(labels,label=>text(label).length)*fontSize*.56||60;
 }
 
 function renderPilonMetrics() {
@@ -1725,107 +1817,77 @@ function renderPilonMetrics() {
   const groupCol=singleSelectedProject() ? 'Seed Input' : 'Project name';
   const groups=unique(rows,groupCol);
   const metrics=['Pilon Coverage','Pilon Confirmed %','Pilon Corrected snps','Pilon Corrected insertions','Pilon Corrected deletions'];
+  const formats={'Pilon Coverage':value=>`${d3.format(',.1f')(value)}×`,'Pilon Confirmed %':value=>`${d3.format('.2f')(value)}%`};
+  const formatValue=(metric,value)=>(formats[metric]||(v=>d3.format(',.1~f')(v)))(value);
 
   if(!groups.length){
     return emptyChart('pilonMetricsHeatmap','No Pilon data.');
   }
-
   clearChart('pilonMetricsHeatmap');
 
-  const {width,height}=chartSize('pilonMetricsHeatmap');
-  const margin={top:25,right:82,bottom:groupCol==='Project name'?165:110,left:150};
-  const svg=d3.select('#pilonMetricsHeatmap').append('svg').attr('viewBox',`0 0 ${width} ${height}`);
-  const x=d3.scaleBand().domain(groups.map(text)).range([margin.left,width-margin.right]).padding(.04);
-  const y=d3.scaleBand().domain(metrics).range([margin.top,height-margin.bottom]).padding(.04);
+  const container=document.getElementById('pilonMetricsHeatmap');
+  const width=Math.max(520,container.clientWidth||900);
+  const labels=groups.map(group=>groupCol==='Project name'?projectDisplayText(projectRecord(group)):text(group));
+  const rowHeight=Math.max(18,Math.min(34,560/groups.length));
+  const margin={top:40,right:86,bottom:12,left:Math.min(360,Math.max(110,svgLabelWidth(labels)+22))};
+  const height=margin.top+groups.length*rowHeight+margin.bottom;
+  const svg=d3.select('#pilonMetricsHeatmap').append('svg').attr('viewBox',`0 0 ${width} ${height}`).attr('width',width).attr('height',height);
+  const x=d3.scaleBand().domain(metrics).range([margin.left,width-margin.right]).padding(.04);
+  const y=d3.scaleBand().domain(groups.map(text)).range([margin.top,height-margin.bottom]).padding(.06);
   const cells=[];
 
   metrics.forEach(metric=>{
     const med=groupMedian(rows,groupCol,metric);
-    const values=[...med.values()];
-    const extent=d3.extent(values);
-
+    const extent=d3.extent([...med.values()]);
     groups.forEach(group=>{
       const actual=med.get(text(group));
-
-      if(actual===undefined){
-        return;
-      }
-
+      if(actual===undefined)return;
       const normalized=extent[0]===extent[1]?50:100*(actual-extent[0])/(extent[1]-extent[0]);
       cells.push({group,metric,actual,norm:normalized});
     });
   });
 
   const color=d3.scaleSequential(d3.interpolateGnBu).domain([0,100]);
-
-  svg.append('g')
-    .selectAll('rect')
-    .data(cells)
-    .join('rect')
-    .attr('x',cell=>x(text(cell.group)))
-    .attr('y',cell=>y(cell.metric))
-    .attr('width',x.bandwidth())
-    .attr('height',y.bandwidth())
-    .attr('fill',cell=>color(cell.norm))
-    .on('mousemove',(event,cell)=>hover(event,`${groupCol==='Project name'?projectDisplayHtml(projectRecord(cell.group)):`<strong>${esc(cell.group)}</strong>`}<br>${esc(cell.metric)}: ${d3.format(',.2f')(cell.actual)}<br>Relative scale: ${d3.format('.0f')(cell.norm)}%`))
+  svg.append('g').selectAll('rect').data(cells).join('rect')
+    .attr('x',cell=>x(cell.metric)).attr('y',cell=>y(text(cell.group)))
+    .attr('width',x.bandwidth()).attr('height',y.bandwidth()).attr('fill',cell=>color(cell.norm))
+    .on('mousemove',(event,cell)=>hover(event,`${groupCol==='Project name'?projectDisplayHtml(projectRecord(cell.group)):`<strong>${esc(cell.group)}</strong>`}<br>${esc(cell.metric)}: ${formatValue(cell.metric,cell.actual)} (median)<br>Relative scale: ${d3.format('.0f')(cell.norm)}%`))
     .on('mouseleave',unhover);
 
-  const pilonXAxis=svg.append('g')
-    .attr('class','axis')
-    .attr('transform',`translate(0,${height-margin.bottom})`)
-    .call(d3.axisBottom(x));
-  if(groupCol!=='Project name') pilonXAxis.selectAll('text').attr('transform','rotate(-45)').style('text-anchor','end');
-  if(groupCol==='Project name') styleProjectAxisTicks(pilonXAxis,{rotate90:true});
+  if(pilonShowValues&&y.bandwidth()>=12){
+    svg.append('g').selectAll('text').data(cells).join('text')
+      .attr('x',cell=>x(cell.metric)+x.bandwidth()/2).attr('y',cell=>y(text(cell.group))+y.bandwidth()/2+3.5)
+      .attr('text-anchor','middle').attr('font-size',Math.min(11,y.bandwidth()*.55)).attr('font-weight',650)
+      .attr('fill',cell=>cell.norm>55?'#ffffff':'#0f172a').attr('pointer-events','none')
+      .text(cell=>formatValue(cell.metric,cell.actual));
+  }
 
-  svg.append('g')
-    .attr('class','axis')
-    .attr('transform',`translate(${margin.left},0)`)
-    .call(d3.axisLeft(y));
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${margin.top})`).call(d3.axisTop(x).tickSize(0)).selectAll('text').attr('font-size',10.5).attr('fill','#334155');
+  const yAxis=svg.append('g').attr('class','axis').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).tickSize(0));
+  yAxis.selectAll('text').attr('font-size',10.5);
+  if(groupCol==='Project name')styleProjectAxisTicks(yAxis);
 
-  const legendHeight=Math.max(120,height-margin.top-margin.bottom);
-  const legendWidth=14;
-  const legendX=width-margin.right+24;
-  const legendY=margin.top;
+  const legendHeight=Math.max(60,height-margin.top-margin.bottom);
+  const legendWidth=14, legendX=width-margin.right+22, legendY=margin.top;
   const legendScale=d3.scaleLinear().domain([0,100]).range([legendHeight,0]);
-  const gradientId='pilonMetricsGradient';
-
-  const defs=svg.append('defs');
-  const gradient=defs.append('linearGradient').attr('id',gradientId).attr('x1','0%').attr('x2','0%').attr('y1','100%').attr('y2','0%');
-
-  d3.range(0,101,10).forEach(value=>{
-    gradient.append('stop').attr('offset',`${value}%`).attr('stop-color',color(value));
-  });
-
-  svg.append('rect')
-    .attr('x',legendX)
-    .attr('y',legendY)
-    .attr('width',legendWidth)
-    .attr('height',legendHeight)
-    .attr('fill',`url(#${gradientId})`)
-    .attr('stroke','#cbd5e1')
-    .attr('stroke-width',.7);
-
-  svg.append('g')
-    .attr('class','axis')
-    .attr('transform',`translate(${legendX+legendWidth},${legendY})`)
-    .call(d3.axisRight(legendScale).tickValues([0,25,50,75,100]).tickFormat(value=>`${value}%`));
-
-  svg.append('text')
-    .attr('x',legendX+legendWidth/2)
-    .attr('y',legendY-9)
-    .attr('text-anchor','middle')
-    .attr('font-size',9)
-    .attr('font-weight',650)
-    .attr('fill','#64748b')
-    .text('Relative');
+  const gradient=svg.append('defs').append('linearGradient').attr('id','pilonMetricsGradient').attr('x1','0%').attr('x2','0%').attr('y1','100%').attr('y2','0%');
+  d3.range(0,101,10).forEach(value=>gradient.append('stop').attr('offset',`${value}%`).attr('stop-color',color(value)));
+  svg.append('rect').attr('x',legendX).attr('y',legendY).attr('width',legendWidth).attr('height',legendHeight).attr('fill','url(#pilonMetricsGradient)').attr('stroke','#cbd5e1').attr('stroke-width',.7);
+  svg.append('g').attr('class','axis').attr('transform',`translate(${legendX+legendWidth},${legendY})`).call(d3.axisRight(legendScale).tickValues(legendHeight>100?[0,25,50,75,100]:[0,100]).tickFormat(value=>`${value}%`));
+  svg.append('text').attr('x',legendX+legendWidth/2).attr('y',legendY-9).attr('text-anchor','middle').attr('font-size',9).attr('font-weight',650).attr('fill','#64748b').text('Relative');
 }
 
-function renderGroupedBars(id, groups, series, yLabel, projectGroups=false) {
+function renderGroupedBars(id, groups, series, yLabel, projectGroups=false, valueFormat=',.2~f', unit='') {
   if(!groups.length) return emptyChart(id,'No data.');
   clearChart(id);
-  const {width,height}=chartSize(id);
-  const margin={top:38,right:20,bottom:projectGroups?155:90,left:66};
+  const {width}=chartSize(id);
+  const labels=groups.map(group=>projectGroups?projectDisplayText(projectRecord(group)):text(group));
+  const rotated=projectGroups||groups.length>7;
+  const bottom=rotated?Math.min(320,svgLabelWidth(labels)+(projectGroups?24:10)):48;
+  const height=Math.max(410,280+bottom);
+  const margin={top:38,right:20,bottom,left:66};
   const svg=d3.select('#'+id).append('svg').attr('viewBox',`0 0 ${width} ${height}`);
+  document.getElementById(id).style.minHeight='0';
   const x0=d3.scaleBand().domain(groups.map(text)).range([margin.left,width-margin.right]).padding(.18);
   const x1=d3.scaleBand().domain(series.map(s=>s.name)).range([0,x0.bandwidth()]).padding(.08);
   const max=d3.max(series,s=>d3.max(s.values,v=>v||0))||1;
@@ -1834,7 +1896,7 @@ function renderGroupedBars(id, groups, series, yLabel, projectGroups=false) {
   series.forEach((s,si)=>{
     svg.append('g').selectAll('rect').data(groups.map((g,i)=>({group:g,value:s.values[i]}))).join('rect')
       .attr('x',d=>x0(text(d.group))+x1(s.name)).attr('y',d=>y(d.value||0)).attr('width',x1.bandwidth()).attr('height',d=>y(0)-y(d.value||0)).attr('fill',palette[si%palette.length])
-      .on('mousemove',(event,d)=>hover(event,`${projectGroups?projectDisplayHtml(projectRecord(d.group)):`<strong>${esc(d.group)}</strong>`}<br>${esc(s.name)}: ${d3.format(',.2f')(d.value||0)}`)).on('mouseleave',unhover);
+      .on('mousemove',(event,d)=>hover(event,`${projectGroups?projectDisplayHtml(projectRecord(d.group)):`<strong>${esc(d.group)}</strong>`}<br>${esc(s.name)}: ${d3.format(valueFormat)(d.value||0)}${unit} (median)`)).on('mouseleave',unhover);
   });
   const groupedXAxis=svg.append('g').attr('class','axis').attr('transform',`translate(0,${height-margin.bottom})`).call(d3.axisBottom(x0));
   if(!projectGroups) groupedXAxis.selectAll('text').attr('transform',groups.length>7?'rotate(-45)':null).style('text-anchor',groups.length>7?'end':'middle');
@@ -1846,14 +1908,14 @@ function renderGroupedBars(id, groups, series, yLabel, projectGroups=false) {
 function renderPilonBeforeAfter() {
   const rows=REPORT.summary.filter(matches), groupCol=singleSelectedProject()?'Seed Input':'Project name', groups=unique(rows,groupCol);
   const before=groupMedian(rows,groupCol,'Largest contig'), after=groupMedian(rows,groupCol,'Pilon Total bases');
-  renderGroupedBars('pilonBeforeAfterChart',groups,[{name:'Before Pilon',values:groups.map(g=>before.get(text(g))??0)},{name:'After Pilon',values:groups.map(g=>after.get(text(g))??0)}],'Genome length (bp)',!singleSelectedProject());
+  renderGroupedBars('pilonBeforeAfterChart',groups,[{name:'Before Pilon',values:groups.map(g=>before.get(text(g))??0)},{name:'After Pilon',values:groups.map(g=>after.get(text(g))??0)}],'Genome length (bp)',!singleSelectedProject(),',.0f',' bp');
 }
 
 function renderPilonCorrections() {
   const rows=REPORT.summary.filter(matches), groupCol=singleSelectedProject()?'K-mer':'Project name', groups=unique(rows,groupCol);
   const cols=[['Pilon Corrected snps','SNPs'],['Pilon Corrected insertions','Insertions'],['Pilon Corrected deletions','Deletions']];
   const series=cols.map(([col,name])=>{const med=groupMedian(rows,groupCol,col);return {name,values:groups.map(g=>med.get(text(g))??0)}});
-  renderGroupedBars('pilonCorrectionsChart',groups.map(g=>singleSelectedProject()?`K ${g}`:g),series,'Median corrections',!singleSelectedProject());
+  renderGroupedBars('pilonCorrectionsChart',groups.map(g=>singleSelectedProject()?`K ${g}`:g),series,'Median corrections',!singleSelectedProject(),',.1~f');
 }
 
 function renderAssemblyTable() {
@@ -1972,12 +2034,12 @@ function renderGenomeTimeline() {
   const plotLeft=labelWidth+48;
   const plotRight=28;
   const headerHeight=58;
-  const coverageTrackHeight=genomes.some(genome=>coverageWindowsFor(genome))?34:0;
+  const coverageTrackHeight=genomes.some(genome=>coverageWindowsFor(genome))?46:0;
   const repeatLineHeight=12;
   // Each repeat gets its own summary line under the assembly name, so rows grow with the repeat count.
   const genomeRowHeight=genome=>{
     const count=(repeatsByAssembly.get(genome['Assembly key'])||[]).length;
-    return Math.max(92+coverageTrackHeight,72+Math.max(0,count-1)*repeatLineHeight+16);
+    return Math.max(92+coverageTrackHeight,72+Math.max(0,count-1)*repeatLineHeight+(coverageTrackHeight?30:16));
   };
   const groupGap=22;
   const topMargin=14;
@@ -2091,12 +2153,12 @@ function renderGenomeTimeline() {
         .attr('font-size',9.5)
         .attr('font-weight',650)
         .attr('fill','#475569')
-        .text(assemblyRepeats.length?`${assemblyRepeats.length} tandem repeat${assemblyRepeats.length===1?'':'s'} · consensus sequence`:'No tandem repeats');
+        .text(assemblyRepeats.length?`${assemblyRepeats.length} tandem repeat${assemblyRepeats.length===1?'':'s'} (TRF)`:'No tandem repeats');
       assemblyRepeats.forEach((repeat,repeatIndex)=>{
         const line=svg.append('text').attr('x',14).attr('y',y0+72+repeatIndex*repeatLineHeight).attr('font-size',8.6).attr('fill','#64748b');
-        line.append('tspan').attr('font-weight',700).attr('fill',repeatColor(text(repeat['Repeat family label'])||text(repeat.Consensus)||'Repeat')).text(`R${repeatIndex+1} `);
-        line.append('tspan').text(`${text(repeat['Repeat length'])} bp · ${text(repeat['Copy Number'])} × ${text(repeat['Consensus Size'])} bp · `);
-        line.append('tspan').attr('font-family','ui-monospace, SFMono-Regular, Menlo, Consolas, monospace').attr('fill','#0f172a').text(truncateSequence(repeat.Consensus,34));
+        line.append('tspan').attr('font-weight',700).attr('fill',repeatColor(text(repeat['Repeat family label'])||text(repeat.Consensus)||'Repeat')).text(`Repeat ${repeatIndex+1}: `);
+        line.append('tspan').text(`${text(repeat['Repeat length'])} bp = ${text(repeat['Copy Number'])} copies of ${text(repeat['Consensus Size'])} bp, consensus `);
+        line.append('tspan').attr('font-family','ui-monospace, SFMono-Regular, Menlo, Consolas, monospace').attr('fill','#0f172a').text(truncateSequence(repeat.Consensus,18));
       });
 
       const plusY=y0+20;
@@ -2143,7 +2205,12 @@ function renderGenomeTimeline() {
       });
 
       drawPilonChangeMarks(svg,genome,x,plusY,minusY);
-      if(coverageTrackHeight)drawCoverageTrack(svg,genome,x,y0+84,coverageTrackHeight-6,genomeLength);
+      if(coverageTrackHeight){
+        drawCoverageTrack(svg,genome,x,y0+84,coverageTrackHeight-8,genomeLength);
+        const depthStats=coverageByRun.get(runCopyKey(genome));
+        if(depthStats)svg.append('text').attr('x',14).attr('y',y0+72+Math.max(0,assemblyRepeats.length-1)*repeatLineHeight+15).attr('font-size',8.6).attr('fill','#0173B2')
+          .text(`Depth: mean ${d3.format(',.1f')(num(depthStats['Mean depth'],0))}×, median ${d3.format(',')(num(depthStats['Median depth'],0))}×, weakest ${num(depthStats['Window size'],50)} bp window ${d3.format(',.0f')(num(depthStats['Lowest window mean depth'],0))}×${text(depthStats['Coordinate system']).startsWith('C')?'':' (pre-Pilon file)'}`);
+      }
 
       assemblyRepeats.forEach(repeat=>{
         const family=text(repeat['Repeat family label'])||text(repeat.Consensus)||'Repeat';
@@ -2196,6 +2263,7 @@ function runCopyKey(row) {
 }
 const coverageWindowsByRun=new Map((ORGANPIPE.coverage_windows||[]).filter(item=>text(item['Coordinate system']).startsWith('C')).map(item=>[runCopyKey(item),item]));
 const pilonChangesByRun=d3Group(ORGANPIPE.pilon_changes||[],runCopyKey);
+const coverageByRun=new Map((ORGANPIPE.coverage||[]).map(row=>[runCopyKey(row),row]));
 const pilonBreaksByRun=d3Group(ORGANPIPE.pilon_breaks||[],runCopyKey);
 function d3Group(rows,keyFn){const map=new Map();rows.forEach(row=>{const key=keyFn(row);if(!map.has(key))map.set(key,[]);map.get(key).push(row);});return map;}
 function coverageWindowsFor(genome){return coverageWindowsByRun.get(runCopyKey(genome))||null;}
@@ -2204,7 +2272,7 @@ function organpipeRows(key){return (ORGANPIPE[key]||[]).filter(matches);}
 function drawCoverageTrack(svg,genome,x,top,height,genomeLength) {
   const item=coverageWindowsFor(genome);
   const baselineY=top+height;
-  svg.append('text').attr('x',x.range()[0]-8).attr('y',top+height/2+3.5).attr('text-anchor','end').attr('font-size',8.5).attr('font-weight',700).attr('fill','#94a3b8').text('Depth');
+  svg.append('text').attr('x',x.range()[0]-30).attr('y',top+height/2+3.5).attr('text-anchor','end').attr('font-size',8.5).attr('font-weight',700).attr('fill','#94a3b8').text('Depth');
   if(!item||!(item.Windows||[]).length){
     svg.append('text').attr('x',x.range()[0]).attr('y',top+height/2+3).attr('font-size',8.5).attr('fill','#94a3b8').text('No rotated depth file');
     return;
@@ -2230,7 +2298,12 @@ function drawCoverageTrack(svg,genome,x,top,height,genomeLength) {
       const point=points[Math.max(0,Math.min(points.length-1,Math.floor((position-1)/size)))];
       hover(event,`<b>Depth</b> ${d3.format(',.1f')(point.value)}×<br>${d3.format(',')(point.start)}–${d3.format(',')(point.end)} bp<br>Window ${size} bp, rotated coordinates`);
     }).on('mouseleave',unhover);
-  svg.append('text').attr('x',x(genomeLength)+3).attr('y',top+7).attr('font-size',8).attr('fill','#94a3b8').text(`${d3.format(',')(Math.round(cap))}×${maximum>cap?'+':''}`);
+  const middle=d3.median(windows)||0;
+  const axis=svg.append('g').attr('class','axis').attr('transform',`translate(${x.range()[0]-2},0)`).call(d3.axisLeft(y).tickValues([0,Math.round(middle),Math.round(cap)].filter((v,i,a)=>a.indexOf(v)===i)).tickFormat(value=>`${d3.format(',')(value)}×`).tickSize(3));
+  axis.selectAll('text').attr('font-size',7.5);
+  axis.select('.domain').attr('stroke','#cbd5e1');
+  svg.append('line').attr('x1',x.range()[0]).attr('x2',x(genomeLength)).attr('y1',y(middle)).attr('y2',y(middle)).attr('stroke','#0f172a').attr('stroke-opacity',.35).attr('stroke-dasharray','3,3').attr('pointer-events','none');
+  if(maximum>cap)svg.append('text').attr('x',x(genomeLength)-4).attr('y',top-2).attr('text-anchor','end').attr('font-size',8).attr('fill','#64748b').attr('pointer-events','none').text(`scale capped at ${d3.format(',')(Math.round(cap))}×, max ${d3.format(',')(Math.round(maximum))}×`);
   if(maximum>cap)points.filter(d=>d.value>cap).forEach(d=>svg.append('rect').attr('x',x(d.start)).attr('y',top-1).attr('width',Math.max(1,x(d.end)-x(d.start))).attr('height',2).attr('fill','#0f172a'));
 }
 
@@ -2319,18 +2392,20 @@ function qualityColumns() {
   const q=qualitySettings();
   return [
     {group:'Assembly',key:'run',label:'Seed · K-mer · copy',help:'Seed used by NOVOPlasty, K-mer size and assembly copy (_1 is the main contig set, _2 the alternative copy NOVOPlasty writes when it finds two options).'},
-    {group:'Assembly',key:'status',label:'Circularized',help:'Whether NOVOPlasty closed the assembly into a circle.'},
-    {group:'Annotation (MITOS2)',key:'genes',label:`Genes found (of ${q.genes})`,help:`Number of the ${q.genes} expected mitochondrial genes (13 protein-coding, 2 rRNAs, 22 tRNAs) that MITOS2 annotated. Green: all present. Orange: some missing; the heatmap above shows which.`},
-    {group:'Annotation (MITOS2)',key:'order',label:'Gene order',help:'Modal: same order and strand as the most common order among the complete assemblies of the project. Differs: at least one gene is out of place, often a sign of a misassembly or of a partial assembly.'},
-    {group:'Coverage (samtools depth)',key:'depth',label:'Mean depth (×)',help:`Mean number of reads covering each base. (A) means the rotated depth file was missing and the pre-Pilon file was used. Red when the mean is below ${q.depth}×.`},
-    {group:'Coverage (samtools depth)',key:'cv',label:'Depth CV',help:'Coefficient of variation of the depth (standard deviation / mean). Values near 0 mean even coverage; high values point to spikes (repeats, collapsed copies) or gaps.'},
-    {group:'Coverage (samtools depth)',key:'low',label:`Bases below ${q.depth}× (%)`,help:`Percentage of positions with fewer than ${q.depth} reads. Orange above ${q.alertPercent}%, which also raises the Low coverage alert.`},
-    {group:'Coverage (samtools depth)',key:'window',label:`Weakest ${q.window} bp window`,help:`Lowest mean depth among consecutive ${q.window} bp windows, and the position where that window starts. Pinpoints the least supported region.`},
-    {group:'Read recruitment (BLAST)',key:'reads',label:'Reads aligned',help:'Reads NOVOPlasty used to build the assembly that BLAST aligned back to it.'},
-    {group:'Read recruitment (BLAST)',key:'mismatch',label:`Reads below ${q.identity}% identity (%)`,help:`Share of aligned reads with identity below ${q.identity}%. Higher values can indicate sequencing errors, mixed haplotypes, heteroplasmy or nuclear copies (NUMTs). The bar is relative to the highest value in view.`},
-    {group:'Read recruitment (BLAST)',key:'target',label:'Assembly covered (%)',help:'Percentage of the assembly covered by at least one aligned read. Orange below 100%.'},
-    {group:'Pilon',key:'changes',label:'Corrections',help:'Changes Pilon made to the assembly (insertions, deletions, substitutions), read from the .changes file. They are marked with triangles in the genome structure.'},
-    {group:'Pilon',key:'breaks',label:'Unresolved breaks',help:'Regions Pilon tried to fix but could not (NoSolution in pilon.log). Orange when there is at least one.'},
+    {group:'Assembly',key:'status',label:'Circular',help:'Whether NOVOPlasty closed the assembly into a circle.'},
+    {group:'Annotation (MITOS2)',key:'genes',label:'Genes',help:`Number of the ${q.genes} expected mitochondrial genes (13 protein-coding, 2 rRNAs, 22 tRNAs) that MITOS2 annotated. Green: all present. Orange: some missing; the heatmap above shows which.`},
+    {group:'Annotation (MITOS2)',key:'order',label:'Order',help:'Modal: same order and strand as the most common order among the complete assemblies of the project. Differs: at least one gene is out of place, often a sign of a misassembly or of a partial assembly.'},
+    {group:'Annotation (MITOS2)',key:'integrity',label:'Integrity',help:'Errors and warnings of the annotation checks (internal stops, frame, start/stop codons, origin, length). Hover for the list; the Annotation integrity table below has every detail.'},
+    {group:'Coverage (samtools depth)',key:'depth',label:'Mean (×)',help:`Mean number of reads covering each base. (A) means the rotated depth file was missing and the pre-Pilon file was used. Red when the mean is below ${q.depth}×.`},
+    {group:'Coverage (samtools depth)',key:'cv',label:'CV',help:'Coefficient of variation of the depth (standard deviation / mean). Values near 0 mean even coverage; high values point to spikes (repeats, collapsed copies) or gaps.'},
+    {group:'Coverage (samtools depth)',key:'low',label:`< ${q.depth}× (%)`,help:`Percentage of positions with fewer than ${q.depth} reads. Orange above ${q.alertPercent}%, which also raises the Low coverage alert.`},
+    {group:'Coverage (samtools depth)',key:'window',label:`Weakest ${q.window} bp`,help:`Lowest mean depth among consecutive ${q.window} bp windows, and the position where that window starts. Pinpoints the least supported region.`},
+    {group:'Read recruitment (BLAST)',key:'reads',label:'Reads',help:'Reads NOVOPlasty used to build the assembly that BLAST aligned back to it.'},
+    {group:'Read recruitment (BLAST)',key:'mismatch',label:`< ${q.identity}% id. (%)`,help:`Share of aligned reads with identity below ${q.identity}%. Higher values can indicate sequencing errors, mixed haplotypes, heteroplasmy or nuclear copies (NUMTs). The bar is relative to the highest value in view.`},
+    {group:'Read recruitment (BLAST)',key:'target',label:'Covered (%)',help:'Percentage of the assembly covered by at least one aligned read. Orange below 100%.'},
+    {group:'Pilon',key:'changes',label:'Fixes',help:'Changes Pilon made to the assembly (insertions, deletions, substitutions), read from the .changes file. They are marked with triangles in the genome structure.'},
+    {group:'Pilon',key:'breaks',label:'Breaks',help:'Regions Pilon tried to fix but could not (NoSolution in pilon.log). Orange when there is at least one.'},
+    {group:'Junction',key:'junction',label:'Support',help:'Reads crossing the point where NOVOPlasty closed the circle: Supported, Weak or Unsupported, with spanning reads / flanking pairs. NA when the assembly is not circularized or the BAM is missing.'},
     {group:'Alerts',key:'alerts',label:'Alerts',help:'Automatic checks combining the columns above. Hover an alert to read the detail.'}
   ];
 }
@@ -2339,8 +2414,20 @@ function renderQualityGuide() {
   const body=document.getElementById('qualityGuideBody');
   const groups=d3.groups(qualityColumns(),column=>column.group);
   body.innerHTML=groups.map(([group,columns])=>`<div class="quality-guide-group"><h4>${esc(group)}</h4><dl>${columns.map(column=>`<dt>${esc(column.label)}</dt><dd>${esc(column.help)}</dd>`).join('')}</dl></div>`).join('')
-    +'<div class="quality-guide-group"><h4>Source of the reads</h4><dl><dd>Coverage and read recruitment use the reads NOVOPlasty assembled (<code>Assembled_reads</code>). They tend to agree with the assembly by construction: they flag problems, but do not prove an assembly is correct.</dd></dl></div>';
+    +'<div class="quality-guide-group"><h4>Source of the reads</h4><dl><dd>Coverage, read recruitment and junction support use the reads NOVOPlasty assembled (<code>Assembled_reads</code>). They tend to agree with the assembly by construction: they flag problems, but do not prove an assembly is correct.</dd></dl></div>';
 }
+
+const junctionByAssembly=new Map((ORGANPIPE.junction||[]).map(row=>[text(row.Assembly),row]));
+const integrityByAssembly=new Map((ORGANPIPE.integrity||[]).map(row=>[text(row.Assembly),row]));
+
+// Integrity alerts (errors + warnings of all copies of a run) as a column of the Assembly data table.
+(function addIntegrityColumn() {
+  if(!(ORGANPIPE.integrity||[]).length)return;
+  const sums=new Map();
+  ORGANPIPE.integrity.forEach(row=>sums.set(rowKey(row),(sums.get(rowKey(row))||0)+num(row['Integrity alerts'],0)));
+  REPORT.summary.forEach(row=>{ if(sums.has(rowKey(row)))row['Integrity alerts']=sums.get(rowKey(row)); });
+  assemblyColumns.push('Integrity alerts');
+})();
 
 function renderQualityTable() {
   const q=qualitySettings();
@@ -2363,15 +2450,15 @@ function renderQualityTable() {
 
   const groups=d3.groups(columns,column=>column.group);
   document.getElementById('qualityTableHead').innerHTML=
-    `<tr class="group-head">${groups.map(([group,items])=>`<th colspan="${items.length}">${esc(group)}</th>`).join('')}</tr>`
-    +`<tr class="column-head">${columns.map(column=>`<th data-tooltip="${esc(column.help)}">${esc(column.label)} <span class="info-dot">i</span></th>`).join('')}</tr>`;
-  document.querySelectorAll('#qualityTableHead [data-tooltip]').forEach(element=>{
-    element.addEventListener('mousemove',event=>hover(event,esc(element.dataset.tooltip)));
+    `<tr class="group-head">${groups.map(([group,items],index)=>`<th colspan="${items.length}" class="${index===0?'q-sticky':''}">${esc(group)}</th>`).join('')}</tr>`
+    +`<tr class="column-head">${columns.map((column,index)=>`<th data-help="${esc(column.help)}" class="${index===0?'q-sticky':''}">${esc(column.label)}</th>`).join('')}</tr>`;
+  document.querySelectorAll('#qualityTableHead [data-help]').forEach(element=>{
+    element.addEventListener('mousemove',event=>hover(event,`<b>${esc(element.textContent)}</b><br>${esc(element.dataset.help)}`));
     element.addEventListener('mouseleave',unhover);
   });
 
   const withAlerts=baseRows.filter(row=>(alerts.get(text(row.Assembly))||[]).length).length;
-  document.getElementById('qualityTableCount').textContent=`${rows.length} of ${baseRows.length} assembl${baseRows.length===1?'y':'ies'} shown · ${withAlerts} with alerts`;
+  document.getElementById('qualityTableCount').textContent=`${rows.length} of ${baseRows.length} assembl${baseRows.length===1?'y':'ies'} shown · ${withAlerts} with alerts · hover a column title for its definition`;
   document.getElementById('qualitySubtitle').textContent=!ORGANPIPE.available
     ? 'No OrganPipe quality files were found for this run.'
     : baseRows.length
@@ -2380,7 +2467,8 @@ function renderQualityTable() {
 
   const fmt=(value,format)=>num(value)===null?'—':d3.format(format)(num(value));
   const maxMismatch=d3.max(rows,row=>num((recruitment.get(text(row.Assembly))||{})['Percent below threshold'],0))||0;
-  const cell=(content,cls='')=>`<td class="${cls}">${content}</td>`;
+  const cell=(content,cls='',title='')=>`<td class="${cls}"${title?` title="${esc(title)}"`:''}>${content}</td>`;
+  const junctionClass={'Supported':'q-ok','Weak':'q-warn','Unsupported':'q-bad'};
   let previousProject=null;
   document.getElementById('qualityTableBody').innerHTML=rows.map(row=>{
     const name=text(row.Assembly), cov=coverage.get(name)||{}, rec=recruitment.get(name)||{};
@@ -2401,26 +2489,220 @@ function renderQualityTable() {
     const mismatch=num(rec['Percent below threshold']);
     const target=num(rec['Target coverage %']);
     const breakCount=(breaks.get(name)||[]).length;
-    const coordinate=cov['Coordinate system']&&!text(cov['Coordinate system']).startsWith('C')?' <span class="q-sub">(A) pre-Pilon file</span>':'';
+    const integrity=integrityByAssembly.get(name);
+    const junction=junctionByAssembly.get(name);
+    const support=junction?text(junction['Junction support']):'';
+    const coordinate=cov['Coordinate system']&&!text(cov['Coordinate system']).startsWith('C')?' <span class="q-sub">(A) pre-Pilon</span>':'';
     const mismatchBar=mismatch===null||maxMismatch<=0?0:Math.min(100,100*mismatch/maxMismatch);
     const chips=assemblyAlerts.map(a=>`<span class="alert-chip ${esc(a.Severity)}" title="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
+    const integrityText=integrity?`${num(integrity.Errors,0)} / ${num(integrity.Warnings,0)}`:'—';
     return header+'<tr>'+[
       cell(`<strong>${esc(row['Seed Input'])}</strong> · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}`,'q-run'),
       cell(circular===null?'—':(circular?'Yes':'No'),circular===null?'':(circular?'q-ok':'q-warn')),
-      cell(present===null?'—':`${present} / ${q.genes}`,present===null?'':(present>=q.genes?'q-ok':(present<q.genes/2?'q-bad':'q-warn'))),
+      cell(present===null?'—':`${present}/${q.genes}`,present===null?'':(present>=q.genes?'q-ok':(present<q.genes/2?'q-bad':'q-warn'))),
       cell(order===true?'Modal':(order===false?'Differs':'—'),order===true?'q-ok':(order===false?'q-warn':'')),
-      cell(`${fmt(depth,',.1f')}${coordinate}`,depth===null?'':(depth<q.depth?'q-bad':'')),
-      cell(fmt(cov['Coefficient of variation'],'.2f')),
-      cell(fmt(low,'.2f'),low===null?'':(low>q.alertPercent?'q-warn':(low===0?'q-ok':''))),
-      cell(num(cov['Lowest window mean depth'])===null?'—':`${fmt(cov['Lowest window mean depth'],',.0f')}× <span class="q-sub">from ${fmt(cov['Lowest window start'],',')} bp</span>`),
-      cell(fmt(rec['Recruited reads'],',')),
-      mismatch===null?cell('—'):`<td class="data-bar-cell" style="--bar-width:${mismatchBar.toFixed(1)}%;--bar-color:rgba(204,120,188,.28)"><div class="cell-bar"></div><span class="cell-value">${fmt(mismatch,'.2f')}</span></td>`,
-      cell(target===null?'—':`${fmt(target,'.2~f')}`,target===null?'':(target>=100?'q-ok':'q-warn')),
-      cell(String((changes.get(name)||[]).length)),
-      cell(String(breakCount),breakCount?'q-warn':''),
+      cell(integrityText,integrity?(num(integrity.Errors,0)?'q-bad':(num(integrity.Warnings,0)?'q-warn':'q-ok')):'',integrity?`errors / warnings${integrity.Checks?`: ${integrity.Checks}`:''}`:''),
+      cell(`${fmt(depth,',.1f')}${coordinate}`,'q-num'+(depth!==null&&depth<q.depth?' q-bad':'')),
+      cell(fmt(cov['Coefficient of variation'],'.2f'),'q-num'),
+      cell(fmt(low,'.2f'),'q-num'+(low===null?'':(low>q.alertPercent?' q-warn':(low===0?' q-ok':'')))),
+      cell(num(cov['Lowest window mean depth'])===null?'—':`${fmt(cov['Lowest window mean depth'],',.0f')}× <span class="q-sub">at ${fmt(cov['Lowest window start'],',')}</span>`,'q-num'),
+      cell(fmt(rec['Recruited reads'],','),'q-num'),
+      mismatch===null?cell('—','q-num'):`<td class="data-bar-cell q-num" style="--bar-width:${mismatchBar.toFixed(1)}%;--bar-color:rgba(204,120,188,.35)"><div class="cell-bar"></div><span class="cell-value">${fmt(mismatch,'.2f')}</span></td>`,
+      cell(target===null?'—':fmt(target,'.2~f'),'q-num'+(target===null?'':(target>=100?' q-ok':' q-warn'))),
+      cell(String((changes.get(name)||[]).length),'q-num'),
+      cell(String(breakCount),'q-num'+(breakCount?' q-warn':'')),
+      cell(support&&support!=='NA'?`${esc(support)} <span class="q-sub">${fmt(junction['Spanning reads'],',')} reads / ${fmt(junction['Flanking pairs'],',')} pairs</span>`:'NA',junctionClass[support]||'',junction?text(junction.Note||junction['Junction mode']):''),
       cell(chips||'<span class="table-count">none</span>','q-alerts')
     ].join('')+'</tr>';
   }).join('') || `<tr><td colspan="${columns.length}" class="table-count" style="padding:18px">No assembly matches the table filters.</td></tr>`;
+}
+
+function renderIntegrityTable() {
+  const showInfo=document.getElementById('integrityShowInfo').checked;
+  const query=text(document.getElementById('integritySearch').value).trim().toLowerCase();
+  const all=organpipeRows('integrity_issues');
+  const rows=sortAssemblyRows(all.filter(row=>showInfo||text(row.Severity)!=='info').filter(row=>!query||[row['Project name'],row['Seed Input'],`k${text(row['K-mer'])}`,row.Assembly,row.Marker,row.Check,row.Detail].map(text).join(' ').toLowerCase().includes(query)));
+  const severityClass={error:'q-bad',warning:'q-warn',info:''};
+  const columns=['Project / species','Seed · K-mer · copy','Gene','Check','Severity','Detail','Position'];
+  document.getElementById('integrityHead').innerHTML=`<tr>${columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>`;
+  const counts=d3.rollup(all,v=>v.length,row=>text(row.Severity));
+  const code=(ORGANPIPE.settings_phase2||{});
+  document.getElementById('integrityCount').textContent=`${rows.length} shown · ${counts.get('error')||0} errors, ${counts.get('warning')||0} warnings, ${counts.get('info')||0} informative · genetic code ${text(code.genetic_code||'—')} (${text(code.genetic_code_source||'')})`;
+  const shown=rows.slice(0,1500);
+  document.getElementById('integrityBody').innerHTML=shown.map(row=>`<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td>${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</td><td><strong>${esc(row.Marker)}</strong></td><td>${esc(row.Check)}</td><td class="${severityClass[text(row.Severity)]||''}">${esc(row.Severity)}</td><td style="text-align:left;white-space:normal;min-width:260px">${esc(row.Detail)}</td><td>${esc(row.Start)}–${esc(row.End)} (${esc(row.Strand)})</td></tr>`).join('')
+    +(rows.length>shown.length?`<tr><td colspan="7" class="table-count">${rows.length-shown.length} more rows in annotation_integrity/annotation_integrity_issues.tsv</td></tr>`:'')
+    || '<tr><td colspan="7" class="table-count" style="padding:16px">No integrity issue for the current filters.</td></tr>';
+}
+
+function renderConcordance() {
+  const grid=document.getElementById('concordanceGrid');
+  grid.innerHTML='';
+  const members=organpipeRows('concordance');
+  const subtitle=document.getElementById('concordanceSubtitle');
+  if(!members.length){subtitle.textContent='No concordance results for the current filters (the analysis needs at least two rotated genomes per project).';return;}
+  const visible=new Set(members.map(row=>text(row.Assembly)));
+  const pairs=(ORGANPIPE.concordance_pairs||[]).filter(pair=>visible.has(text(pair['Assembly A']))&&visible.has(text(pair['Assembly B'])));
+  const pairMap=new Map(pairs.map(pair=>[`${pair['Assembly A']}\0${pair['Assembly B']}`,pair]));
+  const getPair=(a,b)=>pairMap.get(`${a}\0${b}`)||pairMap.get(`${b}\0${a}`);
+  const outside=members.filter(row=>row['In majority group']===false).length;
+  subtitle.textContent=`${members.length} assemblies in ${new Set(members.map(row=>text(row['Project name']))).size} project(s); ${outside} outside the majority group of their sample (red labels). Darker cells mean higher identity; hatched cells compare less than the minimum coverage, usually a partial genome.`;
+  const identities=pairs.map(pair=>num(pair['Identity %'])).filter(value=>value!==null);
+  const minimum=Math.min(99,d3.min(identities)||99);
+  const color=d3.scaleSequential(d3.interpolateBlues).domain([minimum,100]);
+  d3.groups(members,row=>text(row['Project name'])).forEach(([project,rows])=>{
+    rows=rows.slice().sort((a,b)=>num(a.Group,0)-num(b.Group,0)||text(a['Seed Input']).localeCompare(text(b['Seed Input']),undefined,{numeric:true})||num(a['K-mer'],0)-num(b['K-mer'],0)||num(a['Assembly copy'],0)-num(b['Assembly copy'],0));
+    const card=document.createElement('div'); card.className='card concordance-card'; grid.appendChild(card);
+    const groupsCount=new Set(rows.map(row=>row.Group)).size;
+    card.innerHTML=`<div class="chart-title" style="font-size:13.5px">${projectDisplayHtml(projectRecord(project))}</div><div class="chart-subtitle">${rows.length} assemblies · ${groupsCount} group${groupsCount===1?'':'s'} · majority group ${esc(rows[0]['Majority group'])} with ${rows.filter(row=>row['In majority group']===true).length} assemblies</div>`;
+    const holder=document.createElement('div'); card.appendChild(holder);
+    const width=Math.max(480,holder.clientWidth||card.clientWidth-28||900);
+    const labelWidth=190, top=12, right=150;
+    const cell=Math.max(6,Math.min(22,(width-labelWidth-right)/rows.length));
+    const height=top+rows.length*cell+12;
+    const svg=d3.select(holder).append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
+    const defs=svg.append('defs');
+    defs.append('pattern').attr('id',`hatch-${project}`).attr('patternUnits','userSpaceOnUse').attr('width',4).attr('height',4).append('path').attr('d','M0,4 l4,-4').attr('stroke','#94a3b8').attr('stroke-width',1);
+    rows.forEach((row,i)=>{
+      const label=`${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`;
+      const inMajority=row['In majority group']===true;
+      svg.append('text').attr('x',labelWidth-6).attr('y',top+i*cell+cell/2+3.5).attr('text-anchor','end').attr('font-size',Math.min(10.5,cell*.8)).attr('font-weight',inMajority?400:750).attr('fill',inMajority?'#334155':'#D55E00').text(`${label}${inMajority?'':` (group ${row.Group})`}`)
+        .on('mousemove',event=>hover(event,`<b>${esc(label)}</b><br>Group ${esc(row.Group)} (${esc(row['Group size'])} assemblies)${inMajority?' · majority':''}<br>Genome ${d3.format(',')(num(row['Genome length'],0))} bp${row['Reverse-complemented']===true?' · reverse-complemented for the alignment':''}<br>Mean identity to the majority group: ${row['Mean identity to majority %']===null?'—':`${d3.format('.4f')(num(row['Mean identity to majority %']))}%`}`)).on('mouseleave',unhover);
+      rows.forEach((other,j)=>{
+        const x=labelWidth+j*cell, y=top+i*cell;
+        if(i===j){svg.append('rect').attr('x',x).attr('y',y).attr('width',cell-1).attr('height',cell-1).attr('fill','#0f172a');return;}
+        const pair=getPair(text(row.Assembly),text(other.Assembly));
+        if(!pair)return;
+        const identity=num(pair['Identity %']);
+        const lowCoverage=num(pair['Coverage %'],100)<num((ORGANPIPE.settings_phase2||{}).group_min_coverage,95);
+        svg.append('rect').attr('x',x).attr('y',y).attr('width',cell-1).attr('height',cell-1).attr('fill',identity===null?'#e2e8f0':color(Math.max(minimum,identity)))
+          .on('mousemove',event=>hover(event,`<b>${esc(label)}</b><br>vs ${esc(text(other['Seed Input']))} · k${esc(other['K-mer'])} · _${esc(other['Assembly copy'])}<br>Identity ${identity===null?'—':d3.format('.4f')(identity)+'%'} over ${d3.format(',')(num(pair['Compared columns'],0))} columns<br>Coverage ${d3.format('.2f')(num(pair['Coverage %'],0))}% · ${esc(pair.Indels)} indel events`)).on('mouseleave',unhover);
+        if(lowCoverage)svg.append('rect').attr('x',x).attr('y',y).attr('width',cell-1).attr('height',cell-1).attr('fill',`url(#hatch-${project})`).attr('pointer-events','none');
+      });
+    });
+    const legendX=labelWidth+rows.length*cell+18;
+    const legend=svg.append('g').attr('transform',`translate(${legendX},${top})`);
+    const legendHeight=Math.min(140,Math.max(60,rows.length*cell));
+    const gradientId=`concordanceGradient-${project}`;
+    const gradient=defs.append('linearGradient').attr('id',gradientId).attr('x1','0%').attr('x2','0%').attr('y1','100%').attr('y2','0%');
+    d3.range(0,101,10).forEach(value=>gradient.append('stop').attr('offset',`${value}%`).attr('stop-color',color(minimum+(100-minimum)*value/100)));
+    legend.append('rect').attr('width',12).attr('height',legendHeight).attr('fill',`url(#${gradientId})`).attr('stroke','#cbd5e1');
+    legend.append('g').attr('class','axis').attr('transform','translate(12,0)').call(d3.axisRight(d3.scaleLinear().domain([minimum,100]).range([legendHeight,0])).ticks(4).tickFormat(value=>`${d3.format('.2~f')(value)}%`));
+  });
+}
+
+let rscuSelection=null;
+function renderComposition() {
+  const rows=sortAssemblyRows(organpipeRows('composition'));
+  const subtitle=document.getElementById('compositionSubtitle');
+  const code=ORGANPIPE.settings_phase2||{};
+  subtitle.textContent=rows.length?`Genetic code ${text(code.genetic_code||2)} (${text(code.genetic_code_source||'default')}). Skews: AT = (A − T)/(A + T), GC = (G − C)/(G + C). Protein-coding genes are read 5'→3' on their own coding strand.`:'No composition results for the current filters.';
+  const columns=[['Seed · K-mer · copy',row=>`<strong>${esc(row['Seed Input'])}</strong> · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}`],['Length (bp)',row=>d3.format(',')(num(row['Genome length'],0))],
+    ['GC %',row=>fmtNum(row['GC %'],'.2f')],['AT skew',row=>fmtNum(row['AT skew'],'.3f')],['GC skew',row=>fmtNum(row['GC skew'],'.3f')],
+    ['PCG + GC %',row=>fmtNum(row['PCG + GC %'],'.2f')],['PCG + AT skew',row=>fmtNum(row['PCG + AT skew'],'.3f')],['PCG + GC skew',row=>fmtNum(row['PCG + GC skew'],'.3f')],
+    ['PCG − GC %',row=>fmtNum(row['PCG - GC %'],'.2f')],['PCG − AT skew',row=>fmtNum(row['PCG - AT skew'],'.3f')],['PCG − GC skew',row=>fmtNum(row['PCG - GC skew'],'.3f')],
+    ['Codons',row=>d3.format(',')(num(row['Codons counted'],0))]];
+  document.getElementById('compositionHead').innerHTML=`<tr>${columns.map(([label])=>`<th>${esc(label)}</th>`).join('')}</tr>`;
+  document.getElementById('compositionCount').textContent=`${rows.length} assembl${rows.length===1?'y':'ies'}`;
+  let previous=null;
+  document.getElementById('compositionBody').innerHTML=rows.map(row=>{
+    let header='';
+    if(text(row['Project name'])!==previous){previous=text(row['Project name']);header=`<tr class="q-project"><td colspan="${columns.length}" style="text-align:left;background:#e8f3f9">${projectDisplayHtml(projectRecord(previous))}</td></tr>`;}
+    return header+`<tr>${columns.map(([,render])=>`<td>${render(row)}</td>`).join('')}</tr>`;
+  }).join('');
+
+  const rscu=ORGANPIPE.rscu||{codons:[],assemblies:[]};
+  const select=document.getElementById('rscuSelect');
+  const available=sortAssemblyRows((rscu.assemblies||[]).filter(matches));
+  if(!available.length){select.innerHTML='';emptyChart('rscuChart','No codon usage for the current filters.');return;}
+  const recommended=new Set(organpipeRows('scores').filter(row=>row.Recommended===true).map(row=>text(row.Assembly)));
+  if(!rscuSelection||!available.some(row=>text(row.Assembly)===rscuSelection))rscuSelection=text((available.find(row=>recommended.has(text(row.Assembly)))||available[0]).Assembly);
+  select.innerHTML=available.map(row=>`<option value="${esc(row.Assembly)}" ${text(row.Assembly)===rscuSelection?'selected':''}>${esc(projectDisplayText(projectRecord(row['Project name'])))} · ${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}${recommended.has(text(row.Assembly))?' (recommended)':''}</option>`).join('');
+  const item=available.find(row=>text(row.Assembly)===rscuSelection);
+  clearChart('rscuChart');
+  const container=document.getElementById('rscuChart');
+  const width=Math.max(640,container.clientWidth||1100), height=300;
+  const margin={top:16,right:12,bottom:70,left:44};
+  const svg=d3.select('#rscuChart').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
+  const x=d3.scaleBand().domain(rscu.codons).range([margin.left,width-margin.right]).padding(.12);
+  const values=item.RSCU.map(value=>num(value,0));
+  const y=d3.scaleLinear().domain([0,Math.max(2,d3.max(values))]).nice().range([height-margin.bottom,margin.top]);
+  const aminoAcids=[...new Set(rscu.amino_acids)];
+  const aaColor=d3.scaleOrdinal(aminoAcids,[...palette,...palette]);
+  svg.append('g').attr('class','axis').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5));
+  svg.append('line').attr('x1',margin.left).attr('x2',width-margin.right).attr('y1',y(1)).attr('y2',y(1)).attr('stroke','#0f172a').attr('stroke-dasharray','4,3').attr('stroke-opacity',.5);
+  rscu.codons.forEach((codon,index)=>{
+    const aa=rscu.amino_acids[index];
+    svg.append('rect').attr('x',x(codon)).attr('y',y(values[index])).attr('width',x.bandwidth()).attr('height',y(0)-y(values[index])).attr('fill',aaColor(aa))
+      .on('mousemove',event=>hover(event,`<b>${esc(codon)}</b> → ${esc(aa)}<br>RSCU ${d3.format('.3f')(values[index])}<br>${esc(item.Counts[index])} codons`)).on('mouseleave',unhover);
+    svg.append('text').attr('transform',`translate(${x(codon)+x.bandwidth()/2},${height-margin.bottom+6}) rotate(-90)`).attr('text-anchor','end').attr('font-size',8.5).attr('font-family','ui-monospace, monospace').attr('fill','#475569').text(codon);
+  });
+  d3.groups(rscu.codons.map((codon,index)=>({codon,aa:rscu.amino_acids[index]})),d=>d.aa).forEach(([aa,items])=>{
+    const start=x(items[0].codon), end=x(items[items.length-1].codon)+x.bandwidth();
+    svg.append('text').attr('x',(start+end)/2).attr('y',height-8).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',700).attr('fill','#334155').text(aa);
+  });
+  svg.append('text').attr('transform','rotate(-90)').attr('x',-(height-margin.bottom+margin.top)/2).attr('y',12).attr('text-anchor','middle').attr('font-size',10.5).attr('fill','#64748b').text('RSCU');
+}
+
+function fmtNum(value,format) { return num(value)===null?'—':d3.format(format)(num(value)); }
+
+const SCORE_COMPONENTS=[
+  ['Annotation completeness (0-1)','Completeness','completeness'],['Integrity alerts (0-1)','Integrity','integrity'],['Junction support (0-1)','Junction','junction'],
+  ['Coverage uniformity (0-1)','Coverage','coverage'],['Pilon confirmed bases (0-1)','Pilon','pilon'],['Majority concordance group (0-1)','Concordance','concordance'],['Closeness to modal length (0-1)','Length','length']
+];
+
+function scoreBreakdownHtml(row) {
+  const naValue=(ORGANPIPE.settings_phase2||{}).score_na_value;
+  const naText=naValue===null||naValue===undefined?'NA, not counted':`NA, counted as ${naValue}`;
+  return `<b>Score ${fmtNum(row.Score,'.1f')}</b> (weighted mean × 100)<br>${SCORE_COMPONENTS.map(([column,label])=>`${label}: ${num(row[column])===null?naText:d3.format('.2f')(num(row[column]))}`).join('<br>')}<br><br>${esc(row['Score breakdown'])}`;
+}
+
+function renderRecommendation() {
+  const cards=document.getElementById('recommendationCards');
+  const all=ORGANPIPE.scores||[];
+  const subtitle=document.getElementById('recommendationSubtitle');
+  const projects=[...state.projects].filter(project=>all.some(row=>text(row['Project name'])===project)).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  if(!all.length||!projects.length){
+    subtitle.textContent='No assembly score for this run (it needs the OrganPipe quality analyses).';
+    cards.innerHTML='';document.getElementById('rankingBody').innerHTML='';document.getElementById('rankingHead').innerHTML='';
+    document.getElementById('recommendation').style.display=all.length?'':'none';
+    return;
+  }
+  document.getElementById('recommendation').style.display='';
+  subtitle.textContent='The highest-scoring circularized assembly of each project. Hover a card for the score breakdown; open the full ranking below for every assembly. The score ranks, it does not discard: check the alerts of the chosen assembly before keeping it.';
+  cards.innerHTML=projects.map(project=>{
+    const ranked=all.filter(row=>text(row['Project name'])===project).sort((a,b)=>num(a['Rank in project'],1e9)-num(b['Rank in project'],1e9));
+    const inView=ranked.filter(matches);
+    const overall=ranked.find(row=>row.Recommended===true);
+    const pick=overall&&inView.includes(overall)?overall:inView.find(row=>row.Eligible===true);
+    const eligible=ranked.filter(row=>row.Eligible===true).length;
+    const cls=!pick?'no-pick':(pick===overall?'':'hidden-pick');
+    if(!pick)return `<div class="card reco-card no-pick"><div class="reco-project">${projectDisplayHtml(projectRecord(project))}</div><div class="reco-meta">No circularized assembly ${overall?'in the current filters':'in this project'}. ${ranked.length} assemblies were scored.</div></div>`;
+    const runnerUp=inView.filter(row=>row!==pick&&row.Eligible===true)[0];
+    const bars=SCORE_COMPONENTS.map(([column,label])=>{const value=num(pick[column]);return `<span>${label}</span><span class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></span><span>${value===null?'NA':d3.format('.2f')(value)}</span>`;}).join('');
+    const alerts=(ORGANPIPE.alerts||[]).filter(row=>text(row.Assembly)===text(pick.Assembly)).map(row=>row['Alert type']);
+    return `<div class="card reco-card ${cls}" data-assembly="${esc(pick.Assembly)}">
+      <div class="reco-head"><div class="reco-project">${projectDisplayHtml(projectRecord(project))}</div><div class="reco-score">${fmtNum(pick.Score,'.1f')}<small> / 100</small></div></div>
+      <div class="reco-assembly">${esc(pick['Seed Input'])} · K-mer ${esc(pick['K-mer'])} · copy _${esc(pick['Assembly copy'])}</div>
+      <div class="reco-meta">${pick===overall?'Recommended':'Best in the current filters; the overall pick ('+esc(overall?`${overall['Seed Input']} · k${overall['K-mer']} · _${overall['Assembly copy']}`:'none')+') is filtered out'} · ${eligible} of ${ranked.length} assemblies circularized${runnerUp?` · next: ${esc(runnerUp['Seed Input'])} · k${esc(runnerUp['K-mer'])} (${fmtNum(runnerUp.Score,'.1f')})`:''}${alerts.length?`<br>Alerts: ${esc([...new Set(alerts)].join(', '))}`:''}</div>
+      <div class="reco-components">${bars}</div>
+    </div>`;
+  }).join('');
+  cards.querySelectorAll('[data-assembly]').forEach(card=>{
+    const row=all.find(item=>text(item.Assembly)===card.dataset.assembly);
+    card.addEventListener('mousemove',event=>hover(event,scoreBreakdownHtml(row)));
+    card.addEventListener('mouseleave',unhover);
+  });
+
+  const weights=(ORGANPIPE.settings_phase2||{}).score_weights||{};
+  document.getElementById('rankingWeights').textContent=`Weights: ${SCORE_COMPONENTS.map(([,label,key])=>`${label} ${weights[key]??'—'}`).join(' · ')} (assembly_score.weights in config.yml). NA components count as ${(ORGANPIPE.settings_phase2||{}).score_na_value??'not counted'} (assembly_score.na_value).`;
+  const rows=all.filter(matches).sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true})||num(a['Rank in project'],0)-num(b['Rank in project'],0));
+  document.getElementById('rankingHead').innerHTML=`<tr><th>Rank</th><th>Project / species</th><th>Seed · K-mer · copy</th><th>Circular</th><th>Score</th>${SCORE_COMPONENTS.map(([,label])=>`<th>${esc(label)}</th>`).join('')}</tr>`;
+  document.getElementById('rankingBody').innerHTML=rows.map(row=>`<tr class="${row.Recommended===true?'recommended':''}" data-assembly="${esc(row.Assembly)}"><td>${esc(row['Rank in project'])}${row.Recommended===true?' ★':''}</td><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td>${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</td><td class="${row.Circularized===true?'':'table-count'}">${row.Circularized===true?'Yes':'No'}</td><td><strong>${fmtNum(row.Score,'.1f')}</strong></td>${SCORE_COMPONENTS.map(([column])=>{const value=num(row[column]);return `<td class="component-cell">${value===null?'NA':d3.format('.2f')(value)}<div class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></div></td>`;}).join('')}</tr>`).join('');
+  document.querySelectorAll('#rankingBody tr[data-assembly]').forEach(tr=>{
+    const row=all.find(item=>text(item.Assembly)===tr.dataset.assembly);
+    tr.addEventListener('mousemove',event=>hover(event,scoreBreakdownHtml(row)));
+    tr.addEventListener('mouseleave',unhover);
+  });
 }
 
 function renderProvenance() {
@@ -2435,6 +2717,10 @@ function renderProvenance() {
 }
 
 function renderOrganpipeSections() {
+  renderRecommendation();
+  renderIntegrityTable();
+  renderConcordance();
+  renderComposition();
   renderQualityGuide();
   renderReadQc();
   renderCompletenessHeatmap();
@@ -3309,7 +3595,7 @@ function initResizableTable(table, columns) {
     'Smallest contig':155,'Largest contig':155,'Average organelle coverage':205,'Pilon Coverage':145,'Pilon Confirmed %':155,
     'Pilon Corrected snps':165,'Pilon Corrected insertions':190,'Pilon Corrected deletions':185,
     'Repeat length':135,'Period Size':120,'Copy Number':120,'Consensus Size':135,'Percent Matches':145,'Percent Indels':130,
-    'Gene context label':230,'Consensus':210
+    'Gene context label':230,'Consensus':210,'Integrity alerts':140
   };
   const tableId=table.id||'table';
   const columnKey=column=>`${tableId}\0${column}`;
@@ -3472,6 +3758,10 @@ document.getElementById('abbreviateSpecies').addEventListener('change',event=>{
 document.getElementById('assemblySearch').addEventListener('input',renderAssemblyTable);
 document.getElementById('snpIncludeIncomplete').addEventListener('change',event=>{ snpIncludeIncomplete=event.target.checked; renderSnpMatrices(); });
 document.getElementById('qualitySearch').addEventListener('input',renderQualityTable);
+document.getElementById('integritySearch').addEventListener('input',renderIntegrityTable);
+document.getElementById('integrityShowInfo').addEventListener('change',renderIntegrityTable);
+document.getElementById('rscuSelect').addEventListener('change',event=>{ rscuSelection=event.target.value; renderComposition(); });
+document.getElementById('pilonShowValues').addEventListener('change',event=>{ pilonShowValues=event.target.checked; renderPilonMetrics(); });
 document.getElementById('qualityOnlyAlerts').addEventListener('change',renderQualityTable);
 document.getElementById('repeatSearch').addEventListener('input',renderRepeatTable);
 

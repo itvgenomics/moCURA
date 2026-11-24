@@ -223,6 +223,57 @@ assembly_alerts:
   enabled: true
   output_folder: assembly_alerts
 
+# Phase 2. The junction is checked on the rotated BAM of OrganPipe, which maps the
+# Assembled_reads of the same assembly; bam_template accepts another BAM, e.g.
+# "{results_dir}/{project}/rawreads_mapping/{assembly}.rotated.bam".
+junction_validation:
+  enabled: true
+  output_folder: junction_validation
+  min_flank: 20
+  min_mapping_quality: 20
+  supported_min_spanning_reads: 10
+  weak_min_spanning_reads: 3
+  weak_min_flanking_pairs: 3
+  max_insert_size: 1000
+  bam_template: null
+
+# genetic_code: null reads genetic_code from the OrganPipe config/config.yaml,
+# falling back to 2 (vertebrate mitochondrial).
+annotation_integrity:
+  enabled: true
+  output_folder: annotation_integrity
+  genetic_code: null
+  length_deviation_percent: 10
+
+# MAFFT settings default to marker_snp_analysis.mafft; override them under mafft:.
+assembly_concordance:
+  enabled: true
+  output_folder: assembly_concordance
+  group_identity_threshold: 99.5
+  group_min_coverage: 95
+  max_sequences: 150
+  overwrite: false
+  mafft: {}
+
+sequence_composition:
+  enabled: true
+  output_folder: sequence_composition
+
+assembly_score:
+  enabled: true
+  output_folder: assembly_score
+  length_tolerance_percent: 5
+  # NA components (no BAM, no rotated genome) count as this value; null leaves them out.
+  na_value: 0.5
+  weights:
+    completeness: 3
+    integrity: 2
+    junction: 2
+    coverage: 1
+    pilon: 1
+    concordance: 2
+    length: 1
+
 html_report:
   enabled: true
   output_file: moCURA_report.html
