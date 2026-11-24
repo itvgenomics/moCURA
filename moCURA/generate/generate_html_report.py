@@ -122,7 +122,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: ui-san
 button, select, input { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
-.shell { max-width: 1900px; margin: 0 auto; padding: 24px; }
+.shell { min-width: 0; padding: 22px 28px 0; }
 .header-wrap { display: flex; gap: 18px; align-items: center; }
 .header-brand { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
 .header-logo { display: block; width: 180px; max-width: 26vw; height: auto; object-fit: contain; }
@@ -132,8 +132,8 @@ a { color: inherit; text-decoration: none; }
 .eyebrow { color: var(--brand); text-transform: uppercase; letter-spacing: .2em; font-size: 12px; font-weight: 700; }
 h1 { margin: 4px 0 0; font-size: 30px; color: #020617; }
 .subtitle { margin-top: 8px; color: var(--muted); font-size: 14px; }
-.tabs { display: flex; flex-wrap: wrap; gap: 8px; overflow: visible; padding: 18px 0 12px; border-bottom: 1px solid var(--border); align-items: center; }
-.project-tab { white-space: nowrap; border: 1px solid var(--border); background: white; border-radius: 12px; padding: 9px 14px; color: #475569; font-weight: 600; flex: 0 0 auto; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; max-height: 104px; overflow-y: auto; padding: 10px 0 12px; border-bottom: 1px solid var(--border); align-items: center; }
+.project-tab { white-space: nowrap; border: 1px solid var(--border); background: white; border-radius: 10px; padding: 6px 11px; color: #475569; font-size: 13px; font-weight: 600; flex: 0 0 auto; }
 .project-tab.active { background: var(--brand); border-color: var(--brand); color: white; }
 .project-tab.all-tab.active { background: #0f766e; border-color: #0f766e; }
 .filters { position: sticky; top: 0; z-index: 5000; background: rgba(248,250,252,.97); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); margin: 0 -24px; padding: 10px 24px 12px; }
@@ -192,7 +192,7 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .marker-category-option:hover { border-color: #93c5fd; background: #f8fbff; }
 .marker-category-option:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); color: #075985; box-shadow: 0 0 0 3px rgba(1,115,178,.07); }
 .multi-option:has(input:checked) { background: var(--brand-soft); color: #075985; font-weight: 650; }
-.section { margin-top: 30px; scroll-margin-top: 150px; }
+.section { margin-top: 30px; scroll-margin-top: 16px; }
 .section h2 { margin: 0; color: #020617; font-size: 20px; }
 .section-note { margin-top: 4px; color: var(--muted); font-size: 13px; }
 .metrics { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px; }
@@ -207,13 +207,14 @@ input[type="search"]:focus { border-color: var(--brand); box-shadow: 0 0 0 3px r
 .info-card:nth-child(3) { border-left-color: var(--accent); }
 .info-title { font-size: 13px; font-weight: 700; color: #0f172a; }
 .info-copy { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.45; }
-.chart-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-top: 16px; }
+.chart-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 16px; margin-top: 16px; }
 .pilon-grid.stacked { grid-template-columns: 1fr; }
 .pilon-grid.stacked .chart { min-height: 520px; }
-.assembly-metric-grid { display: grid; grid-template-columns: minmax(240px,320px) repeat(4,minmax(0,1fr)); gap: 14px; margin-top: 14px; align-items: stretch; }
+.assembly-metric-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 14px; margin-top: 14px; }
 .assembly-species-card, .assembly-metric-card { padding: 10px; min-width: 0; overflow: hidden; display: flex; flex-direction: column; height: 100%; }
-.assembly-species-card .chart-subtitle, .assembly-metric-card .chart-subtitle { min-height: 34px; }
-.assembly-species-chart, .assembly-metric-chart { width: 100%; overflow: hidden; flex: 1 1 auto; min-height: 470px; }
+
+.assembly-species-chart, .assembly-metric-chart { width: 100%; overflow: hidden; flex: 1 1 auto; }
+.assembly-metric-chart svg { display: block; width: 100%; height: auto; }
 .assembly-table-help { margin-top: 7px; color: var(--muted); font-size: 11px; display: flex; align-items: center; gap: 6px; }
 .assembly-table-help svg { width: 15px; height: 15px; stroke: var(--brand); flex: 0 0 auto; }
 .assembly-legend { margin-top: 12px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
@@ -330,7 +331,7 @@ code { word-break: break-all; font-size: 11px; }
 .report-footer-copy { color: #cbd5e1; font-size: 13px; line-height: 1.6; }
 .report-footer-credit { border-top: 1px solid rgba(203,213,225,.18); padding: 14px 24px 18px; text-align: center; color: #cbd5e1; font-size: 12px; letter-spacing: .01em; }
 .image-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-top: 14px; }
-.snp-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,620px),1fr)); grid-auto-flow: dense; gap: 18px; margin-top: 14px; align-items: start; }
+.snp-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 18px; margin-top: 14px; }
 .snp-card { overflow: hidden; min-width: 0; }
 .snp-card-wide { grid-column: 1 / -1; }
 .snp-card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--border); background: #f8fafc; }
@@ -352,7 +353,8 @@ code { word-break: break-all; font-size: 11px; }
 .read-qc-card dl { display: grid; grid-template-columns: auto auto; gap: 3px 12px; margin: 8px 0 0; font-size: 12px; }
 .read-qc-card dt { color: #64748b; }
 .read-qc-card dd { margin: 0; text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; }
-.completeness-scroll { overflow: auto; max-height: 720px; }
+.completeness-scroll { overflow-y: auto; overflow-x: hidden; max-height: 760px; }
+.completeness-scroll svg { display: block; }
 .quality-note { border-left: 3px solid var(--accent); padding: 8px 12px; background: #fff7ed; border-radius: 0 10px 10px 0; font-size: 12.5px; color: #7c2d12; margin: 10px 0 14px; }
 .alert-chip { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 7px; margin: 1px 3px 1px 0; border-radius: 999px; border: 1px solid #cbd5e1; color: #334155; white-space: nowrap; }
 .alert-chip.warning { border-color: #f59e0b; color: #92400e; background: #fffbeb; }
@@ -371,7 +373,6 @@ code { word-break: break-all; font-size: 11px; }
   .sticky-filter-row { grid-template-columns: 78px minmax(0,1fr); }
   .sticky-logo .header-logo, .sticky-logo .header-logo-svg { width: 68px; max-width: 68px; }
   .filter-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .assembly-metric-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .info-grid { grid-template-columns: 1fr; }
   .file-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
@@ -383,50 +384,150 @@ code { word-break: break-all; font-size: 11px; }
   .metrics, .chart-grid, .assembly-metric-grid, .image-grid, .snp-grid, .file-grid, .filter-grid { grid-template-columns: 1fr; }
   .table-toolbar { flex-direction: column; align-items: stretch; }
 }
+
+.layout { display: grid; grid-template-columns: 264px minmax(0,1fr); min-height: 100vh; }
+.sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding: 18px 16px 22px; background: #ffffff; border-right: 1px solid var(--border); z-index: 50; }
+.sidebar-logo { display: flex; justify-content: center; }
+.sidebar-logo .header-logo, .sidebar-logo .header-logo-svg { width: 176px; max-width: 100%; }
+.sidebar-heading { margin-bottom: 8px; color: #0f172a; font-size: 13px; font-weight: 750; }
+.side-filters { display: grid; gap: 10px; }
+.side-filters .multi-trigger { min-height: 36px; padding: 6px 9px; font-size: 13px; }
+.sidebar .multi-menu { min-width: 0; }
+.sidebar .reset { width: 100%; padding: 8px 12px; }
+.sidebar .filter-summary { line-height: 1.5; }
+.side-nav { display: flex; flex-direction: column; gap: 2px; }
+.side-nav a { padding: 7px 10px; border-radius: 8px; color: #475569; font-size: 13px; font-weight: 650; border-left: 3px solid transparent; }
+.side-nav a:hover { background: var(--brand-soft); color: var(--brand); }
+.side-nav a.active { background: var(--brand-soft); color: #075985; border-left-color: var(--brand); }
+.sidebar .species-toggle { margin: auto 0 0; justify-content: center; }
+.project-picker { margin-top: 16px; position: relative; }
+.project-notice { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1px solid #93c5fd; border-radius: 12px; background: #eff6ff; color: #1e3a8a; font-size: 13.5px; text-align: left; }
+.project-notice:hover, .project-notice[aria-expanded="true"] { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(1,115,178,.10); }
+.project-notice svg { width: 18px; height: 18px; stroke: var(--brand); flex: 0 0 auto; }
+.project-notice-action { margin-left: auto; padding: 5px 11px; border-radius: 8px; background: var(--brand); color: #fff; font-size: 12px; font-weight: 750; white-space: nowrap; }
+.project-picker-panel { margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 12px; background: #fff; box-shadow: 0 18px 45px rgba(15,23,42,.12); }
+.project-picker-panel[hidden] { display: none; }
+.project-picker-tools { display: flex; gap: 8px; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.project-picker-tools .table-search-wrap { flex: 1 1 280px; }
+.project-picker-tools input[type="search"] { padding-left: 36px; }
+.picker-action { border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; color: #475569; padding: 8px 11px; font-size: 12px; font-weight: 700; }
+.picker-action:hover { border-color: #93c5fd; background: #eff6ff; }
+.picker-apply { border: 1px solid var(--brand); border-radius: 8px; background: var(--brand); color: #fff; padding: 8px 14px; font-size: 12px; font-weight: 750; }
+.project-picker-list { max-height: 340px; overflow-y: auto; padding: 8px 12px; display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 2px 14px; }
+.project-picker-list .multi-option { font-size: 12.5px; }
+.project-picker-list .option-meta { margin-left: auto; color: var(--muted); font-size: 11px; white-space: nowrap; }
+.project-picker-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid var(--border); }
+.project-picker-buttons { display: flex; gap: 8px; }
+.genome-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; color: #475569; font-size: 12px; }
+.genome-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.genome-legend i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; }
+.quality-guide { margin-top: 12px; padding: 0; overflow: hidden; }
+.quality-guide > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: #0f172a; font-size: 13.5px; }
+.quality-guide-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 0; border-top: 1px solid var(--border); }
+.quality-guide-group { padding: 12px 14px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.quality-guide-group h4 { margin: 0 0 6px; font-size: 12.5px; color: #0f172a; }
+.quality-guide-group dl { margin: 0; display: grid; gap: 5px; font-size: 12px; line-height: 1.45; }
+.quality-guide-group dt { font-weight: 700; color: #334155; }
+.quality-guide-group dd { margin: 0 0 4px; color: var(--muted); text-align: justify; }
+.quality-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 14px; font-size: 12px; color: #475569; }
+.quality-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.quality-legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+#qualityTable { min-width: 0; width: 100%; }
+#qualityTable th, #qualityTable td { padding-left: 7px; padding-right: 7px; }
+#qualityTable thead tr.group-head th { top: 0; background: #cbd5e1; color: #1e293b; text-align: center; border-left: 2px solid #f8fafc; }
+#qualityTable thead tr.column-head th { top: 31px; text-transform: none; letter-spacing: 0; font-size: 11.5px; white-space: normal; line-height: 1.25; vertical-align: bottom; border-left: 1px solid #f1f5f9; }
+#qualityTable tbody td { vertical-align: middle; }
+#qualityTable td.q-run { text-align: left; white-space: nowrap; }
+#qualityTable td.q-alerts { text-align: left; white-space: normal; min-width: 200px; max-width: 260px; }
+#qualityTable td.q-alerts .alert-chip { white-space: normal; max-width: 100%; font-size: 10.5px; }
+#qualityTable .data-bar-cell { min-width: 0; }
+#qualityTable tr.q-project td { background: #e8f3f9 !important; text-align: left; font-size: 13px; border-top: 14px solid var(--bg); }
+#qualityTable td.q-ok { background: #e7f6ef !important; color: #05624b; }
+#qualityTable td.q-warn { background: #fff4e0 !important; color: #92400e; font-weight: 650; }
+#qualityTable td.q-bad { background: #fde8e4 !important; color: #9a3412; font-weight: 700; }
+.q-sub { display: block; color: var(--muted); font-size: 11px; font-weight: 400; }
+.quality-only-alerts { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #475569; font-weight: 650; }
+.snp-toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 12px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: #fff; font-size: 12px; color: #475569; }
+.snp-toolbar label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer; }
+.snp-toolbar input { accent-color: var(--brand); width: 16px; height: 16px; }
+.snp-hidden-note { margin: 0 14px 12px; padding: 8px 12px; border-left: 3px solid #DE8F05; background: #fffbeb; border-radius: 0 8px 8px 0; color: #92400e; font-size: 12px; line-height: 1.5; }
+.snp-reference-control { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #475569; font-weight: 700; }
+.snp-reference-control select { max-width: 520px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 8px; background: #fff; font-size: 12px; }
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+  .side-nav { flex-direction: row; flex-wrap: wrap; }
+  .shell { padding: 16px; }
+}
 </style>
 </head>
 <body>
-<div class="shell">
-  <div id="errorBox"></div>
-
-  <header>
-    <div class="header-wrap">
-      <div class="header-brand">__LOGO_HTML__</div>
-      <div class="header-text">
-        <div class="eyebrow">moCURA</div>
-        <h1>__REPORT_TITLE__</h1>
-        <div class="subtitle">Interactive organelle assembly report.</div>
-      </div>
-    </div>
-    <div id="projectTabs" class="tabs"></div>
-  </header>
-
-  <div id="filterStickySentinel" aria-hidden="true"></div>
-  <div id="filterBar" class="filters">
-    <div class="sticky-filter-row">
-      <div class="sticky-logo">__LOGO_HTML__</div>
-      <div class="filter-grid">
+<div class="layout">
+  <aside id="sidebar" class="sidebar" aria-label="Report filters and sections">
+    <div class="sidebar-logo">__LOGO_HTML__</div>
+    <div class="sidebar-block">
+      <div class="sidebar-heading">Filters</div>
+      <div class="side-filters">
         <div><span class="filter-label">Seed <span class="info-dot" data-tooltip="Select one or more seed inputs. Use the search box inside the menu when many seeds are available.">i</span></span><div id="seedFilter" class="multi-select"></div></div>
         <div><span class="filter-label">K-mer <span class="info-dot" data-tooltip="Select one or more K-mer values. Multiple values can be compared simultaneously.">i</span></span><div id="kmerFilter" class="multi-select"></div></div>
         <div><span class="filter-label">Assembly status <span class="info-dot" data-tooltip="Choose circularized, non-circularized, or both assembly states.">i</span></span><div id="statusFilter" class="multi-select"></div></div>
         <div><span class="filter-label">Tandem repeats <span class="info-dot" data-tooltip="Filter runs according to whether TRF detected tandem repeats.">i</span></span><div id="repeatFilter" class="multi-select"></div></div>
         <button id="resetFilters" class="reset">Reset filters</button>
       </div>
+      <div id="filterSummary" class="filter-summary"></div>
     </div>
-    <div id="filterSummary" class="filter-summary"></div>
-    <nav class="nav" aria-label="Report sections">
-      <a class="nav-link active" href="#overview" data-tooltip="Summary cards and guidance for the current filtered view.">Overview</a>
-      <a class="nav-link" href="#assemblies" data-tooltip="Linked NOVOPlasty assembly metrics. Hovering one run highlights the same run in all four panels.">Assemblies</a>
-      <a class="nav-link" href="#pilon" data-tooltip="Interactive polishing metrics from Pilon.">Pilon</a>
-      <a class="nav-link" href="#genome" data-tooltip="Marker and tandem-repeat positions for every assembly that passes the filters.">Genome</a>
-      <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, read recruitment and alerts read from the OrganPipe outputs.">Quality</a>
-      <a class="nav-link" href="#markers" data-tooltip="Marker lengths with an independent min–max color scale for every marker column.">Markers</a>
-      <a class="nav-link" href="#repeats" data-tooltip="TRF repeat families, genomic context and comparative table.">Repeats</a>
-      <a class="nav-link" href="#snps" data-tooltip="True-SNP matrices rendered directly with D3 in a Snipit-like layout.">SNPs</a>
-      <a class="nav-link" href="#map" data-tooltip="Sampling localities with SNP differences on the embedded geographic basemap.">Map</a>
-      <label class="species-toggle" data-tooltip-html="When enabled, species labels are shortened from <em>Homo sapiens</em> to <em>H. sapiens</em> throughout the report. It is disabled by default."><input id="abbreviateSpecies" type="checkbox"> Abbreviate species <span class="info-dot">i</span></label>
-    </nav>
-  </div>
+    <div class="sidebar-block">
+      <div class="sidebar-heading">Sections</div>
+      <nav class="side-nav" aria-label="Report sections">
+        <a class="nav-link active" href="#overview" data-tooltip="Summary cards and guidance for the current filtered view.">Overview</a>
+        <a class="nav-link" href="#assemblies" data-tooltip="Linked NOVOPlasty assembly metrics. Hovering one run highlights the same run in all four panels.">Assemblies</a>
+        <a class="nav-link" href="#pilon" data-tooltip="Interactive polishing metrics from Pilon.">Pilon</a>
+        <a class="nav-link" href="#genome" data-tooltip="Marker and tandem-repeat positions for every assembly that passes the filters.">Genome</a>
+        <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, read recruitment and alerts read from the OrganPipe outputs.">Quality</a>
+        <a class="nav-link" href="#markers" data-tooltip="Marker lengths with an independent min–max color scale for every marker column.">Markers</a>
+        <a class="nav-link" href="#repeats" data-tooltip="TRF repeat families, genomic context and comparative table.">Repeats</a>
+        <a class="nav-link" href="#snps" data-tooltip="True-SNP matrices rendered directly with D3 in a Snipit-like layout.">SNPs</a>
+        <a class="nav-link" href="#map" data-tooltip="Sampling localities with SNP differences on the embedded geographic basemap.">Map</a>
+        <a class="nav-link" href="#provenance" data-tooltip="Run time, versions, arguments and configuration used to build this report.">Provenance</a>
+      </nav>
+    </div>
+    <label class="species-toggle" data-tooltip-html="When enabled, species labels are shortened from <em>Homo sapiens</em> to <em>H. sapiens</em> throughout the report. It is disabled by default."><input id="abbreviateSpecies" type="checkbox"> Abbreviate species <span class="info-dot">i</span></label>
+  </aside>
+
+<main class="shell">
+  <div id="errorBox"></div>
+
+  <header>
+    <div class="header-text">
+      <div class="eyebrow">moCURA</div>
+      <h1>__REPORT_TITLE__</h1>
+      <div class="subtitle">Interactive organelle assembly report.</div>
+    </div>
+    <div class="project-picker">
+      <button id="projectPickerToggle" class="project-notice" type="button" aria-expanded="false" aria-controls="projectPickerPanel">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+        <span id="projectNoticeText"></span>
+        <span class="project-notice-action">Choose projects</span>
+      </button>
+      <div id="projectPickerPanel" class="project-picker-panel" hidden>
+        <div class="project-picker-tools">
+          <div class="table-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+            <input id="projectPickerSearch" type="search" placeholder="Search project, species or location...">
+          </div>
+          <button type="button" class="picker-action" data-picker="all">Select all</button>
+          <button type="button" class="picker-action" data-picker="visible">Select matches</button>
+          <button type="button" class="picker-action" data-picker="clear">Clear</button>
+        </div>
+        <div id="projectPickerList" class="project-picker-list"></div>
+        <div class="project-picker-foot">
+          <span id="projectPickerCount" class="table-count"></span>
+          <span class="project-picker-buttons"><button type="button" class="picker-action" data-picker="cancel">Cancel</button><button type="button" class="picker-apply" data-picker="apply">Show selected projects</button></span>
+        </div>
+      </div>
+    </div>
+    <div id="projectTabs" class="tabs"></div>
+  </header>
 
   <section id="overview" class="section">
     <div class="metrics">
@@ -451,7 +552,6 @@ code { word-break: break-all; font-size: 11px; }
     <div id="assemblyInteractionStatus" class="assembly-interaction-note"><strong>Interactive selection:</strong> click any point to isolate that same Project + Seed + K-mer combination across all four plots. Click the selected point again to restore all values.</div>
     <div id="assemblyLegend" class="card assembly-legend"></div>
     <div class="assembly-metric-grid">
-      <div class="card assembly-species-card"><div class="chart-title">Project / species</div><div class="chart-subtitle">Species names are listed in a dedicated column so the four metric plots can use the full card width.</div><div id="metricSpeciesLabels" class="assembly-species-chart"></div></div>
       <div class="card assembly-metric-card"><div class="chart-title">Total contigs</div><div class="chart-subtitle">Number of contigs recovered for each project, seed and K-mer combination.</div><div id="metricTotalContigs" class="assembly-metric-chart"></div></div>
       <div class="card assembly-metric-card"><div class="chart-title">Largest contig</div><div class="chart-subtitle">Largest assembled contig relative to the configured organelle genome range.</div><div id="metricLargestContig" class="assembly-metric-chart"></div></div>
       <div class="card assembly-metric-card"><div class="chart-title">Smallest contig</div><div class="chart-subtitle">Smallest assembled contig relative to the configured organelle genome range.</div><div id="metricSmallestContig" class="assembly-metric-chart"></div></div>
@@ -488,8 +588,9 @@ code { word-break: break-all; font-size: 11px; }
 
   <section id="genome" class="section">
     <h2>Genome structure and tandem-repeat positions <span class="info-dot" data-tooltip="Every filtered rotated assembly is drawn as a separate genomic track. Colored blocks are annotated markers and orange blocks are TRF tandem repeats.">i</span></h2>
-    <div class="section-note">Assemblies are grouped by identical Seed + K-mer combinations. Within each group, projects share the same coordinate scale, gene colors and repeat-family colors so differences are easy to compare.</div>
-    <div class="card chart-card genome-scroll" style="margin-top:14px"><div id="genomeTimeline" class="chart"></div></div>
+    <div class="section-note">Assemblies are grouped by identical Seed + K-mer combinations. Within each group, projects share the same coordinate scale, gene colors and repeat-family colors so differences are easy to compare. The consensus sequence of every tandem repeat is written next to its block and listed under the assembly name.</div>
+    <div class="genome-legend"><span><i style="background:#0173B2"></i>Genes on the + strand (top line) and − strand (second line)</span><span><i style="background:#DE8F05"></i>TRF tandem repeat, labelled with its consensus sequence</span><span><svg width="12" height="10" aria-hidden="true"><path d="M1,1 h10 l-5,8 z" fill="#D55E00"></path></svg>Pilon correction</span><span><i style="background:rgba(1,115,178,.35)"></i>Read depth</span><span><i style="background:rgba(213,94,0,.25)"></i>Unresolved Pilon break</span></div>
+    <div class="card chart-card genome-scroll" style="margin-top:10px"><div id="genomeTimeline" class="chart"></div></div>
   </section>
 
   <section id="quality" class="section">
@@ -503,9 +604,23 @@ code { word-break: break-all; font-size: 11px; }
     </div>
     <div class="card table-card" style="margin-top:16px">
       <div class="table-toolbar">
-        <div><div class="table-title">Quality per assembly</div><div id="qualityTableCount" class="table-count"></div></div>
+        <div><div class="table-title">Quality per assembly <span class="info-dot" data-tooltip="One row per assembly copy, grouped by project. Hover a column title for its definition, or open the guide below the title.">i</span></div><div id="qualityTableCount" class="table-count"></div></div>
+        <div class="table-tools">
+          <label class="quality-only-alerts"><input id="qualityOnlyAlerts" type="checkbox"> Only assemblies with alerts</label>
+          <div class="table-search-control" style="min-width:320px;flex:0 1 420px">
+            <div class="table-search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <input id="qualitySearch" type="search" placeholder="Search project, seed, K-mer or alert..." style="min-width:0">
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="qualityTableScroll" class="table-scroll"><table id="qualityTable" class="assembly-table"><thead><tr id="qualityTableHead"></tr></thead><tbody id="qualityTableBody"></tbody></table></div>
+      <details class="quality-guide" id="qualityGuide" open>
+        <summary>How to read this table</summary>
+        <div id="qualityGuideBody" class="quality-guide-grid"></div>
+      </details>
+      <div class="quality-legend"><span><i style="background:#e7f6ef;border:1px solid #9fd8c0"></i>Within the expected range</span><span><i style="background:#fff4e0;border:1px solid #f5c26b"></i>Worth checking</span><span><i style="background:#fde8e4;border:1px solid #f0a28f"></i>Problem</span><span>Uncoloured cells have no fixed threshold; compare them across rows.</span></div>
+      <div id="qualityTableScroll" class="table-scroll"><table id="qualityTable" class="assembly-table"><thead id="qualityTableHead"></thead><tbody id="qualityTableBody"></tbody></table></div>
     </div>
   </section>
 
@@ -548,6 +663,10 @@ code { word-break: break-all; font-size: 11px; }
   <section id="snps" class="section">
     <h2>Marker SNPs <span class="info-dot" data-tooltip="Only true SNP positions are shown. Each nucleotide state is drawn directly with D3 from the SNP matrix table.">i</span></h2>
     <div id="snpSubtitle" class="section-note"></div>
+    <div class="snp-toolbar">
+      <label><input id="snpIncludeIncomplete" type="checkbox"> Include incomplete or non-circularized sequences</label>
+      <span id="snpToolbarNote"></span>
+    </div>
     <div id="snpGallery" class="snp-grid"></div>
   </section>
 
@@ -594,6 +713,7 @@ code { word-break: break-all; font-size: 11px; }
     </div>
     <div class="report-footer-credit">Report Web Page is developed by Luan Rabelo.</div>
   </footer>
+</main>
 </div>
 
 <div id="tooltip" class="tooltip"></div>
@@ -698,7 +818,8 @@ const snpBaseColors = {
   G: '#87CEEB',
   T: '#8FBC8F',
   '-': '#9CA3AF',
-  N: '#E5E7EB'
+  N: '#E5E7EB',
+  '·': '#ffffff'
 };
 
 const assemblyColumns = [
@@ -1009,7 +1130,97 @@ function hover(event, html) {
 }
 function unhover() { tooltip.style.opacity = 0; }
 
+let projectPickerDraft=new Set();
+
+function projectRunCount(project) {
+  return REPORT.summary.filter(row=>text(row['Project name'])===text(project)).length;
+}
+
+function projectSearchText(project) {
+  const record=projectRecord(project);
+  return [project,record['Species'],locationText(record)].map(text).join(' ').toLowerCase();
+}
+
+function updateProjectNotice() {
+  const total=REPORT.projects.length;
+  const shown=state.projects.size;
+  const notice=document.getElementById('projectNoticeText');
+  if(!notice)return;
+  notice.innerHTML=shown===total
+    ? `<strong>Showing all ${total} project${total===1?'':'s'}.</strong> Click here to choose which projects you want to view.`
+    : `<strong>Showing ${shown} of ${total} projects.</strong> Click here to change the selection.`;
+}
+
+function renderProjectPickerList() {
+  const list=document.getElementById('projectPickerList');
+  const query=text(document.getElementById('projectPickerSearch').value).trim().toLowerCase();
+  const projects=REPORT.projects.map(text).filter(project=>!query||projectSearchText(project).includes(query));
+  list.innerHTML=projects.length
+    ? projects.map(project=>{
+        const record=projectRecord(project);
+        const runs=projectRunCount(project);
+        return `<label class="multi-option"><input type="checkbox" value="${esc(project)}" ${projectPickerDraft.has(project)?'checked':''}><span>${projectDisplayHtml(record)}${locationText(record)?` <span class="table-count">· ${esc(locationText(record))}</span>`:''}</span><span class="option-meta">${runs} run${runs===1?'':'s'}</span></label>`;
+      }).join('')
+    : '<div class="multi-empty">No project matches the search.</div>';
+  list.querySelectorAll('input[type="checkbox"]').forEach(input=>input.addEventListener('change',()=>{
+    if(input.checked)projectPickerDraft.add(input.value);else projectPickerDraft.delete(input.value);
+    updateProjectPickerCount();
+  }));
+  updateProjectPickerCount();
+}
+
+function updateProjectPickerCount() {
+  document.getElementById('projectPickerCount').textContent=`${projectPickerDraft.size} of ${REPORT.projects.length} projects selected`;
+  document.querySelector('[data-picker="apply"]').disabled=!projectPickerDraft.size;
+}
+
+function setProjectPickerOpen(open) {
+  const panel=document.getElementById('projectPickerPanel');
+  const toggle=document.getElementById('projectPickerToggle');
+  panel.hidden=!open;
+  toggle.setAttribute('aria-expanded',open?'true':'false');
+  if(open){
+    projectPickerDraft=new Set(state.projects);
+    document.getElementById('projectPickerSearch').value='';
+    renderProjectPickerList();
+    setTimeout(()=>document.getElementById('projectPickerSearch').focus(),0);
+  }
+}
+
+function applyProjectSelection(projects) {
+  state.projects=new Set([...projects].map(text));
+  state.assembly=null;
+  document.getElementById('assemblySearch').value='';
+  document.getElementById('repeatSearch').value='';
+  renderTabs();
+  resetFilterSelections();
+  renderAll();
+}
+
+function initProjectPicker() {
+  document.getElementById('projectPickerToggle').addEventListener('click',()=>setProjectPickerOpen(document.getElementById('projectPickerPanel').hidden));
+  document.getElementById('projectPickerSearch').addEventListener('input',renderProjectPickerList);
+  document.querySelectorAll('[data-picker]').forEach(button=>button.addEventListener('click',()=>{
+    const action=button.dataset.picker;
+    if(action==='all')REPORT.projects.forEach(project=>projectPickerDraft.add(text(project)));
+    if(action==='clear')projectPickerDraft.clear();
+    if(action==='visible'){
+      const query=text(document.getElementById('projectPickerSearch').value).trim().toLowerCase();
+      REPORT.projects.map(text).filter(project=>!query||projectSearchText(project).includes(query)).forEach(project=>projectPickerDraft.add(project));
+    }
+    if(action==='cancel'){setProjectPickerOpen(false);return;}
+    if(action==='apply'){
+      if(!projectPickerDraft.size)return;
+      setProjectPickerOpen(false);
+      applyProjectSelection(projectPickerDraft);
+      return;
+    }
+    renderProjectPickerList();
+  }));
+}
+
 function renderTabs() {
+  updateProjectNotice();
   const allActive=allProjectsSelected();
   const buttons=[`<button class="project-tab all-tab ${allActive?'active':''}" data-project="__ALL__">All data</button>`];
   REPORT.projects.forEach(project=>{
@@ -1277,7 +1488,12 @@ function assemblyProjectsForCurrentView() {
   return unique(rows,'Project name').map(text);
 }
 
+function assemblyLabelWidth(width) {
+  return Math.round(Math.min(330,Math.max(200,width*.22)));
+}
+
 function renderAssemblySpeciesLabels() {
+  if(!document.getElementById('metricSpeciesLabels'))return;
   const projects=assemblyProjectsForCurrentView();
   if(!projects.length) return emptyChart('metricSpeciesLabels','No projects for the selected filters.');
 
@@ -1309,11 +1525,12 @@ function renderAssemblyMetricChart(id, metric) {
 
   clearChart(id);
   const container=document.getElementById(id);
-  const width=Math.max(300,container.clientWidth||360);
-  const rowHeight=52;
-  const densityHeight=84;
-  const margin={top:densityHeight+18,right:18,bottom:46,left:24};
-  const height=Math.max(470,margin.top+projects.length*rowHeight+margin.bottom);
+  const width=Math.max(520,container.clientWidth||900);
+  const rowHeight=40;
+  const densityHeight=64;
+  const labelWidth=assemblyLabelWidth(width);
+  const margin={top:densityHeight+18,right:18,bottom:46,left:labelWidth+12};
+  const height=Math.max(220,margin.top+projects.length*rowHeight+margin.bottom);
 
   const svg=d3.select('#'+id).append('svg').attr('viewBox',`0 0 ${width} ${height}`).attr('width',width).attr('height',height);
   const pointPadding=24;
@@ -1328,6 +1545,8 @@ function renderAssemblyMetricChart(id, metric) {
     if(index%2===0){
       svg.append('rect').attr('x',0).attr('y',y(project)).attr('width',width-margin.right).attr('height',y.bandwidth()).attr('fill',rowBackground);
     }
+    const label=svg.append('text').attr('x',10).attr('y',y(project)+y.bandwidth()/2+4).attr('font-size',10.5).attr('fill','#475569');
+    setSvgProjectLabel(label,projectRecord(project));
   });
 
   if(metric==='Largest contig' || metric==='Smallest contig'){
@@ -1754,11 +1973,16 @@ function renderGenomeTimeline() {
   const plotRight=28;
   const headerHeight=58;
   const coverageTrackHeight=genomes.some(genome=>coverageWindowsFor(genome))?34:0;
-  const rowHeight=92+coverageTrackHeight;
+  const repeatLineHeight=12;
+  // Each repeat gets its own summary line under the assembly name, so rows grow with the repeat count.
+  const genomeRowHeight=genome=>{
+    const count=(repeatsByAssembly.get(genome['Assembly key'])||[]).length;
+    return Math.max(92+coverageTrackHeight,72+Math.max(0,count-1)*repeatLineHeight+16);
+  };
   const groupGap=22;
   const topMargin=14;
   const bottomMargin=24;
-  const totalHeight=topMargin+groups.reduce((sum,group)=>sum+headerHeight+group.assemblies.length*rowHeight+groupGap,0)+bottomMargin;
+  const totalHeight=topMargin+groups.reduce((sum,group)=>sum+headerHeight+d3.sum(group.assemblies,genomeRowHeight)+groupGap,0)+bottomMargin;
 
   const svg=d3.select('#genomeTimeline')
     .append('svg')
@@ -1815,9 +2039,12 @@ function renderGenomeTimeline() {
       .call(d3.axisTop(x).ticks(8).tickFormat(value=>d3.format(',')(value)));
 
     const rowsStart=groupY+headerHeight;
+    let rowCursor=rowsStart;
 
     groupAssemblies.forEach((genome,index)=>{
-      const y0=rowsStart+index*rowHeight;
+      const y0=rowCursor;
+      const rowHeight=genomeRowHeight(genome);
+      rowCursor+=rowHeight;
       const assemblyMarkers=(markersByAssembly.get(genome['Assembly key'])||[]).slice().sort((a,b)=>num(a.Start,0)-num(b.Start,0));
       const assemblyRepeats=(repeatsByAssembly.get(genome['Assembly key'])||[]).slice().sort((a,b)=>num(a.Start,0)-num(b.Start,0));
       const genomeLength=Math.max(
@@ -1858,20 +2085,19 @@ function renderGenomeTimeline() {
         .attr('fill','#64748b')
         .text(`copy ${genome['Assembly copy']} · ${d3.format(',')(genomeLength)} bp${locationText(genome)?` · ${locationText(genome)}`:''}`);
 
-      const repeatSummary=assemblyRepeats.map((repeat,index)=>`Repeat ${index+1}: Repeat length ${text(repeat['Repeat length'])} bp · Consensus size ${text(repeat['Consensus Size'])} bp · Copy number ${text(repeat['Copy Number'])}`).join(' | ');
       svg.append('text')
         .attr('x',14)
         .attr('y',y0+56)
         .attr('font-size',9.5)
         .attr('font-weight',650)
         .attr('fill','#475569')
-        .text(`${assemblyRepeats.length} repeat${assemblyRepeats.length===1?'':'s'}`);
-      svg.append('text')
-        .attr('x',14)
-        .attr('y',y0+72)
-        .attr('font-size',8.3)
-        .attr('fill','#64748b')
-        .text(repeatSummary || 'No tandem repeats');
+        .text(assemblyRepeats.length?`${assemblyRepeats.length} tandem repeat${assemblyRepeats.length===1?'':'s'} · consensus sequence`:'No tandem repeats');
+      assemblyRepeats.forEach((repeat,repeatIndex)=>{
+        const line=svg.append('text').attr('x',14).attr('y',y0+72+repeatIndex*repeatLineHeight).attr('font-size',8.6).attr('fill','#64748b');
+        line.append('tspan').attr('font-weight',700).attr('fill',repeatColor(text(repeat['Repeat family label'])||text(repeat.Consensus)||'Repeat')).text(`R${repeatIndex+1} `);
+        line.append('tspan').text(`${text(repeat['Repeat length'])} bp · ${text(repeat['Copy Number'])} × ${text(repeat['Consensus Size'])} bp · `);
+        line.append('tspan').attr('font-family','ui-monospace, SFMono-Regular, Menlo, Consolas, monospace').attr('fill','#0f172a').text(truncateSequence(repeat.Consensus,34));
+      });
 
       const plusY=y0+20;
       const minusY=y0+40;
@@ -1934,14 +2160,34 @@ function renderGenomeTimeline() {
           .attr('fill',repeatColor(family))
           .attr('stroke','#ffffff')
           .attr('stroke-width',.5)
-          .on('mousemove',event=>hover(event,`<b>${esc(family)}</b><br>${projectDisplayHtml(genome)}${locationText(genome)?`<br>Location: ${esc(locationText(genome))}`:''}<br>Seed ${esc(group.seed)} · K-mer ${esc(group.kmer)}<br>${esc(repeat.Start)}–${esc(repeat.End)} bp<br>Repeat length: ${esc(repeat['Repeat length'])}<br>Consensus size: ${esc(repeat['Consensus Size'])}<br>Copies: ${esc(repeat['Copy Number'])}<br>${esc(repeat['Gene context'])}`))
+          .on('mousemove',event=>hover(event,`<b>${esc(family)}</b><br>${projectDisplayHtml(genome)}${locationText(genome)?`<br>Location: ${esc(locationText(genome))}`:''}<br>Seed ${esc(group.seed)} · K-mer ${esc(group.kmer)}<br>${esc(repeat.Start)}–${esc(repeat.End)} bp<br>Repeat length: ${esc(repeat['Repeat length'])}<br>Consensus size: ${esc(repeat['Consensus Size'])}<br>Copies: ${esc(repeat['Copy Number'])}<br>${esc(repeat['Gene context'])}<br><b>Consensus</b><br><span style="font-family:monospace;word-break:break-all">${esc(repeat.Consensus)}</span>`))
           .on('mouseleave',unhover);
 
+        const consensusLabel=truncateSequence(repeat.Consensus,24);
+        if(consensusLabel){
+          const labelWidth=consensusLabel.length*5.3;
+          const afterBlock=repeatStart+repeatWidth+5;
+          const fitsAfter=afterBlock+labelWidth<width-plotRight;
+          svg.append('text')
+            .attr('x',fitsAfter?afterBlock:repeatStart-5)
+            .attr('y',repeatY+3.5)
+            .attr('text-anchor',fitsAfter?'start':'end')
+            .attr('font-size',8.8)
+            .attr('font-family','ui-monospace, SFMono-Regular, Menlo, Consolas, monospace')
+            .attr('fill','#334155')
+            .attr('pointer-events','none')
+            .text(consensusLabel);
+        }
       });
     });
 
-    groupY=rowsStart+groupAssemblies.length*rowHeight+groupGap;
+    groupY=rowCursor+groupGap;
   });
+}
+
+function truncateSequence(value,maximum) {
+  const sequence=text(value).trim();
+  return sequence.length>maximum?`${sequence.slice(0,maximum-1)}…`:sequence;
 }
 
 const ORGANPIPE=REPORT.organpipe||{};
@@ -2021,58 +2267,160 @@ function renderCompletenessHeatmap() {
   const genes=ORGANPIPE.expected_markers||[];
   if(!rows.length||!genes.length)return emptyChart('completenessHeatmap','No MITOS2 results for these filters.');
   clearChart('completenessHeatmap');
-  const cell=15, labelWidth=330, top=96, orderWidth=70;
-  const width=labelWidth+genes.length*cell+orderWidth+20, height=top+rows.length*cell+40;
-  const svg=d3.select('#completenessHeatmap').append('svg').attr('width',width).attr('height',height);
+  const container=document.getElementById('completenessHeatmap');
+  const width=Math.max(640,container.clientWidth||1100);
+  const rowHeight=16, top=104, orderWidth=78;
+  const labelWidth=Math.round(Math.min(360,Math.max(230,width*.24)));
+  const cell=Math.max(12,(width-labelWidth-orderWidth-12)/genes.length);
+  const gridRight=labelWidth+genes.length*cell;
+  const height=top+rows.length*rowHeight+16;
+  const svg=d3.select('#completenessHeatmap').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
   genes.forEach((gene,index)=>{
-    svg.append('text').attr('transform',`translate(${labelWidth+index*cell+cell/2+3},${top-6}) rotate(-60)`).attr('font-size',9.5).attr('fill','#334155').text(gene);
+    svg.append('text').attr('transform',`translate(${labelWidth+index*cell+cell/2+3},${top-6}) rotate(-60)`).attr('font-size',10).attr('fill','#334155').text(gene);
   });
-  svg.append('text').attr('x',labelWidth+genes.length*cell+10).attr('y',top-8).attr('font-size',9.5).attr('font-weight',700).attr('fill','#334155').text('Gene order');
+  svg.append('text').attr('x',gridRight+10).attr('y',top-8).attr('font-size',10).attr('font-weight',700).attr('fill','#334155').text('Gene order');
+  let previousProject=null;
   rows.forEach((row,r)=>{
-    const y=top+r*cell;
-    if(r%2===0)svg.append('rect').attr('x',0).attr('y',y).attr('width',width).attr('height',cell).attr('fill','#f8fafc');
-    svg.append('text').attr('x',labelWidth-8).attr('y',y+cell-4).attr('text-anchor','end').attr('font-size',9.5).attr('fill','#0f172a').text(assemblyRowLabel(row));
+    const y=top+r*rowHeight;
+    if(r%2===0)svg.append('rect').attr('x',0).attr('y',y).attr('width',width).attr('height',rowHeight).attr('fill','#f8fafc');
+    if(previousProject!==null&&text(row['Project name'])!==previousProject)svg.append('line').attr('x1',0).attr('x2',width).attr('y1',y).attr('y2',y).attr('stroke','#94a3b8').attr('stroke-width',1);
+    previousProject=text(row['Project name']);
+    svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-4).attr('text-anchor','end').attr('font-size',10).attr('fill','#0f172a').text(assemblyRowLabel(row));
     genes.forEach((gene,c)=>{
       const status=text(row[gene])||'Absent';
-      svg.append('rect').attr('x',labelWidth+c*cell+1).attr('y',y+1).attr('width',cell-2).attr('height',cell-2).attr('rx',2).attr('fill',completenessColors[status]||'#cbd5e1')
+      svg.append('rect').attr('x',labelWidth+c*cell+1).attr('y',y+1).attr('width',cell-2).attr('height',rowHeight-2).attr('rx',2).attr('fill',completenessColors[status]||'#cbd5e1')
         .on('mousemove',event=>hover(event,`<b>${esc(gene)}</b>: ${esc(status)}<br>${esc(assemblyRowLabel(row))}<br>${esc(row['Genes present'])} of ${genes.length} genes present`)).on('mouseleave',unhover);
     });
     const same=row['Gene order matches modal']===true;
-    svg.append('text').attr('x',labelWidth+genes.length*cell+10).attr('y',y+cell-4).attr('font-size',9.5).attr('font-weight',650).attr('fill',same?'#029E73':'#D55E00').text(same?'Modal':'Differs')
+    svg.append('text').attr('x',gridRight+10).attr('y',y+rowHeight-4).attr('font-size',10).attr('font-weight',650).attr('fill',same?'#029E73':'#D55E00').text(same?'Modal':'Differs')
       .on('mousemove',event=>hover(event,`<b>Gene order</b><br>${esc(row['Gene order'])}${same?'':`<br><br><b>Project modal order</b><br>${esc(row['Modal gene order'])}`}`)).on('mouseleave',unhover);
   });
   const legend=svg.append('g').attr('transform',`translate(${labelWidth},14)`);
   Object.entries(completenessColors).forEach(([label,color],index)=>{
-    legend.append('rect').attr('x',index*130).attr('y',0).attr('width',11).attr('height',11).attr('rx',2).attr('fill',color);
-    legend.append('text').attr('x',index*130+16).attr('y',9.5).attr('font-size',10.5).attr('fill','#334155').text(label);
+    legend.append('rect').attr('x',index*140).attr('y',0).attr('width',12).attr('height',12).attr('rx',2).attr('fill',color);
+    legend.append('text').attr('x',index*140+17).attr('y',10).attr('font-size',11).attr('fill','#334155').text(label);
   });
 }
 
+function qualitySettings() {
+  const settings=ORGANPIPE.settings||{};
+  const coverageRow=(ORGANPIPE.coverage||[])[0]||{};
+  const recruitmentRow=(ORGANPIPE.recruitment||[])[0]||{};
+  return {
+    depth:num(settings.low_depth_threshold,num(coverageRow['Low-depth threshold'],10)),
+    alertPercent:num(settings.low_coverage_alert_percent,5),
+    window:num(settings.window_size,num(coverageRow['Window size'],50)),
+    identity:num(settings.identity_threshold,num(recruitmentRow['Identity threshold'],98)),
+    genes:(ORGANPIPE.expected_markers||[]).length||37
+  };
+}
+
+function qualityColumns() {
+  const q=qualitySettings();
+  return [
+    {group:'Assembly',key:'run',label:'Seed · K-mer · copy',help:'Seed used by NOVOPlasty, K-mer size and assembly copy (_1 is the main contig set, _2 the alternative copy NOVOPlasty writes when it finds two options).'},
+    {group:'Assembly',key:'status',label:'Circularized',help:'Whether NOVOPlasty closed the assembly into a circle.'},
+    {group:'Annotation (MITOS2)',key:'genes',label:`Genes found (of ${q.genes})`,help:`Number of the ${q.genes} expected mitochondrial genes (13 protein-coding, 2 rRNAs, 22 tRNAs) that MITOS2 annotated. Green: all present. Orange: some missing; the heatmap above shows which.`},
+    {group:'Annotation (MITOS2)',key:'order',label:'Gene order',help:'Modal: same order and strand as the most common order among the complete assemblies of the project. Differs: at least one gene is out of place, often a sign of a misassembly or of a partial assembly.'},
+    {group:'Coverage (samtools depth)',key:'depth',label:'Mean depth (×)',help:`Mean number of reads covering each base. (A) means the rotated depth file was missing and the pre-Pilon file was used. Red when the mean is below ${q.depth}×.`},
+    {group:'Coverage (samtools depth)',key:'cv',label:'Depth CV',help:'Coefficient of variation of the depth (standard deviation / mean). Values near 0 mean even coverage; high values point to spikes (repeats, collapsed copies) or gaps.'},
+    {group:'Coverage (samtools depth)',key:'low',label:`Bases below ${q.depth}× (%)`,help:`Percentage of positions with fewer than ${q.depth} reads. Orange above ${q.alertPercent}%, which also raises the Low coverage alert.`},
+    {group:'Coverage (samtools depth)',key:'window',label:`Weakest ${q.window} bp window`,help:`Lowest mean depth among consecutive ${q.window} bp windows, and the position where that window starts. Pinpoints the least supported region.`},
+    {group:'Read recruitment (BLAST)',key:'reads',label:'Reads aligned',help:'Reads NOVOPlasty used to build the assembly that BLAST aligned back to it.'},
+    {group:'Read recruitment (BLAST)',key:'mismatch',label:`Reads below ${q.identity}% identity (%)`,help:`Share of aligned reads with identity below ${q.identity}%. Higher values can indicate sequencing errors, mixed haplotypes, heteroplasmy or nuclear copies (NUMTs). The bar is relative to the highest value in view.`},
+    {group:'Read recruitment (BLAST)',key:'target',label:'Assembly covered (%)',help:'Percentage of the assembly covered by at least one aligned read. Orange below 100%.'},
+    {group:'Pilon',key:'changes',label:'Corrections',help:'Changes Pilon made to the assembly (insertions, deletions, substitutions), read from the .changes file. They are marked with triangles in the genome structure.'},
+    {group:'Pilon',key:'breaks',label:'Unresolved breaks',help:'Regions Pilon tried to fix but could not (NoSolution in pilon.log). Orange when there is at least one.'},
+    {group:'Alerts',key:'alerts',label:'Alerts',help:'Automatic checks combining the columns above. Hover an alert to read the detail.'}
+  ];
+}
+
+function renderQualityGuide() {
+  const body=document.getElementById('qualityGuideBody');
+  const groups=d3.groups(qualityColumns(),column=>column.group);
+  body.innerHTML=groups.map(([group,columns])=>`<div class="quality-guide-group"><h4>${esc(group)}</h4><dl>${columns.map(column=>`<dt>${esc(column.label)}</dt><dd>${esc(column.help)}</dd>`).join('')}</dl></div>`).join('')
+    +'<div class="quality-guide-group"><h4>Source of the reads</h4><dl><dd>Coverage and read recruitment use the reads NOVOPlasty assembled (<code>Assembled_reads</code>). They tend to agree with the assembly by construction: they flag problems, but do not prove an assembly is correct.</dd></dl></div>';
+}
+
 function renderQualityTable() {
-  const rows=sortAssemblyRows(organpipeRows('completeness').length?organpipeRows('completeness'):organpipeRows('coverage'));
+  const q=qualitySettings();
+  const columns=qualityColumns();
+  const baseRows=sortAssemblyRows(organpipeRows('completeness').length?organpipeRows('completeness'):organpipeRows('coverage'));
   const byKey=key=>new Map((ORGANPIPE[key]||[]).map(row=>[text(row.Assembly),row]));
   const coverage=byKey('coverage'), recruitment=byKey('recruitment');
   const alerts=d3Group(ORGANPIPE.alerts||[],row=>text(row.Assembly));
   const changes=d3Group(ORGANPIPE.pilon_changes||[],row=>text(row.Assembly));
-  const columns=['Assembly','Genes','Mean depth','CV','% < depth threshold','Lowest window','Reads','% < identity threshold','Target covered','Pilon changes','Alerts'];
-  document.getElementById('qualityTableHead').innerHTML=columns.map(c=>`<th>${esc(c)}</th>`).join('');
-  document.getElementById('qualityTableCount').textContent=`${rows.length} assembl${rows.length===1?'y':'ies'} shown`;
+  const breaks=d3Group(ORGANPIPE.pilon_breaks||[],row=>text(row.Assembly));
+  const onlyAlerts=document.getElementById('qualityOnlyAlerts').checked;
+  const query=text(document.getElementById('qualitySearch').value).trim().toLowerCase();
+  const rows=baseRows.filter(row=>{
+    const name=text(row.Assembly);
+    if(onlyAlerts&&!(alerts.get(name)||[]).length)return false;
+    if(!query)return true;
+    const haystack=[projectDisplayText(projectRecord(row['Project name'])),row['Project name'],row['Seed Input'],`k${text(row['K-mer'])}`,name,...(alerts.get(name)||[]).map(a=>a['Alert type'])].map(text).join(' ').toLowerCase();
+    return haystack.includes(query);
+  });
+
+  const groups=d3.groups(columns,column=>column.group);
+  document.getElementById('qualityTableHead').innerHTML=
+    `<tr class="group-head">${groups.map(([group,items])=>`<th colspan="${items.length}">${esc(group)}</th>`).join('')}</tr>`
+    +`<tr class="column-head">${columns.map(column=>`<th data-tooltip="${esc(column.help)}">${esc(column.label)} <span class="info-dot">i</span></th>`).join('')}</tr>`;
+  document.querySelectorAll('#qualityTableHead [data-tooltip]').forEach(element=>{
+    element.addEventListener('mousemove',event=>hover(event,esc(element.dataset.tooltip)));
+    element.addEventListener('mouseleave',unhover);
+  });
+
+  const withAlerts=baseRows.filter(row=>(alerts.get(text(row.Assembly))||[]).length).length;
+  document.getElementById('qualityTableCount').textContent=`${rows.length} of ${baseRows.length} assembl${baseRows.length===1?'y':'ies'} shown · ${withAlerts} with alerts`;
   document.getElementById('qualitySubtitle').textContent=!ORGANPIPE.available
     ? 'No OrganPipe quality files were found for this run.'
-    : rows.length
-      ? `Values read from the OrganPipe folders of ${new Set(rows.map(r=>text(r['Project name']))).size} project(s).`
+    : baseRows.length
+      ? `Values read from the OrganPipe folders of ${new Set(baseRows.map(r=>text(r['Project name']))).size} project(s).`
       : 'No MITOS2, depth or BLAST results for the assemblies in the current filters.';
+
   const fmt=(value,format)=>num(value)===null?'—':d3.format(format)(num(value));
+  const maxMismatch=d3.max(rows,row=>num((recruitment.get(text(row.Assembly))||{})['Percent below threshold'],0))||0;
+  const cell=(content,cls='')=>`<td class="${cls}">${content}</td>`;
+  let previousProject=null;
   document.getElementById('qualityTableBody').innerHTML=rows.map(row=>{
     const name=text(row.Assembly), cov=coverage.get(name)||{}, rec=recruitment.get(name)||{};
-    const chips=(alerts.get(name)||[]).map(a=>`<span class="alert-chip ${esc(a.Severity)}" title="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
-    const genes=row['Genes present']!==undefined?`${esc(row['Genes present'])}/37`:'—';
-    return `<tr><td>${projectDisplayHtml(projectRecord(row['Project name']))}<br><span class="table-count">${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</span></td>
-      <td>${genes}</td><td>${fmt(cov['Mean depth'],',.1f')}${cov['Coordinate system']&&!text(cov['Coordinate system']).startsWith('C')?' <span class="table-count">(A)</span>':''}</td><td>${fmt(cov['Coefficient of variation'],'.2f')}</td>
-      <td>${fmt(cov['Percent below threshold'],'.2f')}</td><td>${num(cov['Lowest window mean depth'])===null?'—':`${fmt(cov['Lowest window mean depth'],',.0f')}× @ ${fmt(cov['Lowest window start'],',')}`}</td>
-      <td>${fmt(rec['Recruited reads'],',')}</td><td>${fmt(rec['Percent below threshold'],'.2f')}</td><td>${num(rec['Target coverage %'])===null?'—':`${fmt(rec['Target coverage %'],'.1f')}%`}</td>
-      <td>${(changes.get(name)||[]).length}</td><td>${chips||'<span class="table-count">none</span>'}</td></tr>`;
-  }).join('');
+    const assemblyAlerts=alerts.get(name)||[];
+    let header='';
+    if(text(row['Project name'])!==previousProject){
+      previousProject=text(row['Project name']);
+      const projectRows=rows.filter(item=>text(item['Project name'])===previousProject);
+      const flagged=projectRows.filter(item=>(alerts.get(text(item.Assembly))||[]).length).length;
+      header=`<tr class="q-project"><td colspan="${columns.length}">${projectDisplayHtml(projectRecord(previousProject))} <span class="table-count">· ${projectRows.length} assembl${projectRows.length===1?'y':'ies'} · ${flagged} with alerts</span></td></tr>`;
+    }
+    const summaryRow=summaryByRunKey.get(rowKey(row));
+    const circular=summaryRow?summaryRow.Circularized===true:null;
+    const present=num(row['Genes present']);
+    const order=row['Gene order matches modal'];
+    const depth=num(cov['Mean depth']);
+    const low=num(cov['Percent below threshold']);
+    const mismatch=num(rec['Percent below threshold']);
+    const target=num(rec['Target coverage %']);
+    const breakCount=(breaks.get(name)||[]).length;
+    const coordinate=cov['Coordinate system']&&!text(cov['Coordinate system']).startsWith('C')?' <span class="q-sub">(A) pre-Pilon file</span>':'';
+    const mismatchBar=mismatch===null||maxMismatch<=0?0:Math.min(100,100*mismatch/maxMismatch);
+    const chips=assemblyAlerts.map(a=>`<span class="alert-chip ${esc(a.Severity)}" title="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
+    return header+'<tr>'+[
+      cell(`<strong>${esc(row['Seed Input'])}</strong> · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}`,'q-run'),
+      cell(circular===null?'—':(circular?'Yes':'No'),circular===null?'':(circular?'q-ok':'q-warn')),
+      cell(present===null?'—':`${present} / ${q.genes}`,present===null?'':(present>=q.genes?'q-ok':(present<q.genes/2?'q-bad':'q-warn'))),
+      cell(order===true?'Modal':(order===false?'Differs':'—'),order===true?'q-ok':(order===false?'q-warn':'')),
+      cell(`${fmt(depth,',.1f')}${coordinate}`,depth===null?'':(depth<q.depth?'q-bad':'')),
+      cell(fmt(cov['Coefficient of variation'],'.2f')),
+      cell(fmt(low,'.2f'),low===null?'':(low>q.alertPercent?'q-warn':(low===0?'q-ok':''))),
+      cell(num(cov['Lowest window mean depth'])===null?'—':`${fmt(cov['Lowest window mean depth'],',.0f')}× <span class="q-sub">from ${fmt(cov['Lowest window start'],',')} bp</span>`),
+      cell(fmt(rec['Recruited reads'],',')),
+      mismatch===null?cell('—'):`<td class="data-bar-cell" style="--bar-width:${mismatchBar.toFixed(1)}%;--bar-color:rgba(204,120,188,.28)"><div class="cell-bar"></div><span class="cell-value">${fmt(mismatch,'.2f')}</span></td>`,
+      cell(target===null?'—':`${fmt(target,'.2~f')}`,target===null?'':(target>=100?'q-ok':'q-warn')),
+      cell(String((changes.get(name)||[]).length)),
+      cell(String(breakCount),breakCount?'q-warn':''),
+      cell(chips||'<span class="table-count">none</span>','q-alerts')
+    ].join('')+'</tr>';
+  }).join('') || `<tr><td colspan="${columns.length}" class="table-count" style="padding:18px">No assembly matches the table filters.</td></tr>`;
 }
 
 function renderProvenance() {
@@ -2087,6 +2435,7 @@ function renderProvenance() {
 }
 
 function renderOrganpipeSections() {
+  renderQualityGuide();
   renderReadQc();
   renderCompletenessHeatmap();
   renderQualityTable();
@@ -2248,18 +2597,105 @@ function renderRepeatTable() {
   initResizableTable(document.getElementById('repeatTable'),repeatColumns);
 }
 
+let snpIncludeIncomplete=false;
+const SNP_MISSING='·';
+const completenessByRunCopy=new Map((ORGANPIPE.completeness||[]).map(row=>[[text(row['Project name']).trim(),text(row['Seed Input']).trim(),normalizedRunValue(row['K-mer']),normalizedRunValue(row['Assembly copy'])].join('\0'),row]));
+
+function numOrNull(value) {
+  if(value===null||value===undefined||text(value).trim()==='')return null;
+  return num(value);
+}
+
+function snpRunRow(row) {
+  return {'Project name':row.project,'Seed Input':row.seed,'K-mer':row.kmer};
+}
+
+function snpRowCircular(row) {
+  const summary=summaryByRunKey.get(rowKey(snpRunRow(row)));
+  return summary?summary.Circularized===true:null;
+}
+
 function snpRowMatches(row) {
   if (!state.projects.size || !state.projects.has(text(row.project))) return false;
   if (!state.seed.size || !state.seed.has(text(row.seed))) return false;
   if (!state.kmer.size || !state.kmer.has(text(row.kmer))) return false;
-
-  if (!state.status.has('Circularized')) return false;
-
-  const hasRepeat = repeatRunKeys.has(`${text(row.project).trim()}\0${text(row.seed).trim()}\0${normalizedRunValue(row.kmer)}`);
+  const circular=snpRowCircular(row);
+  const status=circular===false?'Not circularized':'Circularized';
+  if (!state.status.has(status)) return false;
+  const hasRepeat = repeatRunKeys.has(rowKey(snpRunRow(row)));
   const repeatStatus = hasRepeat ? 'With repeats' : 'Without repeats';
   if (!state.repeats.size || !state.repeats.has(repeatStatus)) return false;
-
   return true;
+}
+
+function snpMedianLength(matrix) {
+  return median(matrix.rows.map(row=>numOrNull(row.ungapped_length)).filter(value=>value!==null&&value>0));
+}
+
+// Reasons why a sequence can distort the matrix: an open (non-circularized) assembly,
+// a marker much shorter than the others, or a gene MITOS2 only found as a fragment.
+function snpRowIssues(matrix,row,medianLength) {
+  const issues=[];
+  if(snpRowCircular(row)===false)issues.push('assembly not circularized');
+  const length=numOrNull(row.ungapped_length);
+  const ratio=num(REPORT_CONFIG.snp_min_length_ratio,0.9);
+  if(length!==null&&medianLength&&length<ratio*medianLength)issues.push(`marker has ${d3.format(',')(length)} bp, ${Math.round(100*length/medianLength)}% of the median ${d3.format(',')(Math.round(medianLength))} bp`);
+  const completeness=completenessByRunCopy.get([text(row.project).trim(),text(row.seed).trim(),normalizedRunValue(row.kmer),normalizedRunValue(row.assembly_copy)].join('\0'));
+  const status=completeness?text(completeness[matrix.marker]):'';
+  if(status==='Partial at origin')issues.push('MITOS2 kept only a fragment of this gene at the contig origin');
+  if(status==='Absent')issues.push('MITOS2 did not annotate this gene');
+  return issues;
+}
+
+// States outside the first..last aligned base of a sequence are missing data, not deletions.
+function snpRowStates(row) {
+  const first=numOrNull(row.first_column), last=numOrNull(row.last_column);
+  return row.states.map((state,index)=>{
+    const column=numOrNull((row.alignment_columns||[])[index]);
+    if(first!==null&&last!==null&&column!==null&&(column<first||column>last))return SNP_MISSING;
+    return text(state||'N').toUpperCase();
+  });
+}
+
+// A sequence that disagrees with the majority at most SNP columns, while the others
+// rarely do, is often a different region (misannotation) rather than real variation.
+function snpDivergenceWarnings(display) {
+  const warnings=new Map();
+  const columns=display.positions.length;
+  if(columns<5||display.rows.length<3)return warnings;
+  const canonical=new Set(['A','C','G','T']);
+  const majority=display.positions.map((_,index)=>{
+    const counts=d3.rollup(display.rows.map(row=>row.displayStates[index]).filter(base=>canonical.has(base)),values=>values.length,base=>base);
+    return [...counts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0]||null;
+  });
+  const shares=display.rows.map(row=>{
+    let compared=0,different=0;
+    row.displayStates.forEach((base,index)=>{ if(!canonical.has(base)||!majority[index])return; compared++; if(base!==majority[index])different++; });
+    return {row,share:compared?different/compared:0};
+  });
+  const typical=median(shares.map(item=>item.share))||0;
+  shares.forEach(({row,share})=>{
+    if(share>=.5&&share>=typical+.3)warnings.set(row.sequence_id,[`differs from the majority at ${Math.round(100*share)}% of the SNP columns; check whether the same region was extracted`]);
+  });
+  return warnings;
+}
+
+// Keep only the columns that still vary among the displayed sequences.
+function buildDisplayedSnpMatrix(matrix,rows,referenceId) {
+  const canonical=new Set(['A','C','G','T']);
+  const statesById=new Map(rows.map(row=>[row.sequence_id,snpRowStates(row)]));
+  const keep=matrix.positions.map((_,index)=>new Set(rows.map(row=>statesById.get(row.sequence_id)[index]).filter(base=>canonical.has(base))).size>=2);
+  const indices=keep.map((value,index)=>value?index:-1).filter(index=>index>=0);
+  const labels=referencePositionLabels(matrix,referenceId);
+  return {
+    marker:matrix.marker,
+    positions:indices.map(index=>matrix.positions[index]),
+    labels:indices.map(index=>labels[index]),
+    rows:rows.map(row=>({...row,displayStates:indices.map(index=>statesById.get(row.sequence_id)[index])})),
+    referenceId,
+    alignment_length:numOrNull(matrix.alignment_length),
+    allColumns:matrix.positions.length
+  };
 }
 
 function splitSnpPositions(matrix, columnsPerPanel=60) {
@@ -2287,13 +2723,15 @@ function sortSnpRows(rows, referenceId) {
 }
 
 function drawSnpLegend(svg, startX, y) {
-  const entries = ['A','C','G','T','-','N'];
+  const entries = [['A','A'],['C','C'],['G','G'],['T','T'],['-','gap'],['N','N'],[SNP_MISSING,'sequence ends']];
   const legend = svg.append('g').attr('transform',`translate(${startX},${y})`);
-  entries.forEach((base,index)=>{
-    const x=index*54;
-    legend.append('rect').attr('x',x).attr('y',-10).attr('width',15).attr('height',15).attr('rx',2).attr('fill',snpBaseColors[base]);
-    legend.append('text').attr('x',x+21).attr('y',2).attr('font-size',10).attr('fill','#475569').text(base);
+  let x=0;
+  entries.forEach(([base,label])=>{
+    legend.append('rect').attr('x',x).attr('y',-10).attr('width',15).attr('height',15).attr('rx',2).attr('fill',snpBaseColors[base]).attr('stroke',base===SNP_MISSING?'#94a3b8':'none').attr('stroke-dasharray',base===SNP_MISSING?'2,2':null);
+    legend.append('text').attr('x',x+20).attr('y',2).attr('font-size',10).attr('fill','#475569').text(label);
+    x+=label.length*6+34;
   });
+  return {legend,width:x};
 }
 
 function selectedSnpReferenceId(matrix) {
@@ -2330,19 +2768,37 @@ function displayReferencePosition(value) {
   return parsed.label;
 }
 
-function renderSnpPanel(container, matrix, rows, panel, panelIndex, panelCount, referenceId) {
-  const labelWidth = 290;
-  const cellWidth = 36;
+function snpLengthBar(svg,x,y,width,row,alignmentLength,flagged) {
+  const first=numOrNull(row.first_column), last=numOrNull(row.last_column);
+  if(first===null||last===null||!alignmentLength)return;
+  svg.append('rect').attr('x',x).attr('y',y).attr('width',width).attr('height',5).attr('rx',2.5).attr('fill','#e2e8f0');
+  svg.append('rect').attr('x',x+width*(first-1)/alignmentLength).attr('y',y).attr('width',Math.max(2,width*(last-first+1)/alignmentLength)).attr('height',5).attr('rx',2.5).attr('fill',flagged?'#DE8F05':'#029E73');
+}
+
+function renderSnpPanel(container, display, panel, panelIndex, panelCount, context) {
+  const labelWidth = 300;
   const rowHeight = 29;
   const projectGap = Math.max(0,num(REPORT_CONFIG.snp_project_gap,12));
-  const topSpace = 82;
-  const bottomSpace = 132;
-  const allReferencePositions=referencePositionLabels(matrix,referenceId);
-  const panelPositions=allReferencePositions.slice(panel.start,panel.end);
-  const displayedRows = sortSnpRows(rows, referenceId);
-  const compactPanel=panelPositions.length<=8;
-  const containerWidth=Math.max(360,(container.clientWidth||720)-16);
-  const width=compactPanel?containerWidth:Math.max(containerWidth,labelWidth+panelPositions.length*cellWidth+54);
+  const containerWidth=Math.max(480,(container.clientWidth||900)-16);
+  const matrixX = labelWidth + 16;
+  const panelPositions=display.labels.slice(panel.start,panel.end);
+  const fitCell=(containerWidth-matrixX-16)/Math.max(1,panelPositions.length);
+  const cellWidth=Math.max(30,Math.min(64,fitCell));
+  const matrixWidth = panelPositions.length*cellWidth;
+  const width=Math.max(containerWidth,matrixX+matrixWidth+16);
+  const referenceId=display.referenceId;
+  const displayedRows = sortSnpRows(display.rows, referenceId);
+  const referenceRow=displayedRows.find(row=>row.sequence_id===referenceId)||displayedRows[0]||{};
+
+  // Marker track (reference coordinates) on top, with connectors fanning down to the columns.
+  const barY=64, barHeight=14;
+  const connectorTop=barY+barHeight+24, labelBase=connectorTop+62;
+  const topSpace=labelBase+10;
+  const barX=matrixX, barWidth=width-matrixX-16;
+  const allParsed=display.labels.map(parseReferencePosition);
+  const referenceLength=numOrNull(referenceRow.ungapped_length)||numOrNull(referenceRow.marker_length)||d3.max(allParsed,item=>item.base)||1;
+  const markerScale=d3.scaleLinear().domain([1,Math.max(2,referenceLength)]).range([barX,barX+barWidth]).clamp(true);
+  const markerStart=numOrNull(referenceRow.marker_start), markerEnd=numOrNull(referenceRow.marker_end);
 
   let yCursor = topSpace;
   let previousProject = null;
@@ -2354,135 +2810,138 @@ function renderSnpPanel(container, matrix, rows, panel, panelIndex, panelCount, 
     if(!isReference) previousProject = row.project;
     return layout;
   });
-
-  const matrixBottom = yCursor;
-  const height = matrixBottom + bottomSpace;
+  const height = yCursor + 14;
   const svg = d3.select(container).append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
-  const matrixX = labelWidth + 16;
-  const matrixWidth = panelPositions.length*cellWidth;
 
-  svg.append('text').attr('x',10).attr('y',22).attr('font-size',12).attr('font-weight',700).attr('fill','#0f172a').text(panelCount>1?`Panel ${panelIndex+1}/${panelCount}`:'True SNP positions');
-  svg.append('text').attr('x',10).attr('y',39).attr('font-size',10).attr('fill','#64748b').text(`${displayedRows.length} sequences · ${panelPositions.length} SNP columns · coordinates use the selected reference`);
-  drawSnpLegend(svg, Math.max(10,width-340), 28);
+  svg.append('text').attr('x',10).attr('y',20).attr('font-size',12).attr('font-weight',700).attr('fill','#0f172a').text(panelCount>1?`Panel ${panelIndex+1} of ${panelCount} · columns ${panel.start+1}–${panel.end}`:'SNP positions');
+  svg.append('text').attr('x',10).attr('y',36).attr('font-size',10).attr('fill','#64748b').text(`${displayedRows.length} sequences · ${panelPositions.length} SNP columns`);
+  const snpLegend=drawSnpLegend(svg,0,0);
+  snpLegend.legend.attr('transform',`translate(${Math.max(320,width-snpLegend.width-12)},24)`);
 
-  rowLayout.forEach(layout=>{
-    const background = layout.isReference ? '#dbeafe' : (layout.index%2===0 ? '#eeeeee' : '#ffffff');
-    svg.append('rect').attr('x',0).attr('y',layout.y).attr('width',width).attr('height',rowHeight).attr('fill',background);
+  // Marker bar
+  svg.append('text').attr('x',10).attr('y',barY+10).attr('font-size',10.5).attr('font-weight',700).attr('fill','#334155').text(`${display.marker} in the reference`);
+  svg.append('text').attr('x',10).attr('y',barY+24).attr('font-size',9.3).attr('fill','#64748b').text(markerStart!==null&&markerEnd!==null?`${d3.format(',')(referenceLength)} bp · genome ${d3.format(',')(markerStart)}–${d3.format(',')(markerEnd)} bp`:`${d3.format(',')(referenceLength)} bp`);
+  svg.append('rect').attr('x',barX).attr('y',barY).attr('width',barWidth).attr('height',barHeight).attr('rx',4).attr('fill','#e0f2fe').attr('stroke','#7dd3fc');
+  allParsed.forEach((parsed,index)=>{
+    if(parsed.base===null)return;
+    const inPanel=index>=panel.start&&index<panel.end;
+    if(inPanel)return;
+    const x=markerScale(Math.max(1,parsed.base));
+    svg.append('line').attr('x1',x).attr('x2',x).attr('y1',barY+2).attr('y2',barY+barHeight-2).attr('stroke','#94a3b8').attr('stroke-width',1);
+  });
+  const axis=d3.axisBottom(markerScale).ticks(Math.max(2,Math.floor(barWidth/110))).tickFormat(value=>d3.format(',')(value)).tickSizeOuter(0);
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${barY+barHeight})`).call(axis);
+
+  panelPositions.forEach((position,j)=>{
+    const parsed=parseReferencePosition(position);
+    const colX=matrixX+j*cellWidth+(cellWidth-2)/2;
+    if(parsed.base!==null){
+      const x=markerScale(Math.max(1,parsed.base));
+      svg.append('path').attr('d',`M${x},${barY+barHeight} C${x},${connectorTop+20} ${colX},${connectorTop+16} ${colX},${connectorTop+36}`).attr('fill','none').attr('stroke','#64748b').attr('stroke-opacity',.55).attr('stroke-width',1);
+      svg.append('line').attr('x1',x).attr('x2',x).attr('y1',barY-3).attr('y2',barY+barHeight+3).attr('stroke','#1d4ed8').attr('stroke-width',1.6)
+        .on('mousemove',event=>hover(event,`<b>${esc(display.marker)}</b><br>Reference position ${esc(displayReferencePosition(position))}${markerStart!==null?`<br>Approx. genome coordinate ${d3.format(',')(markerStart+Math.max(0,parsed.base-1))} bp`:''}`)).on('mouseleave',unhover);
+    }
+    svg.append('text').attr('x',colX).attr('y',labelBase).attr('text-anchor','start').attr('transform',`rotate(-60,${colX},${labelBase})`).attr('font-size',9).attr('fill','#334155').text(displayReferencePosition(position));
   });
 
-  const queryLayouts = rowLayout.filter(layout=>!layout.isReference);
-  const projectGroups = d3.groups(queryLayouts,layout=>layout.row.project);
-  projectGroups.forEach((group,groupIndex)=>{
-    if(groupIndex%2!==0)return;
-    const first = d3.min(group[1],layout=>layout.y);
-    const last = d3.max(group[1],layout=>layout.y);
-    svg.append('rect').attr('x',0).attr('y',first).attr('width',width).attr('height',last-first+rowHeight).attr('fill','#bfbfbf').attr('fill-opacity',.20).attr('pointer-events','none');
+  rowLayout.forEach(layout=>{
+    const background = layout.isReference ? '#dbeafe' : (layout.index%2===0 ? '#f1f5f9' : '#ffffff');
+    svg.append('rect').attr('x',0).attr('y',layout.y).attr('width',width).attr('height',rowHeight).attr('fill',background);
   });
 
   rowLayout.forEach(layout=>{
     const row = layout.row;
     const y = layout.y;
     const labelRow={project:row.project,species:row.species};
-    const labelMain = projectDisplayText(labelRow);
+    const issues=context.issues.get(row.sequence_id)||[];
     const labelSubParts = [`Seed ${text(row.seed)}`, `K-mer ${text(row.kmer)}`];
     if(text(row.location)) labelSubParts.push(text(row.location));
     const labelSelection=svg.append('text').attr('x',10).attr('y',y+12).attr('font-size',10.3).attr('fill','#0f172a');
-    setSvgProjectLabel(labelSelection,labelRow,{prefix:layout.isReference?'Reference · ':''});
+    setSvgProjectLabel(labelSelection,labelRow,{prefix:layout.isReference?'Reference · ':'',suffix:issues.length?'  ⚠':''});
     svg.append('text').attr('x',10).attr('y',y+24).attr('font-size',9).attr('fill','#64748b').text(labelSubParts.join(' · '));
+    snpLengthBar(svg,labelWidth-74,y+19,70,row,display.alignment_length,issues.length>0);
+    const rowInfo=`${layout.isReference?'<strong>Reference</strong><br>':''}${projectDisplayHtml(labelRow)}<br>${esc(labelSubParts.join(' · '))}${numOrNull(row.ungapped_length)!==null?`<br>Marker sequence: ${d3.format(',')(row.ungapped_length)} bp`:''}${issues.length?`<br><b>Check:</b> ${esc(issues.join('; '))}`:''}`;
+    svg.append('rect').attr('x',0).attr('y',y).attr('width',labelWidth).attr('height',rowHeight).attr('fill','transparent').on('mousemove',event=>hover(event,rowInfo)).on('mouseleave',unhover);
 
     panelPositions.forEach((position,j)=>{
-      const base = text(row.states[panel.start+j] || 'N').toUpperCase();
+      const base = row.displayStates[panel.start+j] || 'N';
       const x = matrixX+j*cellWidth;
-      svg.append('rect').attr('x',x).attr('y',y+2).attr('width',cellWidth-2).attr('height',rowHeight-4).attr('rx',3).attr('fill',snpBaseColors[base] || '#cbd5e1').attr('stroke','#ffffff').attr('stroke-width',0.6)
-        .on('mousemove',event=>hover(event,`${layout.isReference?'<strong>Reference</strong><br>':''}${projectDisplayHtml(labelRow)}<br>${esc(labelSubParts.join(' · '))}<br>Reference position: ${esc(displayReferencePosition(position))}<br>State: ${esc(base)}`))
+      const missing=base===SNP_MISSING;
+      svg.append('rect').attr('x',x).attr('y',y+2).attr('width',cellWidth-2).attr('height',rowHeight-4).attr('rx',3).attr('fill',snpBaseColors[base] || '#cbd5e1').attr('stroke',missing?'#94a3b8':'#ffffff').attr('stroke-width',missing?0.8:0.6).attr('stroke-dasharray',missing?'2,2':null)
+        .on('mousemove',event=>hover(event,`${rowInfo}<br>Reference position: ${esc(displayReferencePosition(position))}<br>State: ${missing?'no data (the sequence ends before this position)':esc(base)}`))
         .on('mouseleave',unhover);
-      svg.append('text').attr('x',x+(cellWidth-2)/2).attr('y',y+rowHeight/2+4).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',700).attr('fill','#111827').attr('pointer-events','none').text(base);
+      if(!missing)svg.append('text').attr('x',x+(cellWidth-2)/2).attr('y',y+rowHeight/2+4).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',700).attr('fill','#111827').attr('pointer-events','none').text(base);
     });
   });
-
-  panelPositions.forEach((position,j)=>{
-    const x = matrixX+j*cellWidth+cellWidth/2;
-    svg.append('text').attr('x',x).attr('y',topSpace-12).attr('text-anchor','start').attr('transform',`rotate(-68,${x},${topSpace-12})`).attr('font-size',8.5).attr('fill','#475569').text(displayReferencePosition(position));
-  });
-
-  const referenceRow=matrix.rows.find(row=>row.sequence_id===referenceId)||{};
-  const markerStart=num(referenceRow.marker_start ?? matrix.marker_start);
-  const markerEnd=num(referenceRow.marker_end ?? matrix.marker_end);
-  const markerLength=num(referenceRow.marker_length ?? matrix.marker_length_min) || (markerStart!==null&&markerEnd!==null?markerEnd-markerStart+1:null);
-  const markerTitle=markerStart!==null&&markerEnd!==null?`Marker ${matrix.marker}: ${d3.format(',d')(Math.round(markerStart))}–${d3.format(',d')(Math.round(markerEnd))} bp · ${d3.format(',d')(Math.round(markerLength))} bp`:`Marker ${matrix.marker} · ${markerLength?d3.format(',d')(Math.round(markerLength))+' bp':'length unavailable'}`;
-  const titleWidth=Math.min(300,Math.max(165,markerTitle.length*5.5));
-  const barX=titleWidth+22;
-  const barWidth=Math.max(220,width-barX-12);
-  const barY=matrixBottom+48;
-
-  svg.append('text').attr('x',10).attr('y',barY+11.5).attr('font-size',9.2).attr('font-weight',700).attr('fill','#334155').text(markerTitle);
-  svg.append('rect').attr('x',barX).attr('y',barY).attr('width',barWidth).attr('height',16).attr('rx',8).attr('fill','#dbeafe').attr('stroke','#93c5fd');
-
-  const relativeDomainMax=Math.max(1,markerLength||d3.max(panelPositions.map(position=>parseReferencePosition(position).base).filter(value=>value!==null))||1);
-  const markerScale=d3.scaleLinear().domain([1,relativeDomainMax]).range([barX,barX+barWidth]);
-  panelPositions.forEach((position,j)=>{
-    const parsed=parseReferencePosition(position);
-    if(parsed.base===null)return;
-    const relative=Math.max(1,Math.min(relativeDomainMax,parsed.base+(parsed.insertion?Math.min(.9,parsed.insertion*.05):0)));
-    const x=markerScale(relative);
-    const sourceX=matrixX+j*cellWidth+(cellWidth-2)/2;
-    const genomic=markerStart!==null?markerStart+Math.max(0,parsed.base-1):null;
-    const elbowY=barY-18-(j%3)*6;
-    svg.append('path').attr('d',`M${sourceX},${matrixBottom+8} V${elbowY} H${x} V${barY}`).attr('fill','none').attr('stroke','#cbd5e1').attr('stroke-width',1);
-    svg.append('line').attr('x1',x).attr('x2',x).attr('y1',barY-4).attr('y2',barY+20).attr('stroke','#1d4ed8').attr('stroke-width',1.4)
-      .on('mousemove',event=>hover(event,`<b>${esc(matrix.marker)}</b><br>Reference position: ${esc(displayReferencePosition(position))}${genomic!==null?`<br>Approx. genomic coordinate: ${d3.format(',d')(Math.round(genomic))} bp`:''}`)).on('mouseleave',unhover);
-  });
-  svg.append('text').attr('x',barX).attr('y',barY+34).attr('font-size',8.5).attr('fill','#64748b').text(markerStart!==null?`Start ${d3.format(',d')(Math.round(markerStart))}`:'Relative position 1');
-  svg.append('text').attr('x',barX+barWidth).attr('y',barY+34).attr('text-anchor','end').attr('font-size',8.5).attr('fill','#64748b').text(markerEnd!==null?`End ${d3.format(',d')(Math.round(markerEnd))}`:`Position ${d3.format(',d')(Math.round(relativeDomainMax))}`);
 }
 
 function renderSnpMatrices() {
   const gallery=document.getElementById('snpGallery');
   gallery.innerHTML='';
 
-  if(!state.status.has('Circularized')){
-    document.getElementById('snpSubtitle').textContent='Marker SNP analysis is generated from circularized assemblies; the current status selection excludes circularized runs.';
-    gallery.innerHTML='<div class="card empty">No SNP matrix for the current assembly-status selection.</div>';
-    return;
-  }
-
   const matrices=REPORT.snp_matrices||[];
   const columnsPerPanel=Math.max(1,num(REPORT_CONFIG.snp_columns_per_panel,60));
-  let rendered=0;
+  let rendered=0, hiddenTotal=0;
 
   matrices.forEach(matrix=>{
-    const referenceId=selectedSnpReferenceId(matrix);
-    let rows=matrix.rows.filter(snpRowMatches);
+    const medianLength=snpMedianLength(matrix);
+    const issues=new Map(matrix.rows.map(row=>[row.sequence_id,snpRowIssues(matrix,row,medianLength)]));
+    const clean=row=>!(issues.get(row.sequence_id)||[]).length;
+    let referenceId=selectedSnpReferenceId(matrix);
+    if(!snpIncludeIncomplete&&!snpReferenceSelection.has(matrix.marker)){
+      const reference=matrix.rows.find(row=>row.sequence_id===referenceId);
+      if(reference&&!clean(reference)){
+        const replacement=matrix.rows.find(clean);
+        if(replacement)referenceId=replacement.sequence_id;
+      }
+    }
+    const filtered=matrix.rows.filter(snpRowMatches);
+    const hidden=snpIncludeIncomplete?[]:filtered.filter(row=>!clean(row)&&row.sequence_id!==referenceId);
+    let rows=filtered.filter(row=>snpIncludeIncomplete||clean(row)||row.sequence_id===referenceId);
+    hiddenTotal+=hidden.length;
     const reference=matrix.rows.find(row=>row.sequence_id===referenceId);
     if(rows.length&&reference&&!rows.some(row=>row.sequence_id===reference.sequence_id))rows=[reference,...rows];
-    if(!rows.length)return;
+    if(rows.length<2)return;
+
+    const display=buildDisplayedSnpMatrix(matrix,rows,referenceId);
+    if(!display.positions.length)return;
+    const warnings=snpDivergenceWarnings(display);
 
     const card=document.createElement('div');
     card.className='card snp-card';
-    if(matrix.positions.length>Math.max(1,num(REPORT_CONFIG.snp_compact_max_columns,14)))card.classList.add('snp-card-wide');
-
+    gallery.appendChild(card);
     const title=document.createElement('div');
     title.className='snp-card-head';
-    const options=matrix.rows.map(row=>`<option value="${esc(row.sequence_id)}" ${row.sequence_id===referenceId?'selected':''}>${esc(snpReferenceLabel(row))}</option>`).join('');
-    title.innerHTML=`<div><div class="snp-card-title">${esc(matrix.marker)}</div><div class="snp-card-meta">${matrix.snp_count} true SNP${matrix.snp_count===1?'':'s'} · select a reference to recalculate the displayed coordinate labels</div></div><div class="snp-reference-control"><label>Reference</label><select aria-label="Reference for ${esc(matrix.marker)}">${options}</select></div>`;
+    const options=matrix.rows.map(row=>`<option value="${esc(row.sequence_id)}" ${row.sequence_id===referenceId?'selected':''}>${esc(snpReferenceLabel(row))}${(issues.get(row.sequence_id)||[]).length?' (check)':''}</option>`).join('');
+    const columnNote=display.positions.length===display.allColumns?'':` (${display.allColumns} when every sequence is included)`;
+    title.innerHTML=`<div><div class="snp-card-title">${esc(matrix.marker)}</div><div class="snp-card-meta">${display.positions.length} SNP column${display.positions.length===1?'':'s'} among ${rows.length} sequences${esc(columnNote)} · coordinates follow the selected reference</div></div><div class="snp-reference-control"><label>Reference</label><select aria-label="Reference for ${esc(matrix.marker)}">${options}</select></div>`;
     const select=title.querySelector('select');
     select.addEventListener('change',()=>{ snpReferenceSelection.set(matrix.marker,select.value); renderSnpMatrices(); renderSamplingMap(); });
     card.appendChild(title);
 
-    const panels=splitSnpPositions(matrix,columnsPerPanel);
+    const flaggedShown=rows.filter(row=>!clean(row)||warnings.has(row.sequence_id));
+    const reasons=row=>[...(issues.get(row.sequence_id)||[]),...(warnings.get(row.sequence_id)||[])].join('; ');
+    const notes=[];
+    if(hidden.length)notes.push(`<b>${hidden.length} sequence${hidden.length===1?'':'s'} hidden</b> because ${hidden.length===1?'it':'they'} could create false SNPs: ${hidden.map(row=>`${esc(projectDisplayText({project:row.project,species:row.species}))} · ${esc(row.seed)} · k${esc(row.kmer)} (${esc((issues.get(row.sequence_id)||[]).join('; '))})`).join(' — ')}.`);
+    if(flaggedShown.length)notes.push(`<b>⚠ ${flaggedShown.length} sequence${flaggedShown.length===1?'':'s'} shown with a warning</b>: ${flaggedShown.map(row=>`${esc(projectDisplayText({project:row.project,species:row.species}))} · ${esc(row.seed)} · k${esc(row.kmer)} (${esc(reasons(row))})`).join(' — ')}. Dashed cells are positions where the sequence ends, not deletions.`);
+    if(notes.length){const note=document.createElement('div');note.className='snp-hidden-note';note.innerHTML=notes.join('<br>');card.appendChild(note);}
+
+    const panels=splitSnpPositions({positions:display.positions},columnsPerPanel);
     panels.forEach((panel,index)=>{
-      const scroll=document.createElement('div'); scroll.className='snp-chart-scroll'; if(panel.positions.length<=8)scroll.classList.add('compact'); card.appendChild(scroll);
-      renderSnpPanel(scroll,matrix,rows,panel,index,panels.length,referenceId);
+      const scroll=document.createElement('div'); scroll.className='snp-chart-scroll'; card.appendChild(scroll);
+      renderSnpPanel(scroll,display,panel,index,panels.length,{issues:new Map([...issues].map(([id,list])=>[id,[...list,...(warnings.get(id)||[])]]))});
     });
-    gallery.appendChild(card); rendered++;
+    rendered++;
   });
 
+  document.getElementById('snpToolbarNote').textContent=snpIncludeIncomplete
+    ? 'All sequences are shown; flagged ones carry ⚠ and a note under the marker title.'
+    : (hiddenTotal?`${hiddenTotal} flagged sequence${hiddenTotal===1?' is':'s are'} hidden and the SNP columns were recomputed without ${hiddenTotal===1?'it':'them'}.`:'No sequence was flagged as incomplete in the current view.');
   document.getElementById('snpSubtitle').textContent=rendered
-    ? `${rendered} marker SNP matrix${rendered===1?'':' matrices'} rendered as SVG with D3. Each marker has an independent reference selector; metadata species and locations are shown when available.`
+    ? `${rendered} marker${rendered===1?'':'s'} with SNPs among the displayed sequences. Only columns that still vary among the sequences shown are drawn. The bar above each matrix is the marker in the reference sequence; lines link each SNP to its position. The small bar next to each name shows how much of the alignment that sequence covers.`
     : 'No marker with true SNPs matches the current filters.';
   if(!rendered)gallery.innerHTML='<div class="card empty">No true-SNP matrix matches the current filters.</div>';
 }
-
 
 function selectedMapMarkers() {
   return new Set([...mapSelectedMarkers].filter(marker=>mapAvailableMarkers.includes(marker)));
@@ -2979,6 +3438,7 @@ async function start() {
     renderAll();
     initStaticTooltips();
     initStickyFilterLogo();
+    initProjectPicker();
     initMarkerCategoryControls();
     initSamplingMapControls();
     enableRightButtonDragScroll(document.getElementById('assemblyTableScroll'));
@@ -3010,6 +3470,9 @@ document.getElementById('abbreviateSpecies').addEventListener('change',event=>{
 });
 
 document.getElementById('assemblySearch').addEventListener('input',renderAssemblyTable);
+document.getElementById('snpIncludeIncomplete').addEventListener('change',event=>{ snpIncludeIncomplete=event.target.checked; renderSnpMatrices(); });
+document.getElementById('qualitySearch').addEventListener('input',renderQualityTable);
+document.getElementById('qualityOnlyAlerts').addEventListener('change',renderQualityTable);
 document.getElementById('repeatSearch').addEventListener('input',renderRepeatTable);
 
 start();
@@ -3048,6 +3511,7 @@ def generate_html_report(**kwargs):
         "snp_columns_per_panel": int(config.get("snp_columns_per_panel", 60)),
         "snp_project_gap": int(config.get("snp_project_gap", 12)),
         "snp_compact_max_columns": int(config.get("snp_compact_max_columns", 14)),
+        "snp_min_length_ratio": float(config.get("snp_min_length_ratio", 0.9)),
         "pilon_stack_threshold": int(config.get("pilon_stack_threshold", 10)),
         "pilon_height_per_group": int(config.get("pilon_height_per_group", 22)),
         "pilon_max_height": int(config.get("pilon_max_height", 900)),

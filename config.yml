@@ -233,6 +233,7 @@ html_report:
   snp_columns_per_panel: 60
   snp_project_gap: 12
   snp_compact_max_columns: 14
+  snp_min_length_ratio: 0.9
   logo_path: assets/mocura_logo.svg
   logo_alt: moCURA logo
   metadata_path: null

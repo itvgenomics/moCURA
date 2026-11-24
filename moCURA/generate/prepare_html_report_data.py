@@ -8,6 +8,7 @@ import re
 from collections import defaultdict
 
 import pandas as pd
+from Bio import SeqIO
 import seaborn as sns
 from matplotlib.colors import to_hex
 
@@ -254,6 +255,36 @@ def collect_embedded_images(**kwargs):
 
 
 
+def alignment_sequence_spans(**kwargs):
+    """Ungapped length and first/last aligned base (1-based columns) per sequence.
+
+    Leading and trailing gaps are where a sequence ends inside the alignment;
+    the HTML report shows them as missing data instead of deletions.
+    """
+
+    path = kwargs.get("path")
+    spans = {}
+    if not path or not os.path.isfile(path):
+        return spans, None
+
+    alignment_length = None
+    try:
+        for record in SeqIO.parse(path, "fasta"):
+            sequence = str(record.seq).upper()
+            alignment_length = len(sequence)
+            positions = [index for index, base in enumerate(sequence) if base not in "-."]
+            spans[record.id] = {
+                "ungapped_length": len(positions),
+                "first_column": positions[0] + 1 if positions else None,
+                "last_column": positions[-1] + 1 if positions else None,
+            }
+    except (OSError, ValueError) as error:
+        logging.warning("Could not read SNP alignment %s: %s", path, error)
+        return {}, None
+
+    return spans, alignment_length
+
+
 def collect_snp_matrices(**kwargs):
     marker_snp_results = kwargs.get("marker_snp_results", {}) or {}
     matrices = []
@@ -268,6 +299,7 @@ def collect_snp_matrices(**kwargs):
             continue
 
         dataframe = pd.read_csv(table_path, sep="\t", dtype=str, keep_default_na=False)
+        spans, alignment_length = alignment_sequence_spans(path=result.get("alignment_path"))
         metadata_columns = ["Sequence ID", "Project", "Seed Input", "Assembly copy", "K-mer", "Label", "Alignment columns", "Reference positions"]
         position_columns = [column for column in dataframe.columns if column not in metadata_columns]
 
@@ -292,6 +324,7 @@ def collect_snp_matrices(**kwargs):
                 "states": [str(record.get(position, "N")).upper() for position in position_columns],
                 "alignment_columns": alignment_columns,
                 "position_labels": [str(value) for value in reference_positions],
+                **spans.get(str(record.get("Sequence ID", "")), {}),
             })
 
         matrices.append({
@@ -299,6 +332,7 @@ def collect_snp_matrices(**kwargs):
             "snp_count": int(result.get("snp_count", len(position_columns)) or len(position_columns)),
             "reference_sequence_id": str(result.get("reference_sequence_id", "")),
             "positions": [str(position) for position in position_columns],
+            "alignment_length": alignment_length,
             "rows": rows,
         })
 
@@ -583,6 +617,7 @@ def organpipe_report_data(**kwargs):
             for item in organpipe.get("coverage_windows", []) or []
         ],
         "identity_histograms": list(organpipe.get("identity_histograms", []) or []),
+        "settings": dict(organpipe.get("settings", {}) or {}),
     }
 
     for key in ORGANPIPE_TABLES:

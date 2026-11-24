@@ -857,8 +857,14 @@ async def run_marker_snp_analysis(**kwargs):
 
             continue
 
+        # The HTML report reads the alignment to flag incomplete marker sequences.
         matrix_results.append(
-            result
+            {
+                **result,
+                "alignment_path": job.get(
+                    "alignment_path"
+                ),
+            }
         )
 
     generated_images = [

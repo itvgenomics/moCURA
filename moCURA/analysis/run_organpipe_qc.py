@@ -195,5 +195,11 @@ async def run_organpipe_qc(**kwargs):
     html.update({key: tables.get(key, pd.DataFrame()) for key in ("completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment", "nhmmer", "read_qc", "benchmarks", "alerts")})
     html["coverage_windows"] = windows
     html["identity_histograms"] = histograms
+    html["settings"] = {
+        "low_depth_threshold": section("coverage_profile").get("low_depth_threshold", 10),
+        "low_coverage_alert_percent": section("coverage_profile").get("low_coverage_alert_percent", 5),
+        "window_size": section("coverage_profile").get("window_size", 50),
+        "identity_threshold": section("read_recruitment").get("identity_threshold", 98),
+    }
 
     return {"excel_sheets": excel_sheets, "html": html, "tsv_files": tsv_files, "organpipe_dir": organpipe_dir}

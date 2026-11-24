@@ -516,6 +516,7 @@ html_report:
   snp_columns_per_panel: 60
   snp_project_gap: 12
   snp_compact_max_columns: 14
+  snp_min_length_ratio: 0.9
   pilon_stack_threshold: 10
   pilon_height_per_group: 22
   pilon_max_height: 900
@@ -523,6 +524,8 @@ html_report:
   logo_alt: moCURA logo
   metadata_path: null
 ```
+
+`snp_min_length_ratio` controls which marker sequences the Marker SNP cards flag as incomplete: a sequence shorter than this fraction of the median length of that marker is hidden by default (see [Marker SNPs](#marker-snps)).
 
 ### OrganPipe quality analyses
 
@@ -590,15 +593,19 @@ Alerts never remove an assembly. Current alert types: circularized with several 
 ##### [:rocket: Go to Contents Overview](#contents-overview)
 The report is divided into the following main sections.
 
+### Layout
+
+Filters and the list of sections sit in a fixed column on the left, so they stay reachable without covering the charts. On narrow screens (below 1000 px) the column moves above the report. Every chart takes its own row and the full width of its card.
+
 ### Project selection
 
-At the top of the report, project buttons support multi-project comparison.
+Above the project buttons, a notice shows how many projects are in view. Clicking it opens a project picker with search, `Select all`, `Select matches` (everything the search finds) and `Clear`; the choice is applied with `Show selected projects`. This is the practical way to pick a subset when a run has many projects.
 
-`All data` activates all projects. Individual project buttons can then be selected for a subset comparison.
+`All data` activates all projects. Individual project buttons can then be selected for a subset comparison. With many projects the button area scrolls instead of growing.
 
 ### Global filters
 
-The sticky filter bar contains:
+The filter column contains:
 
 - Seed Input
 - K-mer
@@ -617,7 +624,7 @@ The overview includes summary cards and four linked NOVOPlasty metrics:
 - Smallest contig
 - Average organelle coverage
 
-Species/project names are kept in a dedicated first column so the four metric plots use the full width of their own cards.
+Each metric has its own full-width card, with the project/species names on the left of the chart.
 
 Hovering over a run fades unrelated points. Clicking a point isolates the same project, seed and K-mer combination across all four metrics; clicking it again restores the complete view.
 
@@ -642,9 +649,7 @@ The interactive Pilon section contains:
 - genome length before and after Pilon;
 - Pilon SNP/insertion/deletion corrections.
 
-For large filtered datasets, the two primary Pilon cards automatically switch from a two-column layout to a vertical one-column layout. Chart height also increases with the number of displayed groups.
-
-This avoids compressing dozens of projects into very small side-by-side panels.
+The cards are stacked one per row, and chart height increases with the number of displayed groups, so dozens of projects are not compressed into small side-by-side panels.
 
 ### Genome structure and tandem-repeat positions
 
@@ -652,13 +657,14 @@ Assemblies are grouped by identical Seed Input and K-mer combinations.
 
 Within a group, projects share a common coordinate scale so differences in marker structure and tandem repeats can be compared directly.
 
-The left information area identifies the project/species and locality and summarizes repeats. Repeat tooltips include:
+The left information area identifies the project/species and locality and lists every tandem repeat on its own line: length, copy number × period and the consensus sequence. The consensus is also written next to the repeat block on the TRF track (long sequences are shortened with `…`). Repeat tooltips include:
 
 - genomic coordinates;
 - Repeat length;
 - Consensus size;
 - Copy number;
-- genomic context.
+- genomic context;
+- the full consensus sequence.
 
 ### Marker length heatmap
 
@@ -715,10 +721,21 @@ Features include:
 - species and locality labels from metadata;
 - selectable reference sequence for each marker;
 - coordinates recalculated from the selected reference;
-- a full-width marker-span bar;
-- Manhattan-style connectors from SNP columns to their positions on the marker;
-- marker start, end and total length.
+- the marker drawn above the matrix in reference coordinates, with a bp axis, a tick for every SNP (dark for the current panel) and connectors from each tick to its column;
+- a small bar next to each sequence name showing which part of the alignment that sequence covers;
+- the marker length and, when known, its start and end in the genome.
 
+#### Incomplete and non-circularized sequences
+
+An alignment that mixes complete markers with truncated ones produces false SNPs: every position where a short sequence ends looks like a difference. The report guards against this:
+
+- **Flagged sequences.** A sequence is flagged when its assembly is not circularized, when its marker is shorter than `snp_min_length_ratio` (default 0.9) of the median length of that marker, or when MITOS2 kept the gene only as a fragment at the contig origin (or did not annotate it).
+- **Hidden by default.** Flagged sequences are left out and listed, with the reason, under the marker title. `Include incomplete or non-circularized sequences` shows them again, marked with ⚠.
+- **Columns recomputed.** Only the columns that still vary among the sequences on screen are drawn. Hiding a truncated sequence, or narrowing the filters, removes the columns that only it made variable. The card title gives both counts.
+- **Missing data is not a deletion.** Leading and trailing gaps (where a sequence ends inside the alignment) are drawn as dashed empty cells (`sequence ends`) and never count as variation. Internal gaps are still shown as `-`.
+- **Divergent sequences.** A sequence that differs from the majority at most SNP columns, while the others rarely do, gets a warning. This usually means a different region was extracted, for example a control region inferred from the largest unannotated gap.
+
+The analysis files (`marker_snp_analysis/`) are unchanged; this filtering only affects the report.
 When an alignment column occurs before the first nucleotide of the selected reference, it is displayed as `before position 1` instead of an artificial expression such as `ins.513@start`.
 
 Reference selection affects both SNP coordinate labels and the SNP summary used by the sampling map.
@@ -728,7 +745,7 @@ Reference selection affects both SNP coordinate labels and the SNP summary used 
 Built from the OrganPipe quality analyses and filtered by the same project, seed, K-mer, status and repeat filters as the rest of the report:
 
 - **Gene completeness**: one row per assembly and one column per mitochondrial gene (present, absent, duplicated, partial at origin), plus whether the gene order matches the project mode.
-- **Quality per assembly**: genes present, mean depth, coefficient of variation, percentage of positions below the depth threshold, lowest window, recruited reads, percentage below the identity threshold, target coverage, Pilon changes and alert chips.
+- **Quality per assembly**: one row per assembly copy, grouped by project, with columns grouped by source: annotation (genes found, gene order), coverage (mean depth, CV, bases below the depth threshold, weakest window), read recruitment (reads aligned, reads below the identity threshold, assembly covered), Pilon (corrections, unresolved breaks) and alerts. The thresholds in the column titles come from `config.yml`. Cells are green when within the expected range, orange when worth checking and red for a problem; columns without a fixed threshold are left uncoloured. A guide above the table explains every column, each title has a tooltip, and the table can be searched or limited to assemblies with alerts.
 - **Genome structure** gains a depth track on the same coordinate scale, Pilon change marks above the plus strand and hatched bands for unresolved Pilon breaks.
 - **Overview** shows a read QC card per project when fastp reports are available.
 - **Provenance**, collapsed at the end of the report, lists run time, peak memory, versions, arguments, effective configuration and OrganPipe benchmarks.
@@ -912,13 +929,13 @@ Keep Python plot generation disabled unless publication-ready static images are 
 
 The HTML report contains several safeguards for larger comparisons:
 
-- project buttons wrap instead of requiring a horizontal scrollbar;
-- the Assembly overview separates species labels from metric cards;
+- a project picker with search selects subsets of large runs, and the project buttons scroll instead of growing;
+- filters live in a side column instead of a sticky bar over the charts;
+- every chart takes its own full-width row;
 - Assembly and repeat tables use horizontal scrolling with fixed identifying columns;
 - table columns can be resized interactively;
-- Marker SNP cards only scroll when the number of SNP columns requires it;
+- Marker SNP cards only scroll when the number of SNP columns requires it, and hide incomplete sequences by default;
 - Marker length categories can be viewed separately as PCGs, tRNAs or rRNAs;
-- Pilon cards stack vertically when many groups are shown;
 - chart height grows for larger Pilon comparisons;
 - Leaflet uses a canvas renderer for locality circles.
 
