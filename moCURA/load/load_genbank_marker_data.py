@@ -12,6 +12,7 @@ from ..standardization.standardized_marker_name import (
     standardized_marker_name,
 )
 from ..utils.gather_records import gather_records
+from .organpipe_layout import step_directories
 
 
 GENBANK_FILE_COLUMNS = [
@@ -150,15 +151,14 @@ def find_rotated_genbank_jobs(**kwargs):
         if not os.path.isdir(project_dir):
             continue
 
-        genbank_dir = os.path.join(
-            project_dir,
-            folder_name,
-        )
+        # Older OrganPipe runs use genbanks/; current runs add genbanks/{assembler}/.
+        genbank_files = [
+            (genbank_dir, file_name)
+            for genbank_dir in step_directories(project_dir=project_dir, step=folder_name)
+            for file_name in sorted(os.listdir(genbank_dir))
+        ]
 
-        if not os.path.isdir(genbank_dir):
-            continue
-
-        for file_name in sorted(os.listdir(genbank_dir)):
+        for genbank_dir, file_name in genbank_files:
             if not file_name.endswith(suffix):
                 continue
 

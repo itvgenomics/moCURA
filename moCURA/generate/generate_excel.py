@@ -84,5 +84,24 @@ def generate_excel(**kwargs):
         write_dataframe_sheet(writer=writer, dataframe=trf_summary_dataframe, sheet_name="TRF Summary", max_width=70)
         write_dataframe_sheet(writer=writer, dataframe=trf_repeats_dataframe, sheet_name="TRF Repeats", max_width=100)
 
+        for sheet_name, sheet_dataframe in kwargs.get("extra_sheets", []) or []:
+            write_dataframe_sheet(writer=writer, dataframe=sheet_dataframe, sheet_name=sheet_name, max_width=70)
+
     logging.info(f"Excel report generated: {output_file}")
+    return output_file
+
+
+def append_excel_sheets(**kwargs):
+    """Add sheets to an existing workbook (used for Provenance, written last)."""
+
+    output_file = kwargs.get("output_file")
+    sheets = kwargs.get("sheets", []) or []
+
+    if not output_file or not os.path.isfile(output_file) or not sheets:
+        return output_file
+
+    with pd.ExcelWriter(output_file, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
+        for sheet_name, dataframe in sheets:
+            write_dataframe_sheet(writer=writer, dataframe=dataframe, sheet_name=sheet_name, max_width=90)
+
     return output_file

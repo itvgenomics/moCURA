@@ -9,6 +9,7 @@ from ..utils.gather_records import gather_records
 from ..utils.pilon_columns import PILON_COLUMNS
 from ..utils.read_text_async import read_text_async
 from ..utils.to_integer import to_integer
+from .organpipe_layout import is_assembler_directory, step_directories
 
 def parse_pilon_text(**kwargs):
     text = kwargs.get("text", None)
@@ -162,20 +163,15 @@ def find_pilon_jobs(**kwargs):
         if not os.path.isdir(project_dir):
             continue
 
-        pilon_dir = os.path.join(
-            project_dir,
-            "pilon",
-        )
+        # Older OrganPipe runs use pilon/{asm}; current runs add pilon/{assembler}/{asm}.
+        run_dirs = [
+            (os.path.join(pilon_dir, run_dir_name), run_dir_name)
+            for pilon_dir in step_directories(project_dir=project_dir, step="pilon")
+            for run_dir_name in sorted(os.listdir(pilon_dir))
+            if not is_assembler_directory(name=run_dir_name)
+        ]
 
-        if not os.path.isdir(pilon_dir):
-            continue
-
-        for run_dir_name in sorted(os.listdir(pilon_dir)):
-            run_dir = os.path.join(
-                pilon_dir,
-                run_dir_name,
-            )
-
+        for run_dir, run_dir_name in run_dirs:
             if not os.path.isdir(run_dir):
                 continue
 

@@ -98,6 +98,46 @@ DEFAULT_CONFIG = {
         "no_redundancy": False,
         "max_tr_length_millions": None,
     },
+    "organpipe": {
+        "organpipe_dir": None,
+    },
+    "mitos2_completeness": {
+        "enabled": True,
+        "output_folder": "mitos2_completeness",
+    },
+    "coverage_profile": {
+        "enabled": True,
+        "window_size": 50,
+        "low_depth_threshold": 10,
+        "low_coverage_alert_percent": 5,
+        "output_folder": "coverage_profile",
+    },
+    "pilon_changes": {
+        "enabled": True,
+        "output_folder": "pilon_changes",
+    },
+    "read_recruitment": {
+        "enabled": True,
+        "identity_threshold": 98,
+        "output_folder": "read_recruitment",
+    },
+    "nhmmer_alerts": {
+        "enabled": True,
+        "max_evalue": 0.001,
+        "output_folder": "nhmmer_alerts",
+    },
+    "read_qc": {
+        "enabled": True,
+        "output_folder": "read_qc",
+    },
+    "provenance": {
+        "enabled": True,
+        "output_folder": "provenance",
+    },
+    "assembly_alerts": {
+        "enabled": True,
+        "output_folder": "assembly_alerts",
+    },
 }
 
 

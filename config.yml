@@ -178,6 +178,51 @@ trf:
   no_redundancy: false
   max_tr_length_millions: null
 
+# Phase 1: analyses of the files OrganPipe already produces.
+# Each section can be switched off with enabled: false. A missing input file
+# logs a warning and leaves the values empty; the run continues.
+organpipe:
+  # Root of the OrganPipe run (holds results/, workflow/reports/ and benchmarks/).
+  # When null, moCURA uses the parent of --results-dir if those folders are siblings.
+  organpipe_dir: null
+
+mitos2_completeness:
+  enabled: true
+  output_folder: mitos2_completeness
+
+coverage_profile:
+  enabled: true
+  window_size: 50
+  low_depth_threshold: 10
+  low_coverage_alert_percent: 5
+  output_folder: coverage_profile
+
+pilon_changes:
+  enabled: true
+  output_folder: pilon_changes
+
+read_recruitment:
+  enabled: true
+  identity_threshold: 98
+  output_folder: read_recruitment
+
+nhmmer_alerts:
+  enabled: true
+  max_evalue: 0.001
+  output_folder: nhmmer_alerts
+
+read_qc:
+  enabled: true
+  output_folder: read_qc
+
+provenance:
+  enabled: true
+  output_folder: provenance
+
+assembly_alerts:
+  enabled: true
+  output_folder: assembly_alerts
+
 html_report:
   enabled: true
   output_file: moCURA_report.html

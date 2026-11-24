@@ -563,6 +563,39 @@ def augment_snp_matrices(**kwargs):
         matrix["marker_length_max"] = max(span_lengths) if span_lengths else None
     return matrices
 
+ORGANPIPE_TABLES = (
+    "completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment",
+    "nhmmer", "read_qc", "benchmarks", "alerts", "provenance",
+)
+
+
+def organpipe_report_data(**kwargs):
+    """Records of the Phase 1 OrganPipe analyses for the HTML report."""
+
+    organpipe = kwargs.get("organpipe_results") or {}
+    metadata_lookup = kwargs.get("metadata_lookup") or {}
+
+    output = {
+        "expected_markers": list(organpipe.get("expected_markers", [])),
+        "identity_bins": list(organpipe.get("identity_bins", [])),
+        "coverage_windows": [
+            {key: clean_scalar(value) if not isinstance(value, list) else value for key, value in item.items()}
+            for item in organpipe.get("coverage_windows", []) or []
+        ],
+        "identity_histograms": list(organpipe.get("identity_histograms", []) or []),
+    }
+
+    for key in ORGANPIPE_TABLES:
+        value = organpipe.get(key)
+        records = dataframe_records(dataframe=value) if isinstance(value, pd.DataFrame) else []
+        if key not in {"provenance", "benchmarks"}:
+            records = apply_metadata_to_records(records, metadata_lookup)
+        output[key] = records
+
+    output["available"] = any(output[key] for key in ORGANPIPE_TABLES if key != "provenance")
+    return output
+
+
 def prepare_html_report_data(**kwargs):
     summary_dataframe = kwargs.get("summary_dataframe")
     plot_dataframe = kwargs.get("plot_dataframe")
@@ -644,4 +677,8 @@ def prepare_html_report_data(**kwargs):
         "metadata_points": metadata_points,
         "metadata_available": bool(metadata_lookup),
         "style": html_style,
+        "organpipe": organpipe_report_data(
+            organpipe_results=kwargs.get("organpipe_results"),
+            metadata_lookup=metadata_lookup,
+        ),
     }

@@ -1,0 +1,19 @@
+Pilon version [COMMIT] [DATE]
+Genome: results/ITV38325/assemblies/1-NADH_dehydrogenase_subunit_1_kmer20/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1.fasta
+Fixing snps, indels, gaps, local
+Input genome size: 16544
+Scanning BAMs
+results/ITV38325/pilon/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1_mapping.bam: 19849 reads, 0 filtered, 17788 mapped, 16982 proper, 88 stray, FR 100% 234+/-409, max 1460 frags
+Processing CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1:1-16544
+CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1:1-16544 log:
+frags results/ITV38325/pilon/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1_mapping.bam: coverage 118
+Total Reads: 18473, Coverage: 118, minDepth: 12
+Confirmed 13625 of 16544 bases (82.36%)
+Corrected 0 snps; 0 ambiguous bases; corrected 0 small insertions totaling 0 bases, 0 small deletions totaling 0 bases
+# Attempting to fix local continuity breaks
+# fix break: CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1:15731-16023 0 -0 +0 NoSolution TandemRepeat 2
+Finished processing CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1:1-16544
+Writing CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1:1-16544 changes to results/ITV38325/pilon/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1.changes
+Writing updated CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1_pilon to results/ITV38325/pilon/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1/CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1.fasta
+Mean frags coverage: 118
+Mean total coverage: 118

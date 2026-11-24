@@ -1,0 +1,7 @@
+#                                     --- full sequence ---  -------------- this domain -------------   hmm coord   ali coord   env coord
+#target name  accession  query name  accession  hmmfrom  hmm to  alifrom  ali to  envfrom  env to  sq len  strand  E-value  score  bias  description of target
+#------------ ---------- ---------- ---------- -------- ------- ------- ------- ------- ------- ------- ------ --------- ------ ----- ---------------------
+temp_header   -          trnF       -          1        68      15962   16030   15960   16031   16544   +      2.1e-08   34.2   0.1   -
+temp_header   -          trnL2      -          2        70      9001    9070    9000    9071    16544   +      4.5e-05   21.7   0.3   -
+#
+# Program:         nhmmer

@@ -4,10 +4,11 @@ import os
 
 import pandas as pd
 
-from .generate.generate_excel import generate_excel
+from .generate.generate_excel import append_excel_sheets, generate_excel
 from .generate.generate_html_report import generate_html_report
 from .load.load_config import config_section, load_config
-from .load.load_genbank_marker_data import load_genbank_marker_data
+from .load.load_genbank_marker_data import build_allowed_assembly_keys, load_genbank_marker_data
+from .load.organpipe_layout import infer_organpipe_dir
 from .load.load_novoplasty_data import load_novoplasty_data
 from .load.load_pilon_data import load_pilon_data
 from .utils.pilon_columns import PILON_COLUMNS
@@ -22,6 +23,8 @@ from .plots.prepare_plot_dataframe import prepare_plot_dataframe
 
 from .analysis.run_marker_snp_analysis import run_marker_snp_analysis
 from .analysis.run_trf_analysis import run_trf_analysis
+from .analysis.provenance import build_provenance
+from .analysis.run_organpipe_qc import run_organpipe_qc, write_tsv
 
 
 async def build_summary_dataframe(**kwargs):
@@ -268,6 +271,26 @@ async def run_pipeline(**kwargs):
             trf_summary_df = trf_results.get("summary_dataframe", pd.DataFrame())
             trf_repeats_df = trf_results.get("repeats_dataframe", pd.DataFrame())
 
+    organpipe_dir = (
+        kwargs.get("organpipe_dir")
+        or config_section(config=config, keys=["organpipe"]).get("organpipe_dir")
+        or infer_organpipe_dir(results_dir=results_dir)
+    )
+    if organpipe_dir:
+        logging.info("OrganPipe directory: %s", organpipe_dir)
+    else:
+        logging.info("OrganPipe directory not found; read QC and benchmarks are skipped")
+
+    organpipe_results = await run_organpipe_qc(
+        results_dir=results_dir,
+        output_dir=output_dir,
+        organpipe_dir=organpipe_dir,
+        concurrency=concurrency,
+        allowed_keys=build_allowed_assembly_keys(dataframe=plot_df),
+        summary_dataframe=summary_df,
+        config=config,
+    )
+
     excel_path = generate_excel(
         dataframe=summary_df,
         genbank_files_dataframe=genbank_files_df,
@@ -276,6 +299,7 @@ async def run_pipeline(**kwargs):
         trf_repeats_dataframe=trf_repeats_df,
         output_file=os.path.join(output_dir, "moCURA_summary.xlsx"),
         separate_groups=True,
+        extra_sheets=organpipe_results.get("excel_sheets", []),
     )
 
     summary_plot_path = None
@@ -425,6 +449,21 @@ async def run_pipeline(**kwargs):
                 config=marker_snp_config,
             )
 
+    provenance_enabled = bool(config_section(config=config, keys=["provenance"]).get("enabled", True))
+    provenance_arguments = {
+        "--results-dir": results_dir,
+        "--output-dir": output_dir,
+        "--config": config_file,
+        "--organpipe-dir": organpipe_dir,
+        "--threads": concurrency,
+        "--only-circularized": only_circularized,
+        "--metadata": metadata_path,
+    }
+    if provenance_enabled:
+        organpipe_results["html"]["provenance"] = build_provenance(
+            config=config, arguments=provenance_arguments, organpipe_dir=organpipe_dir,
+        )
+
     html_report_path = None
     if html_report_config.get("enabled", True):
         html_report_path = generate_html_report(
@@ -433,6 +472,17 @@ async def run_pipeline(**kwargs):
             marker_snp_results=marker_snp_results, output_dir=output_dir, metadata_path=metadata_path,
             static_plot_paths=[summary_plot_path, heatmap_path, pilon_heatmap_path, pilon_before_after_heatmap_path, marker_heatmap_paths],
             output_file=os.path.join(output_dir, html_report_config.get("output_file", "moCURA_report.html")), config=html_report_config,
+            organpipe_results=organpipe_results.get("html", {}),
+        )
+
+    if provenance_enabled:
+        provenance_df = build_provenance(config=config, arguments=provenance_arguments, organpipe_dir=organpipe_dir)
+        append_excel_sheets(output_file=excel_path, sheets=[("Provenance", provenance_df)])
+        write_tsv(
+            dataframe=provenance_df,
+            output_dir=output_dir,
+            folder=config_section(config=config, keys=["provenance"]).get("output_folder", "provenance"),
+            file_name="provenance.tsv",
         )
 
     logging.info("Pipeline completed successfully")
@@ -449,4 +499,5 @@ async def run_pipeline(**kwargs):
         "marker_length_heatmaps": marker_heatmap_paths,
         "marker_snp_analysis": marker_snp_results,
         "trf_analysis": trf_results,
+        "organpipe_qc": organpipe_results,
     }

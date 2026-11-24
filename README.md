@@ -28,6 +28,7 @@ The current report is designed to support comparisons across many projects, seed
   - [TRF](#trf)
   - [Marker SNP workflow](#marker-snp-workflow)
   - [HTML report](#html-report)
+  - [OrganPipe quality analyses](#organpipe-quality-analyses)
 - [Interactive HTML report](#interactive-html-report)
 - [Marker SNP analysis](#marker-snp-analysis)
 - [Tandem repeats](#tandem-repeats)
@@ -35,6 +36,8 @@ The current report is designed to support comparisons across many projects, seed
 - [Output files](#output-files)
 - [Large datasets and HPC recommendations](#large-datasets-and-hpc-recommendations)
 - [Singularity/Apptainer](#singularityapptainer)
+  - [Testing the image with the example dataset](#testing-the-image-with-the-example-dataset)
+- [Interactive input guide](#interactive-input-guide)
 - [SLURM](#slurm)
 - [Troubleshooting](#troubleshooting)
 - [Development team](#development-team)
@@ -283,6 +286,7 @@ python mocura.py \
 | Input | `-i`, `--results-dir` | Required. Directory containing the organellar assembly results. |
 | Input | `-c`, `--config` | YAML configuration file. When omitted, the `config.yml` distributed with moCURA is used. |
 | Input | `--metadata` | Optional CSV, TSV, XLSX or ODS table mapped to the report by `Project name`. |
+| Input | `--organpipe-dir` | Optional root of the OrganPipe run (the folder that holds `results/`, `workflow/reports/` and `benchmarks/`). Used for fastp reports and Snakemake benchmarks. When omitted, moCURA uses `organpipe.organpipe_dir` from `config.yml`, or the parent of `--results-dir` when those folders are siblings of it. |
 | Output | `-o`, `--output-dir` | Required. Destination directory for the Excel workbook, HTML report, TRF results, marker alignments and SNP tables. |
 | Threading | `-t`, `--threads` | Overrides `pipeline.threads` from `config.yml` for general concurrent work such as asynchronous file processing. Important: MAFFT has its own independent concurrency and thread settings under `marker_snp_analysis.mafft`. Increasing `--threads` does not automatically increase MAFFT concurrency. |
 | Other | `--only-circularized` | Process only circularized assemblies. |
@@ -324,6 +328,33 @@ feature_types:
 ```
 
 These records are used by the genome-structure visualization, marker-length comparison, TRF genomic context annotation and marker SNP workflow.
+
+### Directory layouts
+
+Older OrganPipe runs write `results/{sample}/{step}/...`; current runs add an assembler level, `results/{sample}/{step}/novoplasty/...`. moCURA accepts both for every step (`pilon`, `genbanks`, `mitos2`, `images`, `nhmmer`).
+
+### OrganPipe files read by the quality analyses
+
+`{asm}` is the assembly header, for example `CA_1_ITV38325_1-NADH_dehydrogenase_subunit_1_20_1`, and `{seed}_kmer{k}` the seed folder, for example `1-NADH_dehydrogenase_subunit_1_kmer20`.
+
+| File | Used for | Coordinates |
+| --- | --- | --- |
+| `mitos2/{seed}_kmer{k}/{asm}/result.mitos`, `result.geneorder` | 37-gene completeness and gene order | after Pilon |
+| `mitos2/{seed}_kmer{k}/{asm}/ignored.mitos` | genes kept only as a fragment because they cross the contig origin (the 12S problem) | after Pilon |
+| `images/{seed}_kmer{k}/{asm}.rotated.depth` (fallback `{asm}.depth`) | coverage profile | rotated (fallback: before Pilon) |
+| `images/{seed}_kmer{k}/{asm}.rotated.blastn.out` (fallback `{asm}.blastn.out`) | read recruitment | rotated (fallback: after Pilon) |
+| `images/{seed}_kmer{k}/{asm}*.png` | linked as OrganPipe plots in the coverage and recruitment tables | |
+| `pilon/{asm}/{asm}.changes`, `pilon/{asm}/pilon.log` | Pilon change positions and unresolved `NoSolution` breaks | moved to rotated |
+| `genbanks/{asm}.gb` | rotation offset (start of `rrnS`) and assemblies that were never rotated | after Pilon |
+| `nhmmer/{seed}_kmer{k}/{asm}/intergenes_filter.tblout.out` | tRNA, rRNA and origin hits outside annotated features | after Pilon |
+| `{organpipe_dir}/resources/{sample}/rawreads/fastp.json` | read QC per sample | |
+| `{organpipe_dir}/benchmarks/{sample}/**` | Snakemake wall time, CPU time and memory per rule | |
+
+Positions are moved to the rotated genome with the rotation offset: `rotated = ((after_Pilon − 1 − offset) mod length) + 1`. Positions before Pilon are first shifted by the indels listed in `.changes`.
+
+Every file is optional. A missing file logs one summary warning per analysis and leaves the values empty; the run continues. With no OrganPipe quality files, the existing sheets and report sections are unchanged.
+
+**Limitation.** The OrganPipe BAM, depth and BLAST files are built from NOVOPlasty's own `Assembled_reads`. Coverage and read recruitment computed from them tend to agree with the assembly by construction: they flag problems but do not validate it independently. The code reads the rotated BAM path so a BAM of raw reads can be plugged in later; that mapping is not part of moCURA yet.
 
 ## Metadata
 ##### [:rocket: Go to Contents Overview](#contents-overview)
@@ -493,6 +524,68 @@ html_report:
   metadata_path: null
 ```
 
+### OrganPipe quality analyses
+
+Each analysis has its own section and can be switched off with `enabled: false`:
+
+```yaml
+organpipe:
+  organpipe_dir: null            # inferred from --results-dir when null
+
+mitos2_completeness:
+  enabled: true
+  output_folder: mitos2_completeness
+
+coverage_profile:
+  enabled: true
+  window_size: 50                # bp
+  low_depth_threshold: 10        # x
+  low_coverage_alert_percent: 5  # alert when more positions than this are below the threshold
+  output_folder: coverage_profile
+
+pilon_changes:
+  enabled: true
+  output_folder: pilon_changes
+
+read_recruitment:
+  enabled: true
+  identity_threshold: 98         # %
+  output_folder: read_recruitment
+
+nhmmer_alerts:
+  enabled: true
+  max_evalue: 0.001
+  output_folder: nhmmer_alerts
+
+read_qc:
+  enabled: true
+  output_folder: read_qc
+
+provenance:
+  enabled: true
+  output_folder: provenance
+
+assembly_alerts:
+  enabled: true
+  output_folder: assembly_alerts
+```
+
+| Analysis | Excel sheet | TSV files | HTML |
+| --- | --- | --- | --- |
+| 37-gene completeness and gene order | `MITOS2 Completeness` | `mitos2_completeness/mitos2_completeness.tsv` | Quality: completeness heatmap |
+| Genes crossing the origin | `Origin Check` | `mitos2_completeness/origin_check.tsv` | Quality: alerts |
+| Coverage | `Coverage` | `coverage_profile/coverage_metrics.tsv`, `coverage_windows.tsv` | Genome: depth track under each assembly; Quality table |
+| Pilon changes and breaks | `Pilon Changes`, `Pilon Breaks` | `pilon_changes/pilon_changes.tsv`, `pilon_unresolved_breaks.tsv` | Genome: change marks and hatched breaks |
+| Read recruitment | `Read Recruitment` | `read_recruitment/read_recruitment.tsv`, `identity_histograms.tsv` | Quality table |
+| Intergenic nhmmer hits | `nhmmer Hits` | `nhmmer_alerts/nhmmer_hits.tsv` | Quality: alerts |
+| Read QC (fastp) | `Read QC` | `read_qc/read_qc.tsv` | Overview: one card per project |
+| Benchmarks and provenance | `Benchmarks`, `Provenance` | `provenance/benchmarks.tsv`, `provenance.tsv` | Provenance (collapsible, end of report) |
+| Assembly alerts | `Assembly Alerts` | `assembly_alerts/assembly_alerts.tsv` | Quality: alert chips |
+
+The existing sheets (`Summary`, `GenBank Files`, `Marker Lengths`, `TRF Summary`, `TRF Repeats`) and their columns are unchanged. In particular, `Marker length`, `Start` and `End` keep the raw annotation; the origin-corrected 12S length is reported only in `Origin Check`, and the marker SNP workflow still uses the annotated sequence.
+
+Alerts never remove an assembly. Current alert types: circularized with several contigs, annotated but not rotated (no `rrnS`), gene crosses the origin, missing genes, duplicated genes, gene order differs from the project mode (compared on the genes each assembly has), unresolved Pilon break, low coverage and unannotated intergenic nhmmer hit.
+
 ## Interactive HTML report
 ##### [:rocket: Go to Contents Overview](#contents-overview)
 The report is divided into the following main sections.
@@ -629,6 +722,16 @@ Features include:
 When an alignment column occurs before the first nucleotide of the selected reference, it is displayed as `before position 1` instead of an artificial expression such as `ins.513@start`.
 
 Reference selection affects both SNP coordinate labels and the SNP summary used by the sampling map.
+
+### Assembly quality
+
+Built from the OrganPipe quality analyses and filtered by the same project, seed, K-mer, status and repeat filters as the rest of the report:
+
+- **Gene completeness**: one row per assembly and one column per mitochondrial gene (present, absent, duplicated, partial at origin), plus whether the gene order matches the project mode.
+- **Quality per assembly**: genes present, mean depth, coefficient of variation, percentage of positions below the depth threshold, lowest window, recruited reads, percentage below the identity threshold, target coverage, Pilon changes and alert chips.
+- **Genome structure** gains a depth track on the same coordinate scale, Pilon change marks above the plus strand and hatched bands for unresolved Pilon breaks.
+- **Overview** shows a read QC card per project when fastp reports are available.
+- **Provenance**, collapsed at the end of the report, lists run time, peak memory, versions, arguments, effective configuration and OrganPipe benchmarks.
 
 ### Sampling map
 
@@ -847,11 +950,13 @@ or:
 /usr/bin/apptainer build --fakeroot mocura.sif mocura.def
 ```
 
-Test the image:
+On a workstation without root access (including WSL2), a user namespace build works when `/etc/subuid` has an entry for your user:
 
 ```bash
-/usr/bin/singularity test mocura.sif
+singularity build --fakeroot mocura.sif mocura.def
 ```
+
+`mocura.def` has no `%test` section, so `singularity test mocura.sif` only reports that no test exists. Use the checks below and the example-dataset run instead.
 
 Check the environment tools:
 
@@ -893,6 +998,81 @@ singularity run \
     --metadata /config/metadata.xlsx \
     --threads 20 \
     --only-circularized
+```
+
+### Tests
+
+Unit tests for the OrganPipe parsers use small excerpts of the example dataset in `tests/fixtures/`. nhmmer, fastp and Snakemake benchmark files are not in the example dataset; their fixtures in `tests/fixtures/format_examples/` follow the documented formats.
+
+```bash
+conda activate mocura_env
+python -m pytest tests
+```
+
+### Testing the image with the example dataset
+
+The repository can hold a copy of the example OrganPipe results in `data/` (it is listed in `.gitignore`; the folder is about 23 GB). It contains 7 samples (`ITV38290`, `ITV38292`, `ITV38302`, `ITV38307`, `ITV38323`, `ITV38324`, `ITV38325`) produced by an older OrganPipe layout, without the assembler level (`pilon/{asm}`, not `pilon/novoplasty/{asm}`):
+
+```text
+data/{sample}/
+├── novoplasty/{seed}/kmer{k}/log_{sample}.txt, config.txt, Assembled_reads_*
+├── assemblies/{seed}_kmer{k}/{asm}.fasta
+├── pilon/{asm}/pilon.log, {asm}.changes, {asm}_mapping.bam
+├── mitos2/{seed}_kmer{k}/{asm}/result.*, ignored.mitos
+├── genbanks/{asm}.gb, {asm}.rotated.gb
+└── images/{seed}_kmer{k}/{asm}.rotated.depth, {asm}.rotated.blastn.out, {asm}.rotated_mapping.bam
+```
+
+Run the image on it from the project root:
+
+```bash
+mkdir -p /tmp/mocura_test
+singularity run \
+    --bind "$PWD/data:/data/input:ro" \
+    --bind /tmp/mocura_test:/data/output \
+    --bind "$PWD/config.yml:/config/config.yml" \
+    --bind "$PWD/example/metadata.xlsx:/config/metadata.xlsx" \
+    mocura.sif \
+    --results-dir /data/input \
+    --output-dir /data/output \
+    --config /config/config.yml \
+    --metadata /config/metadata.xlsx \
+    --threads 12
+```
+
+Reference run (image built from `mocura.def` with SingularityCE 4.1.1, Python 3.14.10, MAFFT 7.525, TRF 4.09.1, 12 threads; with the default configuration all OrganPipe quality analyses are on):
+
+| Check | Result |
+| --- | --- |
+| Exit status | 0 |
+| Wall time | 48 s (35 s before the OrganPipe quality analyses) |
+| Peak memory | 364 MB (284 MB before) |
+| Warnings | 7 for `pilon/INVALIDSEED_1` folders (expected); one each for missing nhmmer tables, fastp reports and Snakemake benchmarks |
+| `Summary` sheet | 489 rows (unchanged by the quality analyses) |
+| `GenBank Files` sheet | 192 rows |
+| `Marker Lengths` sheet | 7,052 rows |
+| `TRF Summary` / `TRF Repeats` | 192 / 187 rows |
+| OrganPipe assemblies analysed | 286 (216 `_1` and 70 `_2` copies of circularized runs) |
+| `MITOS2 Completeness` | 145 of 216 `_1` copies have all 37 genes |
+| `Origin Check` | 64 genes crossing the origin: 49 12S (48 recovered to 962 bp), 13 16S, 2 tRNA-Thr |
+| `Coverage` | 192 from rotated depth, 94 from pre-Pilon depth (assemblies without rotation) |
+| `Pilon Changes` / `Pilon Breaks` | 145 insertions in 93 assemblies / 76 unresolved breaks |
+| `Read Recruitment` | 286 assemblies; median 2.3% of reads below 98% identity |
+| `Assembly Alerts` | 593 alerts in 216 assemblies |
+
+The same run with the Conda environment outside the container produced identical sheets, apart from the file-path columns and the Provenance values.
+
+The example dataset has no `fastp.json`, nhmmer output, `workflow/reports/`, Snakemake benchmarks or OrganPipe `config/`, so it cannot exercise analyses that depend on those files.
+
+## Interactive input guide
+##### [:rocket: Go to Contents Overview](#contents-overview)
+`docs/index.html` is an interactive, step-by-step guide to what moCURA reads from OrganPipe and how each value is obtained: file locations in the old and current OrganPipe layouts, the line each value comes from, the three coordinate systems, the 12S origin problem, coverage, read recruitment and the analyses planned for the next phases. It is available in English, Portuguese and Spanish (`?lang=en|pt|es`) and needs an internet connection for D3 and the web fonts.
+
+Open it directly in a browser, or publish the `docs/` folder with GitHub Pages. The genome maps, coverage tracks and identity histograms use the 296 rotated assemblies of the example dataset, stored in `docs/assets/example_data.js`. To rebuild that file after changing `data/`:
+
+```bash
+conda activate mocura_env
+python docs/build_example_data.py --results-dir data --output docs/assets/example_data.js
 ```
 
 ## SLURM

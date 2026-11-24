@@ -345,6 +345,21 @@ code { word-break: break-all; font-size: 11px; }
 .file-name { font-size: 13px; font-weight: 650; }
 .file-path { margin-top: 4px; color: var(--muted); word-break: break-all; font-size: 11px; }
 .empty { min-height: 240px; display: grid; place-items: center; color: #94a3b8; font-size: 13px; }
+.read-qc-panel { margin-top: 12px; }
+.read-qc-panel:empty { display: none; }
+.read-qc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.read-qc-card { padding: 14px 16px; }
+.read-qc-card dl { display: grid; grid-template-columns: auto auto; gap: 3px 12px; margin: 8px 0 0; font-size: 12px; }
+.read-qc-card dt { color: #64748b; }
+.read-qc-card dd { margin: 0; text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; }
+.completeness-scroll { overflow: auto; max-height: 720px; }
+.quality-note { border-left: 3px solid var(--accent); padding: 8px 12px; background: #fff7ed; border-radius: 0 10px 10px 0; font-size: 12.5px; color: #7c2d12; margin: 10px 0 14px; }
+.alert-chip { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 7px; margin: 1px 3px 1px 0; border-radius: 999px; border: 1px solid #cbd5e1; color: #334155; white-space: nowrap; }
+.alert-chip.warning { border-color: #f59e0b; color: #92400e; background: #fffbeb; }
+.alert-chip.info { border-color: #93c5fd; color: #1e3a8a; background: #eff6ff; }
+.provenance-section { margin-top: 30px; }
+.provenance-section > summary { cursor: pointer; font-size: 20px; font-weight: 750; padding: 6px 0; }
+.provenance-section table { font-size: 12px; }
 #errorBox { display: none; margin: 16px 0; padding: 14px; border: 1px solid #fecaca; border-radius: 12px; background: var(--danger-bg); color: var(--danger); white-space: pre-wrap; }
 .axis text { fill: #64748b; font-size: 10px; }
 .axis path, .axis line { stroke: #cbd5e1; }
@@ -404,6 +419,7 @@ code { word-break: break-all; font-size: 11px; }
       <a class="nav-link" href="#assemblies" data-tooltip="Linked NOVOPlasty assembly metrics. Hovering one run highlights the same run in all four panels.">Assemblies</a>
       <a class="nav-link" href="#pilon" data-tooltip="Interactive polishing metrics from Pilon.">Pilon</a>
       <a class="nav-link" href="#genome" data-tooltip="Marker and tandem-repeat positions for every assembly that passes the filters.">Genome</a>
+      <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, read recruitment and alerts read from the OrganPipe outputs.">Quality</a>
       <a class="nav-link" href="#markers" data-tooltip="Marker lengths with an independent min–max color scale for every marker column.">Markers</a>
       <a class="nav-link" href="#repeats" data-tooltip="TRF repeat families, genomic context and comparative table.">Repeats</a>
       <a class="nav-link" href="#snps" data-tooltip="True-SNP matrices rendered directly with D3 in a Snipit-like layout.">SNPs</a>
@@ -421,6 +437,7 @@ code { word-break: break-all; font-size: 11px; }
       <div class="card metric"><div class="metric-label">TRF repeats <span class="info-dot" data-tooltip="Number of tandem-repeat records detected by TRF in the filtered assemblies.">i</span></div><div id="metricRepeats" class="metric-value"></div></div>
       <div class="card metric"><div class="metric-label">Median coverage <span class="info-dot" data-tooltip="Median NOVOPlasty average organelle coverage for the filtered runs.">i</span></div><div id="metricCoverage" class="metric-value"></div></div>
     </div>
+    <div id="readQcPanel" class="read-qc-panel"></div>
     <div class="info-grid">
       <div class="card info-card"><div class="info-title">Multiple filters</div><div class="info-copy">Seed, K-mer, assembly status and repeat status support multiple selections. Search inside each filter to quickly find values in large projects.</div></div>
       <div class="card info-card"><div class="info-title">Linked assembly plots</div><div class="info-copy">Hover a point in any assembly panel. The same project, seed and K-mer run remains at 100% opacity in every panel while all other runs fade to 25%.</div></div>
@@ -473,6 +490,23 @@ code { word-break: break-all; font-size: 11px; }
     <h2>Genome structure and tandem-repeat positions <span class="info-dot" data-tooltip="Every filtered rotated assembly is drawn as a separate genomic track. Colored blocks are annotated markers and orange blocks are TRF tandem repeats.">i</span></h2>
     <div class="section-note">Assemblies are grouped by identical Seed + K-mer combinations. Within each group, projects share the same coordinate scale, gene colors and repeat-family colors so differences are easy to compare.</div>
     <div class="card chart-card genome-scroll" style="margin-top:14px"><div id="genomeTimeline" class="chart"></div></div>
+  </section>
+
+  <section id="quality" class="section">
+    <h2>Assembly quality <span class="info-dot" data-tooltip="Read directly from the OrganPipe outputs: MITOS2 gene annotation, samtools depth, BLAST read recruitment, Pilon change lists and nhmmer intergenic searches.">i</span></h2>
+    <div id="qualitySubtitle" class="section-note"></div>
+    <div class="quality-note">Coverage and read recruitment come from the reads NOVOPlasty used to build each assembly (<code>Assembled_reads</code>). They tend to agree with the assembly by construction, so they flag problems but do not independently validate it.</div>
+    <div class="card chart-card">
+      <div class="chart-title">Gene completeness <span class="info-dot" data-tooltip="Each row is one assembly, each column one of the 37 mitochondrial genes annotated by MITOS2. Partial at origin marks genes kept only as a fragment because they cross the contig origin.">i</span></div>
+      <div class="chart-subtitle">37 genes from MITOS2: present, absent, duplicated or kept only as a fragment at the contig origin. The last column compares the gene order with the most common order in the project.</div>
+      <div class="completeness-scroll"><div id="completenessHeatmap" class="chart"></div></div>
+    </div>
+    <div class="card table-card" style="margin-top:16px">
+      <div class="table-toolbar">
+        <div><div class="table-title">Quality per assembly</div><div id="qualityTableCount" class="table-count"></div></div>
+      </div>
+      <div id="qualityTableScroll" class="table-scroll"><table id="qualityTable" class="assembly-table"><thead><tr id="qualityTableHead"></tr></thead><tbody id="qualityTableBody"></tbody></table></div>
+    </div>
   </section>
 
   <section id="markers" class="section">
@@ -535,6 +569,12 @@ code { word-break: break-all; font-size: 11px; }
     </div>
     <div class="card map-card"><div id="samplingMap"></div><div id="haplotypeNetworkPanel" class="haplotype-network-panel"></div><div id="mapStatus" class="map-note"></div></div>
   </section>
+
+  <details id="provenance" class="section provenance-section">
+    <summary>Provenance</summary>
+    <div class="section-note">How this report was produced: run time and memory, versions, arguments, effective configuration and OrganPipe benchmarks.</div>
+    <div id="provenanceBody"></div>
+  </details>
 
   <footer class="report-footer">
     <div class="footer-brand"><div class="footer-logo">__LOGO_HTML__</div></div>
@@ -1713,7 +1753,8 @@ function renderGenomeTimeline() {
   const plotLeft=labelWidth+48;
   const plotRight=28;
   const headerHeight=58;
-  const rowHeight=92;
+  const coverageTrackHeight=genomes.some(genome=>coverageWindowsFor(genome))?34:0;
+  const rowHeight=92+coverageTrackHeight;
   const groupGap=22;
   const topMargin=14;
   const bottomMargin=24;
@@ -1875,6 +1916,9 @@ function renderGenomeTimeline() {
           .on('mouseleave',unhover);
       });
 
+      drawPilonChangeMarks(svg,genome,x,plusY,minusY);
+      if(coverageTrackHeight)drawCoverageTrack(svg,genome,x,y0+84,coverageTrackHeight-6,genomeLength);
+
       assemblyRepeats.forEach(repeat=>{
         const family=text(repeat['Repeat family label'])||text(repeat.Consensus)||'Repeat';
         const repeatStart=x(num(repeat.Start));
@@ -1898,6 +1942,155 @@ function renderGenomeTimeline() {
 
     groupY=rowsStart+groupAssemblies.length*rowHeight+groupGap;
   });
+}
+
+const ORGANPIPE=REPORT.organpipe||{};
+function runCopyKey(row) {
+  return [text(row['Project name']).trim(),normalizedRunValue(row['Seed order']),normalizedRunValue(row['K-mer']),normalizedRunValue(row['Assembly copy'])].join('\0');
+}
+const coverageWindowsByRun=new Map((ORGANPIPE.coverage_windows||[]).filter(item=>text(item['Coordinate system']).startsWith('C')).map(item=>[runCopyKey(item),item]));
+const pilonChangesByRun=d3Group(ORGANPIPE.pilon_changes||[],runCopyKey);
+const pilonBreaksByRun=d3Group(ORGANPIPE.pilon_breaks||[],runCopyKey);
+function d3Group(rows,keyFn){const map=new Map();rows.forEach(row=>{const key=keyFn(row);if(!map.has(key))map.set(key,[]);map.get(key).push(row);});return map;}
+function coverageWindowsFor(genome){return coverageWindowsByRun.get(runCopyKey(genome))||null;}
+function organpipeRows(key){return (ORGANPIPE[key]||[]).filter(matches);}
+
+function drawCoverageTrack(svg,genome,x,top,height,genomeLength) {
+  const item=coverageWindowsFor(genome);
+  const baselineY=top+height;
+  svg.append('text').attr('x',x.range()[0]-8).attr('y',top+height/2+3.5).attr('text-anchor','end').attr('font-size',8.5).attr('font-weight',700).attr('fill','#94a3b8').text('Depth');
+  if(!item||!(item.Windows||[]).length){
+    svg.append('text').attr('x',x.range()[0]).attr('y',top+height/2+3).attr('font-size',8.5).attr('fill','#94a3b8').text('No rotated depth file');
+    return;
+  }
+  const size=num(item['Window size'],50);
+  const windows=item.Windows;
+  const maximum=d3.max(windows)||1;
+  // Cap the scale at 2.5x the median window so a repeat spike does not flatten the profile.
+  const cap=Math.min(maximum,Math.max(1,2.5*(d3.median(windows)||1)));
+  const y=d3.scaleLinear().domain([0,cap]).range([baselineY,top]).clamp(true);
+  const points=windows.map((value,index)=>({start:index*size+1,end:Math.min(genomeLength,(index+1)*size),value}));
+  const area=d3.area().curve(d3.curveStepAfter).x(d=>x(d.start)).y0(baselineY).y1(d=>y(d.value));
+  svg.append('path').datum(points.concat([{start:points[points.length-1].end,value:points[points.length-1].value}])).attr('d',area).attr('fill','#0173B2').attr('fill-opacity',.28).attr('stroke','#0173B2').attr('stroke-width',.6);
+  const breaks=pilonBreaksByRun.get(runCopyKey(genome))||[];
+  breaks.filter(row=>num(row['Rotated start'])!==null).forEach(row=>{
+    svg.append('rect').attr('x',x(num(row['Rotated start']))).attr('y',top).attr('width',Math.max(2,x(num(row['Rotated end']))-x(num(row['Rotated start'])))).attr('height',height)
+      .attr('fill','#D55E00').attr('fill-opacity',.22)
+      .on('mousemove',event=>hover(event,`<b>Unresolved Pilon break</b><br>${esc(row['Rotated start'])}–${esc(row['Rotated end'])} bp (rotated)<br>${esc(row['Pilon message'])}`)).on('mouseleave',unhover);
+  });
+  svg.append('rect').attr('x',x.range()[0]).attr('y',top).attr('width',Math.max(1,x(genomeLength)-x.range()[0])).attr('height',height).attr('fill','transparent')
+    .on('mousemove',event=>{
+      const position=x.invert(d3.pointer(event)[0]);
+      const point=points[Math.max(0,Math.min(points.length-1,Math.floor((position-1)/size)))];
+      hover(event,`<b>Depth</b> ${d3.format(',.1f')(point.value)}×<br>${d3.format(',')(point.start)}–${d3.format(',')(point.end)} bp<br>Window ${size} bp, rotated coordinates`);
+    }).on('mouseleave',unhover);
+  svg.append('text').attr('x',x(genomeLength)+3).attr('y',top+7).attr('font-size',8).attr('fill','#94a3b8').text(`${d3.format(',')(Math.round(cap))}×${maximum>cap?'+':''}`);
+  if(maximum>cap)points.filter(d=>d.value>cap).forEach(d=>svg.append('rect').attr('x',x(d.start)).attr('y',top-1).attr('width',Math.max(1,x(d.end)-x(d.start))).attr('height',2).attr('fill','#0f172a'));
+}
+
+function drawPilonChangeMarks(svg,genome,x,plusY,minusY) {
+  const changes=(pilonChangesByRun.get(runCopyKey(genome))||[]).filter(row=>num(row['Rotated position'])!==null);
+  changes.forEach(change=>{
+    const cx=x(num(change['Rotated position']));
+    svg.append('path').attr('d',`M${cx},${plusY-8} l-4,-7 h8 z`).attr('fill','#D55E00').attr('stroke','#ffffff').attr('stroke-width',.6)
+      .on('mousemove',event=>hover(event,`<b>Pilon ${esc(text(change['Change type']).toLowerCase())}</b><br>Rotated position ${d3.format(',')(num(change['Rotated position']))}<br>Before Pilon ${esc(change['Position before Pilon'])}, after Pilon ${esc(change['Position after Pilon'])}<br>${esc(change.Reference)} → ${esc(change.Replacement)}`))
+      .on('mouseleave',unhover);
+  });
+}
+
+function renderReadQc() {
+  const panel=document.getElementById('readQcPanel');
+  const rows=(ORGANPIPE.read_qc||[]).filter(row=>state.projects.has(text(row['Project name'])));
+  if(!rows.length){panel.innerHTML='';return;}
+  const pct=value=>num(value)===null?'—':`${d3.format('.1f')(100*num(value))}%`;
+  const count=value=>num(value)===null?'—':d3.format(',')(num(value));
+  panel.innerHTML=`<div class="read-qc-grid">${rows.map(row=>`<div class="card read-qc-card"><div class="metric-label">Read QC (fastp)</div><div>${projectDisplayHtml(projectRecord(row['Project name']))}</div><dl>
+    <dt>Reads before</dt><dd>${count(row['Reads before filtering'])}</dd>
+    <dt>Reads after</dt><dd>${count(row['Reads after filtering'])}</dd>
+    <dt>Q30 after</dt><dd>${pct(row['Q30 rate after'])}</dd>
+    <dt>GC after</dt><dd>${pct(row['GC content after'])}</dd>
+    <dt>Duplication</dt><dd>${pct(row['Duplication rate'])}</dd></dl></div>`).join('')}</div>`;
+}
+
+const completenessColors={'Present':'#029E73','Absent':'#D55E00','Duplicated':'#0173B2','Partial at origin':'#DE8F05'};
+function assemblyRowLabel(row){return `${projectDisplayText(projectRecord(row['Project name']))} · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`;}
+function sortAssemblyRows(rows){return rows.slice().sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true})||text(a['Seed Input']).localeCompare(text(b['Seed Input']),undefined,{numeric:true})||num(a['K-mer'],0)-num(b['K-mer'],0)||num(a['Assembly copy'],0)-num(b['Assembly copy'],0));}
+
+function renderCompletenessHeatmap() {
+  const rows=sortAssemblyRows(organpipeRows('completeness'));
+  const genes=ORGANPIPE.expected_markers||[];
+  if(!rows.length||!genes.length)return emptyChart('completenessHeatmap','No MITOS2 results for these filters.');
+  clearChart('completenessHeatmap');
+  const cell=15, labelWidth=330, top=96, orderWidth=70;
+  const width=labelWidth+genes.length*cell+orderWidth+20, height=top+rows.length*cell+40;
+  const svg=d3.select('#completenessHeatmap').append('svg').attr('width',width).attr('height',height);
+  genes.forEach((gene,index)=>{
+    svg.append('text').attr('transform',`translate(${labelWidth+index*cell+cell/2+3},${top-6}) rotate(-60)`).attr('font-size',9.5).attr('fill','#334155').text(gene);
+  });
+  svg.append('text').attr('x',labelWidth+genes.length*cell+10).attr('y',top-8).attr('font-size',9.5).attr('font-weight',700).attr('fill','#334155').text('Gene order');
+  rows.forEach((row,r)=>{
+    const y=top+r*cell;
+    if(r%2===0)svg.append('rect').attr('x',0).attr('y',y).attr('width',width).attr('height',cell).attr('fill','#f8fafc');
+    svg.append('text').attr('x',labelWidth-8).attr('y',y+cell-4).attr('text-anchor','end').attr('font-size',9.5).attr('fill','#0f172a').text(assemblyRowLabel(row));
+    genes.forEach((gene,c)=>{
+      const status=text(row[gene])||'Absent';
+      svg.append('rect').attr('x',labelWidth+c*cell+1).attr('y',y+1).attr('width',cell-2).attr('height',cell-2).attr('rx',2).attr('fill',completenessColors[status]||'#cbd5e1')
+        .on('mousemove',event=>hover(event,`<b>${esc(gene)}</b>: ${esc(status)}<br>${esc(assemblyRowLabel(row))}<br>${esc(row['Genes present'])} of ${genes.length} genes present`)).on('mouseleave',unhover);
+    });
+    const same=row['Gene order matches modal']===true;
+    svg.append('text').attr('x',labelWidth+genes.length*cell+10).attr('y',y+cell-4).attr('font-size',9.5).attr('font-weight',650).attr('fill',same?'#029E73':'#D55E00').text(same?'Modal':'Differs')
+      .on('mousemove',event=>hover(event,`<b>Gene order</b><br>${esc(row['Gene order'])}${same?'':`<br><br><b>Project modal order</b><br>${esc(row['Modal gene order'])}`}`)).on('mouseleave',unhover);
+  });
+  const legend=svg.append('g').attr('transform',`translate(${labelWidth},14)`);
+  Object.entries(completenessColors).forEach(([label,color],index)=>{
+    legend.append('rect').attr('x',index*130).attr('y',0).attr('width',11).attr('height',11).attr('rx',2).attr('fill',color);
+    legend.append('text').attr('x',index*130+16).attr('y',9.5).attr('font-size',10.5).attr('fill','#334155').text(label);
+  });
+}
+
+function renderQualityTable() {
+  const rows=sortAssemblyRows(organpipeRows('completeness').length?organpipeRows('completeness'):organpipeRows('coverage'));
+  const byKey=key=>new Map((ORGANPIPE[key]||[]).map(row=>[text(row.Assembly),row]));
+  const coverage=byKey('coverage'), recruitment=byKey('recruitment');
+  const alerts=d3Group(ORGANPIPE.alerts||[],row=>text(row.Assembly));
+  const changes=d3Group(ORGANPIPE.pilon_changes||[],row=>text(row.Assembly));
+  const columns=['Assembly','Genes','Mean depth','CV','% < depth threshold','Lowest window','Reads','% < identity threshold','Target covered','Pilon changes','Alerts'];
+  document.getElementById('qualityTableHead').innerHTML=columns.map(c=>`<th>${esc(c)}</th>`).join('');
+  document.getElementById('qualityTableCount').textContent=`${rows.length} assembl${rows.length===1?'y':'ies'} shown`;
+  document.getElementById('qualitySubtitle').textContent=!ORGANPIPE.available
+    ? 'No OrganPipe quality files were found for this run.'
+    : rows.length
+      ? `Values read from the OrganPipe folders of ${new Set(rows.map(r=>text(r['Project name']))).size} project(s).`
+      : 'No MITOS2, depth or BLAST results for the assemblies in the current filters.';
+  const fmt=(value,format)=>num(value)===null?'—':d3.format(format)(num(value));
+  document.getElementById('qualityTableBody').innerHTML=rows.map(row=>{
+    const name=text(row.Assembly), cov=coverage.get(name)||{}, rec=recruitment.get(name)||{};
+    const chips=(alerts.get(name)||[]).map(a=>`<span class="alert-chip ${esc(a.Severity)}" title="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
+    const genes=row['Genes present']!==undefined?`${esc(row['Genes present'])}/37`:'—';
+    return `<tr><td>${projectDisplayHtml(projectRecord(row['Project name']))}<br><span class="table-count">${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</span></td>
+      <td>${genes}</td><td>${fmt(cov['Mean depth'],',.1f')}${cov['Coordinate system']&&!text(cov['Coordinate system']).startsWith('C')?' <span class="table-count">(A)</span>':''}</td><td>${fmt(cov['Coefficient of variation'],'.2f')}</td>
+      <td>${fmt(cov['Percent below threshold'],'.2f')}</td><td>${num(cov['Lowest window mean depth'])===null?'—':`${fmt(cov['Lowest window mean depth'],',.0f')}× @ ${fmt(cov['Lowest window start'],',')}`}</td>
+      <td>${fmt(rec['Recruited reads'],',')}</td><td>${fmt(rec['Percent below threshold'],'.2f')}</td><td>${num(rec['Target coverage %'])===null?'—':`${fmt(rec['Target coverage %'],'.1f')}%`}</td>
+      <td>${(changes.get(name)||[]).length}</td><td>${chips||'<span class="table-count">none</span>'}</td></tr>`;
+  }).join('');
+}
+
+function renderProvenance() {
+  const body=document.getElementById('provenanceBody');
+  const rows=ORGANPIPE.provenance||[];
+  const benchmarks=(ORGANPIPE.benchmarks||[]).filter(row=>state.projects.has(text(row['Project name'])));
+  if(!rows.length&&!benchmarks.length){body.innerHTML='<div class="table-count">Provenance was disabled for this run.</div>';return;}
+  const groups=d3Group(rows,row=>text(row.Category));
+  const table=(items,cols)=>`<div class="table-scroll" style="max-height:420px"><table class="assembly-table"><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${items.map(item=>`<tr>${cols.map(c=>`<td>${esc(item[c])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  body.innerHTML=[...groups.entries()].map(([category,items])=>`<h3 style="margin:16px 0 6px;font-size:14px">${esc(category)}</h3>${table(items,['Item','Value'])}`).join('')
+    +(benchmarks.length?`<h3 style="margin:16px 0 6px;font-size:14px">OrganPipe benchmarks</h3>${table(benchmarks,['Project name','Rule','Runs','Wall time (s)','CPU time (s)','Max RSS (MB)'])}`:'<h3 style="margin:16px 0 6px;font-size:14px">OrganPipe benchmarks</h3><div class="table-count">No Snakemake benchmark files were found.</div>');
+}
+
+function renderOrganpipeSections() {
+  renderReadQc();
+  renderCompletenessHeatmap();
+  renderQualityTable();
+  renderProvenance();
 }
 
 function markerCategory(markerName) {
@@ -2768,6 +2961,7 @@ function renderAll() {
   renderPilonCorrections();
   renderAssemblyTable();
   renderGenomeTimeline();
+  renderOrganpipeSections();
   renderSamplingMap();
   renderMarkerHeatmap();
   renderRepeatTable();
@@ -2845,7 +3039,8 @@ def generate_html_report(**kwargs):
         static_plot_paths=kwargs.get("static_plot_paths", []),
         metadata_dataframe=kwargs.get("metadata_dataframe"),
         metadata_path=kwargs.get("metadata_path") or config.get("metadata_path"),
-        output_dir=output_dir
+        output_dir=output_dir,
+        organpipe_results=kwargs.get("organpipe_results"),
     )
 
     report_config = {

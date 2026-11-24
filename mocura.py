@@ -62,6 +62,7 @@ def main():
             --results-dir: Directory containing the organpipe results.
             --config: YAML file containing report and plot settings.
             --metadata: Optional metadata table mapped by Project name.
+            --organpipe-dir: Optional OrganPipe root (results/, workflow/reports/, benchmarks/).
             """
         ),
     )
@@ -86,6 +87,15 @@ def main():
         help=(
             "Optional CSV, TSV, XLSX or ODS metadata table with Project name, "
             "Species, Location, Latitude and Longitude columns."
+        ),
+    )
+
+    input_group.add_argument(
+        "--organpipe-dir",
+        default=None,
+        help=(
+            "Optional OrganPipe run root holding results/, workflow/reports/ "
+            "and benchmarks/. Inferred from --results-dir when omitted."
         ),
     )
 
@@ -173,6 +183,7 @@ def main():
                 dpi=arguments.dpi,
                 fig_format=arguments.fig_format,
                 metadata_path=arguments.metadata,
+                organpipe_dir=arguments.organpipe_dir,
             )
         )
     except Exception as error:
