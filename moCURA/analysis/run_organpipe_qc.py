@@ -226,6 +226,7 @@ async def run_organpipe_qc(**kwargs):
                           **(section("assembly_score").get("weights", {}) or {})},
         "group_min_coverage": section("assembly_concordance").get("group_min_coverage", 95),
         "score_na_value": section("assembly_score").get("na_value", 0.5),
+        "score_length_tolerance_percent": section("assembly_score").get("length_tolerance_percent", 5),
         "group_identity_threshold": section("assembly_concordance").get("group_identity_threshold", 99.5),
     })
 

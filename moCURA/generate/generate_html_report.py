@@ -424,11 +424,20 @@ code { word-break: break-all; font-size: 11px; }
 .section-bar .species-toggle { padding: 6px 10px; }
 .section-bar .species-toggle { margin-left: 0; flex: 0 0 auto; }
 .recommendation-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 10px; padding: 0 14px 14px; }
-.reco-card { padding: 12px 16px; border-left: 5px solid #029E73; display: grid; grid-template-columns: minmax(260px,1.25fr) 104px minmax(320px,1.6fr); gap: 8px 22px; align-items: center; cursor: help; }
+.reco-card { padding: 14px 16px; border-left: 5px solid #029E73; display: grid; grid-template-columns: minmax(240px,1fr) 128px minmax(460px,2.3fr); gap: 8px 22px; align-items: center; }
 .reco-card.hidden-pick { border-left-color: #DE8F05; }
 .reco-card.no-pick { border-left-color: #94a3b8; display: block; }
 .reco-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.reco-card .reco-components { grid-template-columns: auto 1fr auto auto 1fr auto; gap: 3px 10px; }
+.reco-card .reco-components { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px 22px; align-items: start; }
+.reco-metric { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.reco-metric-head { display: flex; align-items: baseline; gap: 8px; font-size: 12px; }
+.reco-metric-name { font-weight: 700; color: #0f172a; }
+.reco-metric-weight { color: #94a3b8; font-size: 10.5px; }
+.reco-metric-value { margin-left: auto; font-weight: 700; color: #0f172a; font-variant-numeric: tabular-nums; }
+.reco-metric-help { font-size: 11px; line-height: 1.35; color: #64748b; }
+.reco-score-note { font-size: 10.5px; font-weight: 500; color: var(--muted); line-height: 1.3; margin-top: 2px; }
+.reco-score-note .info-dot { vertical-align: -1px; }
+.ranking-table th.help-head { cursor: help; }
 .reco-details { margin-top: 14px; }
 .reco-details > summary, .ranking-details > summary { list-style: none; display: flex; align-items: center; gap: 10px; }
 .reco-details > summary::-webkit-details-marker, .ranking-details > summary::-webkit-details-marker { display: none; }
@@ -511,12 +520,11 @@ code { word-break: break-all; font-size: 11px; }
 .quality-legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
 #qualityTable { min-width: 100%; width: max-content; font-size: 12.5px; }
 #qualityTable thead tr.column-head th { min-width: 84px; }
-#qualityTable thead tr.column-head th.q-sticky { min-width: 190px; }
+#qualityTable thead tr.column-head th.q-sticky { min-width: 170px; }
 #qualityTable thead tr.column-head th { cursor: help; }
 #qualityTable td.q-num { text-align: right; font-variant-numeric: tabular-nums; }
-#qualityTable th.q-sticky, #qualityTable td.q-run { position: sticky; left: 0; z-index: 3; }
-#qualityTable td.q-run { background: #fff; box-shadow: 1px 0 0 var(--border); }
-#qualityTable thead th.q-sticky { z-index: 6; }
+#qualityTable td.pinned:not(.q-ok):not(.q-warn):not(.q-bad) { background: #fff; }
+#qualityTable td.q-project-cell { text-align: left; white-space: nowrap; }
 #qualityTable th, #qualityTable td { padding: 6px 8px; }
 #qualityTable thead tr.group-head th { top: 0; background: #cbd5e1; color: #1e293b; text-align: center; border-left: 2px solid #f8fafc; }
 #qualityTable thead tr.column-head th { top: 31px; text-transform: none; letter-spacing: 0; font-size: 11.5px; white-space: normal; line-height: 1.25; vertical-align: bottom; border-left: 1px solid #f1f5f9; }
@@ -2504,6 +2512,7 @@ function qualitySettings() {
 function qualityColumns() {
   const q=qualitySettings();
   return [
+    {group:'Sample',key:'project',label:'Project / species',help:'Project and species of the assembly. This column and the next stay visible while the table scrolls sideways.'},
     {group:'Assembly',key:'run',label:'Seed · K-mer · copy',help:'Seed used by NOVOPlasty, K-mer size and assembly copy (_1 is the main contig set, _2 the alternative copy NOVOPlasty writes when it finds two options).'},
     {group:'Assembly',key:'status',label:'Circular',help:'Whether NOVOPlasty closed the assembly into a circle.'},
     {group:'Annotation (MITOS2)',key:'genes',label:'Genes',help:`Number of the ${q.genes} expected mitochondrial genes (13 protein-coding, 2 rRNAs, 22 tRNAs) that MITOS2 annotated. Green: all present. Orange: some missing; the heatmap above shows which.`},
@@ -2563,8 +2572,8 @@ function renderQualityTable() {
 
   const groups=d3.groups(columns,column=>column.group);
   document.getElementById('qualityTableHead').innerHTML=
-    `<tr class="group-head">${groups.map(([group,items],index)=>`<th colspan="${items.length}" class="${index===0?'q-sticky':''}">${esc(group)}</th>`).join('')}</tr>`
-    +`<tr class="column-head">${columns.map((column,index)=>`<th data-help="${esc(column.help)}" class="${index===0?'q-sticky':''}">${esc(column.label)}</th>`).join('')}</tr>`;
+    `<tr class="group-head">${groups.map(([group,items],index)=>`<th colspan="${items.length}">${esc(group)}</th>`).join('')}</tr>`
+    +`<tr class="column-head">${columns.map((column,index)=>`<th data-help="${esc(column.help)}" class="${index<2?'q-sticky':''}">${esc(column.label)}</th>`).join('')}</tr>`;
 
   const withAlerts=baseRows.filter(row=>(alerts.get(text(row.Assembly))||[]).length).length;
   document.getElementById('qualityTableCount').textContent=`${rows.length} of ${baseRows.length} assembl${baseRows.length===1?'y':'ies'} shown · ${withAlerts} with alerts · hover a column title for its definition`;
@@ -2607,6 +2616,7 @@ function renderQualityTable() {
     const chips=assemblyAlerts.map(a=>`<span class="alert-chip ${esc(a.Severity)}" data-tooltip="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
     const integrityText=integrity?`${num(integrity.Errors,0)} / ${num(integrity.Warnings,0)}`:'—';
     return header+'<tr>'+[
+      cell(projectDisplayHtml(projectRecord(row['Project name'])),'q-project-cell'),
       cell(`<strong>${esc(row['Seed Input'])}</strong> · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}`,'q-run'),
       cell(circular===null?'—':(circular?'Yes':'No'),circular===null?'':(circular?'q-ok':'q-warn')),
       cell(present===null?'—':`${present}/${q.genes}`,present===null?'':(present>=q.genes?'q-ok':(present<q.genes/2?'q-bad':'q-warn'))),
@@ -2625,6 +2635,7 @@ function renderQualityTable() {
       cell(chips||'<span class="table-count">none</span>','q-alerts')
     ].join('')+'</tr>';
   }).join('') || `<tr><td colspan="${columns.length}" class="table-count" style="padding:18px">No assembly matches the table filters.</td></tr>`;
+  pinColumns(document.getElementById('qualityTable'),2);
 }
 
 function renderIntegrityTable() {
@@ -2778,45 +2789,53 @@ function renderRscu() {
 
 function renderRscuStacked(rscu,families,item) {
   const legend=document.getElementById('rscuLegend');
-  legend.innerHTML=RSCU_SEGMENT_COLORS.map((color,index)=>`<span><i style="background:${color}"></i>${['1st','2nd','3rd','4th'][index]} codon of the box (order under each bar)</span>`).join('')+'<span>Dashed line: RSCU of a box with no preference</span>';
+  legend.innerHTML='<span>Each bar stacks the RSCU of the synonymous codons of one codon box; the boxes beneath list those codons in the same color and order, from the bottom of the bar up, with n = number of times the codon was counted.</span><span>Dashed line: height of a box with no codon preference (every codon at RSCU 1).</span>';
   const container=document.getElementById('rscuChart');
-  const width=Math.max(760,container.clientWidth||1100);
+  const margin={top:14,right:12,left:48};
+  const width=Math.max(760,container.clientWidth||1100,margin.left+margin.right+families.length*50);
   const maxCodons=d3.max(families,family=>family.items.length)||4;
-  const codonRow=13;
-  const margin={top:14,right:12,bottom:30+maxCodons*codonRow+22,left:48};
-  const plotHeight=260;
+  const aaHeight=28, codonHeight=26, codonGap=2, gapBelowPlot=8;
+  margin.bottom=gapBelowPlot+aaHeight+4+maxCodons*(codonHeight+codonGap)+26;
+  const plotHeight=270;
   const height=margin.top+plotHeight+margin.bottom;
   const values=item.RSCU.map(value=>num(value,0));
   const counts=item.Counts.map(value=>num(value,0));
   const totals=families.map(family=>d3.sum(family.items,codon=>values[codon.index]));
   const svg=d3.select('#rscuChart').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
-  const x=d3.scaleBand().domain(families.map(family=>family.key)).range([margin.left,width-margin.right]).paddingInner(.22).paddingOuter(.1);
+  const x=d3.scaleBand().domain(families.map(family=>family.key)).range([margin.left,width-margin.right]).paddingInner(.14).paddingOuter(.06);
   const y=d3.scaleLinear().domain([0,Math.max(4,d3.max(totals)||0)]).nice().range([margin.top+plotHeight,margin.top]);
   svg.append('g').attr('class','grid-line').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickSize(-(width-margin.left-margin.right)).tickFormat(''));
   svg.append('g').attr('class','axis').attr('transform',`translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6));
   svg.append('text').attr('transform','rotate(-90)').attr('x',-(margin.top+plotHeight/2)).attr('y',13).attr('text-anchor','middle').attr('font-size',10.5).attr('fill','#64748b').text('RSCU (stacked within each codon box)');
+  // Text on the segment colors: white on blue and green, dark on orange and pink.
+  const textColor=['#ffffff','#1f2937','#ffffff','#1f2937'];
+  const tip=(codon,family)=>`<b>${esc(codon.codon)}</b> · ${esc(family.label)}<br>RSCU ${d3.format('.3f')(values[codon.index])} · n = ${d3.format(',')(counts[codon.index])} codons<br>${values[codon.index]>1.05?'Used more than its synonyms':(values[codon.index]<.95?'Used less than its synonyms':'No preference')}`;
+  const highlight=(index,on)=>svg.selectAll(`.rscu-codon-${index}`).attr('stroke',on?'#0f172a':'#fff').attr('stroke-width',on?1.6:.6);
   families.forEach(family=>{
     const bx=x(family.key), bw=x.bandwidth();
     let base=0;
     family.items.forEach((codon,position)=>{
       const value=values[codon.index];
-      svg.append('rect').attr('x',bx).attr('y',y(base+value)).attr('width',bw).attr('height',Math.max(0,y(base)-y(base+value))).attr('fill',RSCU_SEGMENT_COLORS[position%4]).attr('stroke','#fff').attr('stroke-width',.6)
-        .on('mousemove',event=>hover(event,`<b>${esc(codon.codon)}</b> · ${esc(family.label)}<br>RSCU ${d3.format('.3f')(value)} · ${d3.format(',')(counts[codon.index])} codons<br>${value>1.05?'Used more than its synonyms':(value<.95?'Used less than its synonyms':'No preference')}`)).on('mouseleave',unhover);
+      svg.append('rect').attr('class',`rscu-codon-${codon.index}`).attr('x',bx).attr('y',y(base+value)).attr('width',bw).attr('height',Math.max(0,y(base)-y(base+value))).attr('fill',RSCU_SEGMENT_COLORS[position%4]).attr('stroke','#fff').attr('stroke-width',.6)
+        .on('mouseenter',()=>highlight(codon.index,true)).on('mousemove',event=>hover(event,tip(codon,family))).on('mouseleave',()=>{highlight(codon.index,false);unhover();});
       base+=value;
     });
     // Without preference every codon has RSCU 1, so the stack of a box equals its number of codons.
     const expected=family.items.length;
     svg.append('line').attr('x1',bx-2).attr('x2',bx+bw+2).attr('y1',y(expected)).attr('y2',y(expected)).attr('stroke','#0f172a').attr('stroke-dasharray','3,2').attr('stroke-opacity',.55).attr('pointer-events','none');
-    const labelY=margin.top+plotHeight+14;
-    svg.append('text').attr('x',bx+bw/2).attr('y',labelY).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',700).attr('fill','#0f172a').text(family.name);
-    if(family.label!==family.name)svg.append('text').attr('x',bx+bw/2).attr('y',labelY+11).attr('text-anchor','middle').attr('font-size',8.5).attr('fill','#64748b').attr('font-family','ui-monospace, monospace').text(family.box);
+    const aaTop=margin.top+plotHeight+gapBelowPlot;
+    svg.append('rect').attr('x',bx).attr('y',aaTop).attr('width',bw).attr('height',aaHeight).attr('rx',3).attr('fill','#e2e8f0');
+    svg.append('text').attr('x',bx+bw/2).attr('y',aaTop+12).attr('text-anchor','middle').attr('font-size',10.5).attr('font-weight',750).attr('fill','#0f172a').text(family.name);
+    svg.append('text').attr('x',bx+bw/2).attr('y',aaTop+23).attr('text-anchor','middle').attr('font-size',8.5).attr('fill','#475569').attr('font-family','ui-monospace, monospace').text(family.box);
     family.items.forEach((codon,position)=>{
-      const cy=labelY+24+position*codonRow;
-      svg.append('rect').attr('x',bx+bw/2-17).attr('y',cy-8).attr('width',8).attr('height',8).attr('rx',1.5).attr('fill',RSCU_SEGMENT_COLORS[position%4]);
-      svg.append('text').attr('x',bx+bw/2-6).attr('y',cy).attr('font-size',8.8).attr('font-family','ui-monospace, monospace').attr('fill','#334155').text(codon.codon);
+      const top=aaTop+aaHeight+4+position*(codonHeight+codonGap);
+      svg.append('rect').attr('class',`rscu-codon-${codon.index}`).attr('x',bx).attr('y',top).attr('width',bw).attr('height',codonHeight).attr('rx',3).attr('fill',RSCU_SEGMENT_COLORS[position%4]).attr('stroke','#fff').attr('stroke-width',.6)
+        .on('mouseenter',()=>highlight(codon.index,true)).on('mousemove',event=>hover(event,tip(codon,family))).on('mouseleave',()=>{highlight(codon.index,false);unhover();});
+      svg.append('text').attr('x',bx+bw/2).attr('y',top+11).attr('text-anchor','middle').attr('font-size',9.5).attr('font-weight',750).attr('font-family','ui-monospace, monospace').attr('fill',textColor[position%4]).attr('pointer-events','none').text(codon.codon);
+      svg.append('text').attr('x',bx+bw/2).attr('y',top+21.5).attr('text-anchor','middle').attr('font-size',8).attr('fill',textColor[position%4]).attr('pointer-events','none').text(`n=${counts[codon.index]}`);
     });
   });
-  svg.append('text').attr('x',margin.left).attr('y',height-6).attr('font-size',10).attr('fill','#64748b').text(`${rscuAssemblyLabel(item)} · ${d3.format(',')(d3.sum(counts))} codons counted`);
+  svg.append('text').attr('x',margin.left).attr('y',height-8).attr('font-size',10).attr('fill','#64748b').text(`${rscuAssemblyLabel(item)} · ${d3.format(',')(d3.sum(counts))} codons counted`);
 }
 
 function renderRscuHeatmap(rscu,families,assemblies,recommended) {
@@ -2865,6 +2884,22 @@ const SCORE_COMPONENTS=[
   ['Annotation completeness (0-1)','Completeness','completeness'],['Integrity alerts (0-1)','Integrity','integrity'],['Junction support (0-1)','Junction','junction'],
   ['Coverage uniformity (0-1)','Coverage','coverage'],['Pilon confirmed bases (0-1)','Pilon','pilon'],['Majority concordance group (0-1)','Concordance','concordance'],['Closeness to modal length (0-1)','Length','length']
 ];
+
+// What each score component measures, shown on the recommendation cards and in the ranking headers.
+function scoreComponentHelp(key) {
+  const settings=ORGANPIPE.settings_phase2||{};
+  const q=qualitySettings();
+  const tolerance=num(settings.score_length_tolerance_percent,5);
+  return {
+    completeness:`Genes MITOS2 annotated out of the ${q.genes} expected.`,
+    integrity:'1 / (1 + annotation errors and warnings): 1 means no alert.',
+    junction:'Reads across the point where the circle was closed: supported 1, weak 0.5, unsupported 0.',
+    coverage:`Even read depth: (1 − CV) × (1 − share of bases below ${q.depth}×).`,
+    pilon:'Share of bases Pilon confirmed without changing them.',
+    concordance:'1 when the assembly is in the largest group of matching assemblies of the sample, otherwise 0.',
+    length:`1 at the most common genome length of the project, falling to 0 at ${tolerance}% away from it.`
+  }[key]||'';
+}
 
 function scoreBreakdownHtml(row) {
   const naValue=(ORGANPIPE.settings_phase2||{}).score_na_value;
@@ -2927,7 +2962,14 @@ function renderRecommendation() {
     const location=locationText(projectRecord(project));
     if(!pick)return `<div class="card reco-card no-pick"><div class="reco-project">${projectDisplayHtml(projectRecord(project))}${location?` · ${esc(location)}`:''}</div><div class="reco-meta">No circularized assembly ${overall?'in the current filters':'in this project'}. ${ranked.length} assemblies were scored.</div></div>`;
     const runnerUp=inView.filter(row=>row!==pick&&row.Eligible===true)[0];
-    const bars=SCORE_COMPONENTS.map(([column,label])=>{const value=num(pick[column]);return `<span>${label}</span><span class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></span><span>${value===null?'NA':d3.format('.2f')(value)}</span>`;}).join('');
+    const weights=(ORGANPIPE.settings_phase2||{}).score_weights||{};
+    const naValue=(ORGANPIPE.settings_phase2||{}).score_na_value;
+    const bars=SCORE_COMPONENTS.map(([column,label,key])=>{
+      const value=num(pick[column]);
+      return `<div class="reco-metric"><div class="reco-metric-head"><span class="reco-metric-name">${esc(label)}</span><span class="reco-metric-weight">weight ${esc(weights[key]??'—')}</span><span class="reco-metric-value">${value===null?`NA${naValue===null||naValue===undefined?'':` (${naValue})`}`:d3.format('.2f')(value)}</span></div>`
+        +`<span class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></span>`
+        +`<div class="reco-metric-help">${esc(scoreComponentHelp(key))}</div></div>`;
+    }).join('');
     const alerts=(ORGANPIPE.alerts||[]).filter(row=>text(row.Assembly)===text(pick.Assembly)).map(row=>row['Alert type']);
     return `<div class="card reco-card ${cls}" data-assembly="${esc(pick.Assembly)}">
       <div class="reco-info">
@@ -2935,27 +2977,18 @@ function renderRecommendation() {
         <div class="reco-assembly">${esc(pick['Seed Input'])} · K-mer ${esc(pick['K-mer'])} · copy _${esc(pick['Assembly copy'])}</div>
         <div class="reco-meta">${pick===overall?'Recommended':'Best in the current filters; the overall pick ('+esc(overall?`${overall['Seed Input']} · k${overall['K-mer']} · _${overall['Assembly copy']}`:'none')+') is filtered out'} · ${eligible} of ${ranked.length} assemblies circularized${runnerUp?` · next: ${esc(runnerUp['Seed Input'])} · k${esc(runnerUp['K-mer'])} (${fmtNum(runnerUp.Score,'.1f')})`:''}${alerts.length?`<br>Alerts: ${esc([...new Set(alerts)].join(', '))}`:''}</div>
       </div>
-      <div class="reco-score">${fmtNum(pick.Score,'.1f')}<small> / 100</small></div>
+      <div class="reco-score">${fmtNum(pick.Score,'.1f')}<small> / 100</small><div class="reco-score-note">weighted mean of the components × 100 <span class="info-dot" data-tooltip-html="${esc(scoreBreakdownHtml(pick))}">i</span></div></div>
       <div class="reco-components">${bars}</div>
     </div>`;
   }).join('');
-  cards.querySelectorAll('[data-assembly]').forEach(card=>{
-    const row=all.find(item=>text(item.Assembly)===card.dataset.assembly);
-    card.addEventListener('mousemove',event=>hover(event,scoreBreakdownHtml(row)));
-    card.addEventListener('mouseleave',unhover);
-  });
 
   const weights=(ORGANPIPE.settings_phase2||{}).score_weights||{};
   document.getElementById('rankingWeights').textContent=`Weights: ${SCORE_COMPONENTS.map(([,label,key])=>`${label} ${weights[key]??'—'}`).join(' · ')} (assembly_score.weights in config.yml). NA components count as ${(ORGANPIPE.settings_phase2||{}).score_na_value??'not counted'} (assembly_score.na_value).`;
   const rows=all.filter(matches).sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true})||num(a['Rank in project'],0)-num(b['Rank in project'],0));
   document.getElementById('rankingCount').textContent=`· ${rows.length} assemblies`;
-  document.getElementById('rankingHead').innerHTML=`<tr><th>Project / species</th><th>Location</th><th>Rank</th><th>Seed · K-mer · copy</th><th>Circular</th><th>Score</th>${SCORE_COMPONENTS.map(([,label])=>`<th>${esc(label)}</th>`).join('')}</tr>`;
+  const helpHead=(label,help)=>`<th data-help="${esc(help)}" class="help-head">${esc(label)}</th>`;
+  document.getElementById('rankingHead').innerHTML=`<tr><th>Project / species</th><th>Location</th>${helpHead('Rank','Position of the assembly within its project. Circularized assemblies rank above the others; ★ marks the recommended one.')}<th>Seed · K-mer · copy</th>${helpHead('Circular','Whether NOVOPlasty closed the assembly into a circle. Only circularized assemblies can be recommended.')}${helpHead('Score','Weighted mean of the components × 100. The weights are listed above the table.')}${SCORE_COMPONENTS.map(([,label,key])=>helpHead(label,scoreComponentHelp(key))).join('')}</tr>`;
   document.getElementById('rankingBody').innerHTML=rows.map(row=>`<tr class="${row.Recommended===true?'recommended':''}" data-assembly="${esc(row.Assembly)}"><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td style="text-align:left">${esc(locationText(projectRecord(row['Project name'])))}</td><td>${esc(row['Rank in project'])}${row.Recommended===true?' ★':''}</td><td>${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}</td><td class="${row.Circularized===true?'':'table-count'}">${row.Circularized===true?'Yes':'No'}</td><td><strong>${fmtNum(row.Score,'.1f')}</strong></td>${SCORE_COMPONENTS.map(([column])=>{const value=num(row[column]);return `<td class="component-cell">${value===null?'NA':d3.format('.2f')(value)}<div class="reco-bar ${value===null?'na':''}"><span style="width:${value===null?0:Math.round(100*value)}%"></span></div></td>`;}).join('')}</tr>`).join('');
-  document.querySelectorAll('#rankingBody tr[data-assembly]').forEach(tr=>{
-    const row=all.find(item=>text(item.Assembly)===tr.dataset.assembly);
-    tr.addEventListener('mousemove',event=>hover(event,scoreBreakdownHtml(row)));
-    tr.addEventListener('mouseleave',unhover);
-  });
   pinColumns(document.getElementById('rankingTable'),2);
 }
 
