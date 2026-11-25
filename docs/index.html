@@ -159,27 +159,32 @@ button.chip[aria-pressed="false"] { opacity: .45; text-decoration: line-through;
 /* file explorer */
 .ex-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 14px; }
 .ex-tools input[type=search] { min-width: 220px; }
-.explorer { display: grid; grid-template-columns: minmax(270px, 360px) minmax(0, 1fr); gap: 22px; }
-.tree-col { border-right: 1px solid var(--rule); padding-right: 14px; min-width: 0; }
-.tree-note { display: none; font-family: "Instrument Sans", sans-serif; }
-.tree { font-family: "JetBrains Mono", monospace; font-size: 12.5px; line-height: 1.5; }
-.tree .dir { color: var(--muted); padding: 8px 0 2px; }
-.tree ul { list-style: none; margin: 0 0 0 10px; padding: 0 0 0 12px; border-left: 1px solid var(--rule); }
+.explorer { display: flex; flex-direction: column; gap: 14px; }
+.picker { display: flex; flex-direction: column; gap: 8px; }
+.folds { display: flex; flex-wrap: wrap; gap: 6px; }
+.folds button { font-family: "JetBrains Mono", monospace; font-size: 12px; border: 1px solid var(--rule); background: transparent; color: var(--muted); border-radius: 5px; padding: 3px 8px; }
+.folds button:hover { color: var(--ink); background: var(--sunken); }
+.folds button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.folds .n { opacity: .6; margin-left: 4px; }
+.tree { display: flex; flex-wrap: wrap; gap: 4px 6px; }
 .tree button {
-  display: flex; align-items: flex-start; gap: 7px; width: 100%; text-align: left; background: transparent;
-  border: 0; color: var(--ink); padding: 3px 6px; border-radius: 4px; font: inherit; overflow-wrap: anywhere;
+  display: inline-flex; align-items: center; gap: 7px; text-align: left; background: transparent;
+  border: 0; border-bottom: 2px solid transparent; color: var(--ink); padding: 4px 6px; font-size: .92rem; border-radius: 0;
 }
 .tree button:hover { background: var(--sunken); }
-.tree button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
-.tree .sd { flex: none; width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; }
+.tree button[aria-selected="true"] { border-bottom-color: var(--brand); font-weight: 600; }
+.tree .sd { flex: none; width: 8px; height: 8px; border-radius: 50%; }
 .sd.now { background: var(--ok); } .sd.f1 { background: var(--ori); } .sd.f2 { background: var(--trna); }
 .sd.absent { background: transparent; border: 1.5px solid var(--alert); }
-.tree .empty { color: var(--muted); font-family: "Instrument Sans", sans-serif; font-size: .9rem; padding: 10px 0; }
+.tree .empty { color: var(--muted); font-size: .9rem; padding: 4px 0; }
 .lvl { display: none; color: var(--ori); font-weight: 600; }
 .layout-current .lvl { display: inline; animation: lvlIn .45s ease; }
 @keyframes lvlIn { from { opacity: 0; letter-spacing: -.6em; } to { opacity: 1; letter-spacing: normal; } }
 @media (prefers-reduced-motion: reduce) { .layout-current .lvl { animation: none; } }
-.tree button[aria-selected="true"] .lvl { color: var(--mark-strong); }
+#layoutSeg { margin-top: 4px; align-self: flex-start; }
+#layoutSeg button { white-space: nowrap; padding: 4px 10px; font-size: .85rem; }
+#arquivos .files-names { font-size: .85rem; color: var(--muted); margin-top: 14px; text-align: left; hyphens: manual; }
+.files-names code { font-size: .78rem; overflow-wrap: anywhere; }
 .detail { min-width: 0; container-type: inline-size; }
 .detail-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: flex-start; }
 .detail h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
@@ -370,11 +375,6 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
   }
   .slide.split { display: grid; grid-template-columns: minmax(300px, 31%) minmax(0, 1fr); gap: clamp(24px, 3vw, 48px); }
   #arquivos.slide.split { grid-template-columns: minmax(250px, 25%) minmax(0, 1fr); }
-  #arquivos .explorer { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(110px, 32%) minmax(0, 1fr); gap: 12px; }
-  #arquivos .tree-col { border-right: 0; padding: 0 0 8px; border-bottom: 1px solid var(--rule); }
-  #arquivos .tree { column-width: 250px; column-gap: 22px; }
-  #arquivos .tree .grp { break-inside: avoid; }
-  #arquivos .tree .dir { padding-top: 2px; }
   #arquivos .lede { font-size: 1rem; }
   .pipes thead { display: none; }
   .pipes tbody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); column-gap: 16px; row-gap: 0; }
@@ -404,8 +404,8 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
   .explorer { flex: 1 1 0; min-height: 0; }
   .slide.stack .lede { font-size: 1rem; margin-bottom: 0; }
   #arquivos .s-body > .fig > .fig-note { display: none; }
-  .tree-note { display: block !important; }
-  .explorer > .tree-col, .explorer > .detail { overflow: auto; min-height: 0; }
+  .explorer > .picker { flex: none; }
+  .explorer > .detail { flex: 1 1 0; overflow: auto; min-height: 0; }
   .detail .detail-grid { padding-bottom: 6px; }
   #outTableWrap, #outYaml { flex: 1 1 0; min-height: 0; overflow: auto; max-height: none; }
   .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 46%); padding-top: clamp(16px, 3vh, 36px); border-bottom: 0; }
@@ -441,8 +441,6 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
   .toc a { white-space: nowrap; margin: 0; grid-template-columns: auto auto; gap: 5px; border-left: 0; }
   .toc a.active { border-bottom: 2px solid var(--brand); border-radius: 4px 4px 0 0; }
   .hero, .explorer, .parser, .case-grid { grid-template-columns: minmax(0, 1fr); }
-  .tree-col { border-right: 0; padding-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: 10px; }
-  .tree { max-height: 300px; overflow-y: auto; }
   .hero .ring-wrap { max-width: 440px; margin: 0 auto; width: 100%; }
   html { scroll-padding-top: 110px; }
 }
@@ -589,17 +587,19 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
       <div class="s-text">
         <div class="sec-head"><span class="n">3</span><h2 data-i18n="files.h"></h2></div>
         <p class="lede" data-i18n="files.lede"></p>
+        <div class="seg" role="group" id="layoutSeg">
+          <button type="button" aria-pressed="true" data-layout="old" data-i18n="files.old"></button>
+          <button type="button" aria-pressed="false" data-layout="current" data-i18n="files.cur"></button>
+        </div>
+        <p class="files-names" data-i18n="files.names"></p>
       </div>
       <div class="s-body">
         <div class="fig">
-          <div class="ex-tools">
-            <div class="seg" role="group" id="layoutSeg">
-              <button type="button" aria-pressed="true" data-layout="old" data-i18n="files.old"></button>
-              <button type="button" aria-pressed="false" data-layout="current" data-i18n="files.cur"></button>
-            </div>
-          </div>
           <div class="explorer" id="explorer">
-            <div class="tree-col"><div class="tree" id="tree" role="listbox"></div><p class="fig-note tree-note" data-i18n="files.names"></p></div>
+            <div class="picker">
+              <div class="folds" id="folds" role="tablist"></div>
+              <div class="tree" id="tree" role="listbox"></div>
+            </div>
             <div class="detail" id="detail" aria-live="polite"></div>
           </div>
         </div>
@@ -2001,36 +2001,44 @@ function buildFilter() {
     b.addEventListener("click", function () { stOn[b.dataset.st] = !stOn[b.dataset.st]; b.setAttribute("aria-pressed", stOn[b.dataset.st]); buildTree(); });
   });
 }
-function buildTree() {
+function groupOf(id) { for (var g = 0; g < FILES.length; g++) if (FILES[g].items.some(function (it) { return it.id === id; })) return g; return -1; }
+function foldLabel(g) { return FILES[g].dir ? FILES[g].dir : t("files.outside"); }
+function buildTree(anim) {
   var vis = visibleFiles(), ids = {}; vis.forEach(function (v) { ids[v.id] = 1; });
-  var tree = document.getElementById("tree"), html = "";
-  FILES.forEach(function (g) {
-    var items = g.items.filter(function (it) { return ids[it.id]; });
-    if (!items.length) return;
-    html += '<div class="grp"><div class="dir">' + esc(g.dir ? "{sample}/" + g.dir : t("files.outside")) + "</div><ul>";
-    items.forEach(function (it) {
-      html += '<li><button type="button" role="option" data-id="' + it.id + '" aria-selected="' + (it.id === current) + '"><span class="sd ' + it.st + '"></span><span>' + lvlSpan(it) + esc(it.name) + "</span></button></li>";
+  if (vis.length && !ids[current]) current = vis[0].id;
+  var cg = groupOf(current), folds = document.getElementById("folds"), tree = document.getElementById("tree");
+  folds.innerHTML = FILES.map(function (g, gi) {
+    var n = g.items.filter(function (it) { return ids[it.id]; }).length;
+    if (!n) return "";
+    return '<button type="button" role="tab" data-g="' + gi + '" aria-selected="' + (gi === cg) + '">' + esc(foldLabel(gi)) + (n > 1 ? '<span class="n">' + n + "</span>" : "") + "</button>";
+  }).join("");
+  var items = cg < 0 ? [] : FILES[cg].items.filter(function (it) { return ids[it.id]; });
+  tree.innerHTML = items.map(function (it) {
+    return '<button type="button" role="option" data-id="' + it.id + '" aria-selected="' + (it.id === current) + '"><span class="sd ' + it.st + '"></span>' + esc(L(it.title)) + "</button>";
+  }).join("") || '<div class="empty">' + t("files.none") + "</div>";
+  folds.querySelectorAll("button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var first = FILES[+b.dataset.g].items.filter(function (it) { return ids[it.id]; })[0];
+      if (first) select(first.id);
     });
-    html += "</ul></div>";
   });
-  tree.innerHTML = html || '<div class="empty">' + t("files.none") + "</div>";
   tree.querySelectorAll("button").forEach(function (b) {
     b.addEventListener("click", function () { select(b.dataset.id); });
     b.addEventListener("keydown", function (ev) {
-      if (ev.key !== "ArrowDown" && ev.key !== "ArrowUp") return;
+      var fwd = ev.key === "ArrowDown" || ev.key === "ArrowRight", back = ev.key === "ArrowUp" || ev.key === "ArrowLeft";
+      if (!fwd && !back) return;
       ev.preventDefault();
-      var all = Array.prototype.slice.call(tree.querySelectorAll("button")), i = all.indexOf(b);
-      var nb = all[ev.key === "ArrowDown" ? Math.min(all.length - 1, i + 1) : Math.max(0, i - 1)];
-      nb.focus(); select(nb.dataset.id);
+      var i = vis.map(function (x) { return x.id; }).indexOf(b.dataset.id);
+      var nx = vis[fwd ? Math.min(vis.length - 1, i + 1) : Math.max(0, i - 1)];
+      select(nx.id);
+      var nb = document.querySelector('#tree button[data-id="' + nx.id + '"]'); if (nb) nb.focus();
     });
   });
-  if (vis.length && !ids[current]) { current = vis[0].id; buildTree(); return; }
-  showDetail(false);
+  showDetail(!!anim);
 }
 function select(id) {
   current = id;
-  document.querySelectorAll("#tree button").forEach(function (x) { x.setAttribute("aria-selected", x.dataset.id === id); });
-  showDetail(true);
+  buildTree(true);
 }
 function highlight(text, fields) {
   var ranges = [], n = 0;
@@ -2909,8 +2917,6 @@ AUTO.arquivos = function (r) {
     }
     var nx = vis[(i + 1) % vis.length];
     select(nx.id);
-    var btn = document.querySelector('#tree button[data-id="' + nx.id + '"]'), col = document.querySelector(".tree-col");
-    if (btn && col && col.scrollTo) col.scrollTo({ top: Math.max(0, btn.offsetTop - col.offsetTop - col.clientHeight / 2), behavior: "smooth" });
     r.after(450, play);
   }
   play();
