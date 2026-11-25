@@ -14,9 +14,9 @@
 SIF=/path/to/mocura.sif
 RESULTS=/path/to/results
 OUTPUT=/path/to/mocura_output
-CONFIG=/path/to/config.yml
-METADATA=/path/to/metadata.xlsx
-THREADS=16
+CONFIG=config.yml # Path to the configuration YAML file
+METADATA=/path/to/metadata.xlsx # Path to the metadata Excel file (Optional)
+THREADS=12
 
 mkdir -p "${OUTPUT}"
 
@@ -30,6 +30,6 @@ singularity exec \
     --results-dir /data/input \
     --output-dir /data/output \
     --config /config/config.yml \
-    --metadata /config/metadata.xlsx \
+    #--metadata /config/metadata.xlsx \
     --threads "${THREADS}" \
     --only-circularized

@@ -1,5 +1,5 @@
 pipeline:
-  threads: 20
+  threads: 12
   only_circularized: true
 
 figures:
