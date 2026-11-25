@@ -274,6 +274,87 @@ assembly_score:
     concordance: 2
     length: 1
 
+# Phase 3. Heteroplasmy candidates from the rotated BAM (pileup). Frequencies are
+# a lower bound: the OrganPipe BAM holds the reads NOVOPlasty assembled.
+heteroplasmy:
+  enabled: true
+  output_folder: heteroplasmy
+  min_depth: 20
+  min_minor_reads: 3
+  min_frequency: 0.10
+  min_mapping_quality: 20
+  # Ignored when the BAM stores no base qualities (OrganPipe BAMs often do not).
+  min_base_quality: 20
+  # Sites near the contig ends, in clusters, on one strand only or inside a TRF
+  # repeat are kept as low confidence and left out of the counts and alerts.
+  edge_exclusion: 50
+  cluster_window: 20
+  max_cluster_sites: 2
+  require_both_strands: true
+  bam_template: null
+
+# NCBI and BOLD access shared by species_identification and reference_comparison.
+# env_file (or --env-file) holds NCBI_API_KEY=... and optionally NCBI_EMAIL=...;
+# with a key, 10 requests per second, without it 3. BLAST also follows NCBI's
+# rule of 10 s between submissions and one status check per minute per search.
+# Answers are cached in cache_dir (default: <output>/species_identification/cache).
+remote_services:
+  env_file: null
+  cache_dir: null
+  refresh: false
+  timeout: 120
+  retries: 3
+  blast_submit_interval: 10
+  blast_poll_interval: 60
+  blast_max_wait: 1800
+
+# COI (mitochondrion) or rbcL and matK (chloroplast) of the recommended assembly
+# against BOLD and GenBank. With --metadata the declared species is confirmed;
+# without it the top_species most similar species of each database are listed.
+species_identification:
+  enabled: true
+  output_folder: species_identification
+  # null: read organelle from the OrganPipe config, falling back to mitochondrion.
+  organelle: null
+  # null: COI for mitochondrion, rbcL and matK for chloroplast.
+  markers: null
+  # null: public.tax-derep (animals) or public.plants (chloroplast).
+  bold_database: null
+  bold_min_identity: 0.9
+  bold_max_hits: 100
+  blast_database: core_nt
+  blast_hitlist_size: 250
+  min_overlap: 400
+  top_species: 3
+  identity_threshold: 97
+  tie_margin: 0.5
+
+# RefSeq complete genomes of the same organelle in the genus of the sample, or in
+# the family when the genus has fewer than min_references (add order to levels to
+# go further). Genome length, gene lengths and tandem repeats are compared.
+reference_comparison:
+  enabled: true
+  output_folder: reference_comparison
+  levels: [genus, family]
+  min_references: 1
+  max_references: 50
+  length_tolerance_percent: 5
+  gene_tolerance_percent: 10
+  compare_repeats: true
+
+# GenBank submission check with table2asn (bioconda). Writes .fsa, .tbl, .sqn,
+# .val, .dr and .gbf per assembly. assemblies: recommended or all. template: an
+# optional .sbt file; without it the missing-publication messages are ignored.
+ncbi_validation:
+  enabled: true
+  output_folder: ncbi_validation
+  binary: table2asn
+  assemblies: recommended
+  template: null
+  timeout: 600
+  ignore_codes:
+    - SEQ_DESCR.NoTaxonID
+
 html_report:
   enabled: true
   output_file: moCURA_report.html

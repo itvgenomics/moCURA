@@ -1,0 +1,177 @@
+<?xml version="1.0" ?>
+<!DOCTYPE TaxaSet PUBLIC "-//NLM//DTD Taxon, 14th January 2002//EN" "https://www.ncbi.nlm.nih.gov/entrez/query/DTD/taxon.dtd">
+<TaxaSet><Taxon>
+    <TaxId>1227502</TaxId>
+    <ScientificName>Kinosternon scorpioides</ScientificName>
+    <OtherNames>
+        <GenbankCommonName>scorpion mud turtle</GenbankCommonName>
+        <Synonym>Testudo scorpioides</Synonym>
+        <Name>
+            <ClassCDE>authority</ClassCDE>
+            <DispName>Kinosternon scorpioides (Linnaeus, 1766)</DispName>
+        </Name>
+        <Name>
+            <ClassCDE>authority</ClassCDE>
+            <DispName>Testudo scorpioides Linnaeus, 1766</DispName>
+        </Name>
+    </OtherNames>
+    <ParentTaxId>55538</ParentTaxId>
+    <Rank>species</Rank>
+    <Division>Vertebrates</Division>
+    <GeneticCode>
+        <GCId>1</GCId>
+        <GCName>Standard</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>2</MGCId>
+        <MGCName>Vertebrate Mitochondrial</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Eukaryota; Opisthokonta; Metazoa; Eumetazoa; Bilateria; Deuterostomia; Chordata; Craniata; Vertebrata; Gnathostomata; Teleostomi; Euteleostomi; Sarcopterygii; Dipnotetrapodomorpha; Tetrapoda; Amniota; Sauropsida; Sauria; Archelosauria; Testudinata; Testudines; Cryptodira; Durocryptodira; Americhelydia; Chelydroidea; Kinosternidae; Kinosternon</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2759</TaxId>
+            <ScientificName>Eukaryota</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>33154</TaxId>
+            <ScientificName>Opisthokonta</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>33208</TaxId>
+            <ScientificName>Metazoa</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>6072</TaxId>
+            <ScientificName>Eumetazoa</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>33213</TaxId>
+            <ScientificName>Bilateria</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>33511</TaxId>
+            <ScientificName>Deuterostomia</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>7711</TaxId>
+            <ScientificName>Chordata</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>89593</TaxId>
+            <ScientificName>Craniata</ScientificName>
+            <Rank>subphylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>7742</TaxId>
+            <ScientificName>Vertebrata</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>7776</TaxId>
+            <ScientificName>Gnathostomata</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>117570</TaxId>
+            <ScientificName>Teleostomi</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>117571</TaxId>
+            <ScientificName>Euteleostomi</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>8287</TaxId>
+            <ScientificName>Sarcopterygii</ScientificName>
+            <Rank>superclass</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1338369</TaxId>
+            <ScientificName>Dipnotetrapodomorpha</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>32523</TaxId>
+            <ScientificName>Tetrapoda</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>32524</TaxId>
+            <ScientificName>Amniota</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>8457</TaxId>
+            <ScientificName>Sauropsida</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>32561</TaxId>
+            <ScientificName>Sauria</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1329799</TaxId>
+            <ScientificName>Archelosauria</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2841271</TaxId>
+            <ScientificName>Testudinata</ScientificName>
+            <Rank>subclass</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>8459</TaxId>
+            <ScientificName>Testudines</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>8464</TaxId>
+            <ScientificName>Cryptodira</ScientificName>
+            <Rank>suborder</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1579337</TaxId>
+            <ScientificName>Durocryptodira</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1579336</TaxId>
+            <ScientificName>Americhelydia</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1579283</TaxId>
+            <ScientificName>Chelydroidea</ScientificName>
+            <Rank>superfamily</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>34912</TaxId>
+            <ScientificName>Kinosternidae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>55538</TaxId>
+            <ScientificName>Kinosternon</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2012/08/27 17:46:37</CreateDate>
+    <UpdateDate>2020/09/10 06:16:40</UpdateDate>
+    <PubDate>2012/12/04 13:02:29</PubDate>
+</Taxon>
+
+</TaxaSet>

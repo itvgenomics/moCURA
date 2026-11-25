@@ -23,6 +23,8 @@ From: condaforge/miniforge3:latest
 
     # pysam reads the rotated BAMs for the circularization-junction check.
     /opt/conda/envs/mocura_env/bin/python -c "import pysam"
+    # table2asn validates the annotation for GenBank submission (Phase 3).
+    /opt/conda/envs/mocura_env/bin/table2asn -version
 
     /opt/conda/envs/mocura_env/bin/python -m compileall -q /opt/mocura/mocura.py /opt/mocura/moCURA
 

@@ -1,0 +1,42 @@
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c1177-1108] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:2326-2395] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c4789-4718] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c4855-4789] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c4925-4856] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c6661-6592] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c7083-7016] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c8791-8719] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c9538-9471] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:9541-9611] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:11193-11262] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:11272-11337] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:11364-11436] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:11438-11506] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c11578-11508] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c12684-12616] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:12684-12754] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c12825-12754] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c13868-13794] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c15536-15467] [lcl|asm1: raw, dna len= 15536]
+Warning: valid [SEQ_FEAT.MissingTrnaAA] Missing encoded amino acid qualifier in tRNA FEATURE: tRNA:  [lcl|asm1:c1031-963] [lcl|asm1: raw, dna len= 15536]
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_1: raw, aa len= 380
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_2: raw, aa len= 173
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_3: raw, aa len= 600
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_4: raw, aa len= 454
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_5: raw, aa len= 106
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_6: raw, aa len= 116
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_7: raw, aa len= 261
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_8: raw, aa len= 226
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_9: raw, aa len= 59
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_10: raw, aa len= 225
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_11: raw, aa len= 516
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_12: raw, aa len= 345
+Error: valid [SEQ_FEAT.MissingProteinName] The product name is missing from this protein. BIOSEQ: lcl|asm1_13: raw, aa len= 314
+Error: valid [SEQ_FEAT.NoStop] Missing stop codon FEATURE: CDS: cob <1>  [lcl|asm1:c2318-1177] [lcl|asm1: raw, dna len= 15536] -> [lcl|asm1_1]
+Error: valid [SEQ_FEAT.NoStop] Missing stop codon FEATURE: CDS: nad3 <11>  [lcl|asm1:c7015-6667] [lcl|asm1: raw, dna len= 15536] -> [lcl|asm1_6]
+Error: valid [SEQ_FEAT.NoStop] Missing stop codon FEATURE: CDS: cox3 <13>  [lcl|asm1:c7867-7083] [lcl|asm1: raw, dna len= 15536] -> [lcl|asm1_7]
+Error: valid [SEQ_FEAT.NoStop] Missing stop codon FEATURE: CDS: cox1 <21>  [lcl|asm1:c11191-9643] [lcl|asm1: raw, dna len= 15536] -> [lcl|asm1_11]
+Error: valid [SEQ_FEAT.NoStop] Missing stop codon FEATURE: CDS: nad2 <23>  [lcl|asm1:c12614-11579] [lcl|asm1: raw, dna len= 15536] -> [lcl|asm1_12]
+Warning: valid [SEQ_DESCR.NoTaxonID] BioSource is missing taxon ID DESCRIPTOR: BioSrc: Kinosternon scorpioides BIOSEQ-SET: nuc-prot: lcl|asm1
+Error: valid [SEQ_DESCR.NoPubFound] No publications anywhere on this entire record. BIOSEQ-SET: genbank: lcl|asm1
+Info: valid [GENERIC.MissingPubRequirement] No submission citation anywhere on this entire record. BIOSEQ-SET: genbank: lcl|asm1

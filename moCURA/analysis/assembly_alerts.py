@@ -3,7 +3,9 @@
 Alerts never remove an assembly. They list conditions a curator should check:
 "circularized" runs with more than one contig, assemblies annotated but not
 rotated, genes MITOS2 kept only as a fragment at the origin, missing genes,
-unresolved Pilon breaks, low coverage and unannotated nhmmer hits.
+unresolved Pilon breaks, low coverage and unannotated nhmmer hits. Phase 3
+adds possible heteroplasmy, species not confirmed, lengths outside the RefSeq
+references and NCBI validation errors.
 """
 
 import os
@@ -51,6 +53,10 @@ def build_assembly_alerts(**kwargs):
     integrity = rows_by_assembly(dataframe=kwargs.get("integrity_dataframe"))
     concordance = rows_by_assembly(dataframe=kwargs.get("concordance_dataframe"))
     low_coverage_percent = float(kwargs.get("low_coverage_percent", 5))
+    heteroplasmy = rows_by_assembly(dataframe=kwargs.get("heteroplasmy_dataframe"))
+    species = rows_by_assembly(dataframe=kwargs.get("species_dataframe"))
+    reference = rows_by_assembly(dataframe=kwargs.get("reference_dataframe"))
+    validation = rows_by_assembly(dataframe=kwargs.get("validation_dataframe"))
     rows = []
 
     def add(job, alert_type, severity, detail):
@@ -110,5 +116,32 @@ def build_assembly_alerts(**kwargs):
             if item.get("In majority group") is False or item.get("In majority group") == False:  # noqa: E712
                 add(job, "Outside the majority group", "warning",
                     f"Concordance group {item['Group']} ({item['Group size']} assemblies); the majority group of the sample is {item['Majority group']}.")
+
+        for _, item in heteroplasmy.get(name, pd.DataFrame()).iterrows():
+            if item.get("High-confidence sites", 0):
+                add(job, "Possible heteroplasmy", "info",
+                    f"{int(item['High-confidence sites'])} high-confidence site(s) with a second base in the reads (highest frequency {item['Highest minor frequency']:.0%}); regions: {item['Regions']}.")
+
+        for _, item in species.get(name, pd.DataFrame()).iterrows():
+            if item.get("Verdict") in ("Not confirmed", "Ambiguous"):
+                identity = item.get("Identity to declared species (%)")
+                add(job, "Species not confirmed", "warning",
+                    f"{item['Marker']}: {item['Verdict'].lower()} for {item['Declared species']}"
+                    + (f" ({identity:.1f}% identity)" if pd.notna(identity) else "") + f"; probable species: {item['Probable species']}.")
+            elif item.get("Verdict") == "No reference":
+                add(job, "Species without reference sequence", "info",
+                    f"Neither BOLD nor GenBank has a {item['Marker']} of {item['Declared species']}; probable species: {item['Probable species']}.")
+
+        for _, item in reference.get(name, pd.DataFrame()).iterrows():
+            if item.get("Genome length status") in ("Shorter", "Longer"):
+                add(job, "Genome length outside references", "warning",
+                    f"{int(item['Genome length'])} bp; {int(item['References'])} RefSeq genomes of the {item['Reference level']} {item['Reference taxon']} range from {int(item['Reference length min'])} to {int(item['Reference length max'])} bp.")
+            if item.get("Genes outside the reference range", 0):
+                add(job, "Gene lengths outside references", "warning", f"{item['Genes outside (list)']}.")
+
+        for _, item in validation.get(name, pd.DataFrame()).iterrows():
+            problems = int(item.get("Rejects", 0) or 0) + int(item.get("Errors", 0) or 0) + int(item.get("Fatal discrepancies", 0) or 0)
+            if problems:
+                add(job, "NCBI validation errors", "warning", f"table2asn: {item['Main issues']}.")
 
     return pd.DataFrame(rows, columns=ALERT_COLUMNS)

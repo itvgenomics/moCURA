@@ -1,4 +1,4 @@
-"""Phases 1 and 2: OrganPipe outputs and the curation analyses built on them.
+"""Phases 1 to 3: OrganPipe outputs and the curation analyses built on them.
 
 Each analysis has its own ``config.yml`` section with an ``enabled`` key. A
 missing file logs a warning and leaves the corresponding values empty; it never
@@ -20,13 +20,18 @@ from ..load.load_mitos2_data import EXPECTED_MARKERS, load_mitos2_data
 from ..load.load_nhmmer_data import load_nhmmer_data
 from ..load.load_recruitment_data import IDENTITY_BINS, load_recruitment_data
 from ..load.organpipe_layout import find_organpipe_assemblies
-from .annotation_integrity import genetic_code_from_organpipe, load_annotation_integrity
+from ..utils.remote_service import RemoteService, read_env_file
+from .annotation_integrity import find_key, genetic_code_from_organpipe, load_annotation_integrity
 from .assembly_alerts import build_assembly_alerts, summary_lookup
 from .assembly_concordance import run_assembly_concordance
 from .assembly_score import build_assembly_score
 from .junction_support import load_junction_support
+from .heteroplasmy import load_heteroplasmy
+from .ncbi_validation import run_ncbi_validation
 from .provenance import load_benchmarks
+from .reference_comparison import run_reference_comparison
 from .sequence_composition import load_sequence_composition
+from .species_identification import run_species_identification
 
 
 def write_tsv(**kwargs):
@@ -90,6 +95,59 @@ def target_lengths_from_jobs(**kwargs):
         if length:
             lengths[job["Assembly"]] = length
     return lengths
+
+
+def organelle_from_organpipe(**kwargs):
+    """``mitochondrion`` or ``chloroplast`` from config.yml, else the OrganPipe config, else mitochondrion."""
+
+    configured = kwargs.get("configured")
+    organpipe_dir = kwargs.get("organpipe_dir")
+    value = configured
+    if not value and organpipe_dir:
+        import yaml
+        for name in ("config.yaml", "config.yml"):
+            path = os.path.join(organpipe_dir, "config", name)
+            if os.path.isfile(path):
+                try:
+                    with open(path, encoding="utf-8") as handle:
+                        value = find_key(data=yaml.safe_load(handle), key="organelle")
+                except (OSError, yaml.YAMLError) as error:
+                    logging.warning("Could not read organelle from %s: %s", path, error)
+                if value:
+                    break
+    text = str(value or "mitochondrion").lower()
+    return "chloroplast" if text.startswith("chlo") or "plast" in text else "mitochondrion"
+
+
+async def guarded(name, coroutine, count):
+    """Await a Phase 3 analysis; an unexpected error is logged and gives empty tables instead of stopping the run."""
+
+    try:
+        return await coroutine
+    except Exception:  # noqa: BLE001 - remote services and external tools must never stop moCURA
+        logging.exception("%s failed; its tables are left empty and the run continues", name)
+        return tuple(pd.DataFrame() for _ in range(count))
+
+
+def declared_species(**kwargs):
+    """Species of each project from the metadata table (empty without metadata)."""
+
+    from ..generate.prepare_html_report_data import load_metadata_dataframe
+
+    path = kwargs.get("metadata_path")
+    if not path:
+        return {}
+    try:
+        metadata = load_metadata_dataframe(path=path)
+    except (OSError, ValueError) as error:
+        logging.warning("Could not read the metadata for species identification: %s", error)
+        return {}
+    species = {}
+    for _, row in metadata.iterrows():
+        name = row.get("Species")
+        if name is not None and not pd.isna(name) and str(name).strip():
+            species[str(row["Project name"]).strip()] = " ".join(str(name).split())
+    return species
 
 
 async def run_organpipe_qc(**kwargs):
@@ -179,6 +237,8 @@ async def run_organpipe_qc(**kwargs):
     genetic_code = int(configured_code or organpipe_code or 2)
     html["settings_phase2"] = {"genetic_code": genetic_code, "genetic_code_source": "config.yml" if configured_code else ("OrganPipe config" if organpipe_code else "default (2, vertebrate mitochondrial)")}
     junction = integrity_issues = integrity = concordance_pairs = concordance = composition = rscu = scores = pd.DataFrame()
+    heteroplasmy = heteroplasmy_sites = species = species_hits = reference = reference_genes = reference_genomes = pd.DataFrame()
+    validation = validation_messages = pd.DataFrame()
 
     if jobs and enabled("junction_validation"):
         junction_config = section("junction_validation")
@@ -230,6 +290,85 @@ async def run_organpipe_qc(**kwargs):
         "group_identity_threshold": section("assembly_concordance").get("group_identity_threshold", 99.5),
     })
 
+    # ---- Phase 3 ----
+    organelle = organelle_from_organpipe(configured=section("species_identification").get("organelle"), organpipe_dir=organpipe_dir)
+    html["settings_phase3"] = {"organelle": organelle}
+
+    if jobs and enabled("heteroplasmy"):
+        heteroplasmy_config = section("heteroplasmy")
+        heteroplasmy, heteroplasmy_sites = await guarded("Heteroplasmy", load_heteroplasmy(
+            jobs=jobs, concurrency=concurrency, settings=heteroplasmy_config, trf_repeats_dataframe=kwargs.get("trf_repeats_dataframe"),
+            index_dir=os.path.join(output_dir, folder("heteroplasmy", "heteroplasmy"), "bam_index"),
+        ), 2)
+        save("heteroplasmy", "heteroplasmy_summary.tsv", "heteroplasmy", heteroplasmy)
+        save("heteroplasmy", "heteroplasmy_sites.tsv", "heteroplasmy_sites", heteroplasmy_sites)
+        html["settings_phase3"]["heteroplasmy"] = {key: heteroplasmy_config.get(key) for key in (
+            "min_depth", "min_minor_reads", "min_frequency", "edge_exclusion", "cluster_window", "max_cluster_sites")}
+
+    declared = declared_species(metadata_path=kwargs.get("metadata_path"))
+    remote = section("remote_services")
+    service = None
+    remote_on = lambda name: False
+    if jobs and (enabled("species_identification") or enabled("reference_comparison")):
+        env_file = kwargs.get("env_file") or remote.get("env_file")
+        service = RemoteService(
+            env=read_env_file(path=env_file),
+            cache_dir=remote.get("cache_dir") or os.path.join(output_dir, folder("species_identification", "species_identification"), "cache"),
+            refresh=remote.get("refresh", False), timeout=remote.get("timeout", 120), retries=remote.get("retries", 3),
+            blast_submit_interval=remote.get("blast_submit_interval", 10), blast_poll_interval=remote.get("blast_poll_interval", 60),
+            blast_max_wait=remote.get("blast_max_wait", 1800),
+        )
+        logging.info("Remote services: %d requests per second (%s)", service.rate, "NCBI_API_KEY from the env file" if service.api_key else "no API key")
+        if not await service.available():
+            logging.warning("Species identification and RefSeq comparison skipped: no network access to NCBI")
+            html["settings_phase3"]["remote"] = {"offline": True}
+            service = None
+
+    remote_on = lambda name: service is not None and enabled(name)
+
+    if jobs and remote_on("species_identification"):
+        species_config = section("species_identification")
+        species, species_hits = await guarded("Species identification", run_species_identification(
+            jobs=jobs, scores_dataframe=scores, service=service, settings=species_config, organelle=organelle, declared_species=declared,
+        ), 2)
+        save("species_identification", "species_identification.tsv", "species", species)
+        save("species_identification", "species_top_hits.tsv", "species_hits", species_hits)
+        html["settings_phase3"]["species"] = {key: species_config.get(key, default) for key, default in (
+            ("identity_threshold", 97), ("tie_margin", 0.5), ("min_overlap", 400), ("top_species", 3))}
+        html["settings_phase3"]["metadata_species"] = bool(declared)
+
+    if jobs and remote_on("reference_comparison"):
+        reference_config = section("reference_comparison")
+        reference, reference_genes, reference_genomes = await guarded("RefSeq comparison", run_reference_comparison(
+            jobs=jobs, service=service, settings=reference_config, species_dataframe=species, organelle=organelle,
+            output_dir=os.path.join(output_dir, folder("reference_comparison", "reference_comparison")),
+            trf_config=kwargs.get("trf_config", {}), trf_repeats_dataframe=kwargs.get("trf_repeats_dataframe"),
+            trf_summary_dataframe=kwargs.get("trf_summary_dataframe"),
+        ), 3)
+        save("reference_comparison", "reference_comparison.tsv", "reference", reference)
+        save("reference_comparison", "reference_genes.tsv", "reference_genes", reference_genes)
+        save("reference_comparison", "reference_genomes.tsv", "reference_genomes", reference_genomes)
+        html["settings_phase3"]["reference"] = {key: reference_config.get(key, default) for key, default in (
+            ("length_tolerance_percent", 5), ("gene_tolerance_percent", 10), ("levels", ["genus", "family"]))}
+
+    if service is not None:
+        html["settings_phase3"]["remote"] = {"rate": service.rate, "requests": service.requests, "failures": service.failures, "api_key": bool(service.api_key)}
+
+    if jobs and enabled("ncbi_validation"):
+        organisms = dict(declared)
+        if not species.empty:
+            for _, row in species.iterrows():
+                probable = str(row.get("Probable species") or "").split(";")[0].strip()
+                if row["Project name"] not in organisms and probable:
+                    organisms[row["Project name"]] = probable
+        validation, validation_messages = await guarded("NCBI validation", run_ncbi_validation(
+            jobs=jobs, scores_dataframe=scores, settings=section("ncbi_validation"), organisms=organisms, organelle=organelle,
+            genetic_code=genetic_code, concurrency=concurrency,
+            output_dir=os.path.join(output_dir, folder("ncbi_validation", "ncbi_validation")),
+        ), 2)
+        save("ncbi_validation", "ncbi_validation_summary.tsv", "validation", validation)
+        save("ncbi_validation", "ncbi_validation_messages.tsv", "validation_messages", validation_messages)
+
     if jobs and enabled("assembly_alerts"):
         alerts = build_assembly_alerts(
             jobs=jobs,
@@ -243,6 +382,7 @@ async def run_organpipe_qc(**kwargs):
             integrity_dataframe=integrity,
             concordance_dataframe=concordance,
             low_coverage_percent=section("coverage_profile").get("low_coverage_alert_percent", 5),
+            heteroplasmy_dataframe=heteroplasmy, species_dataframe=species, reference_dataframe=reference, validation_dataframe=validation,
         )
         save("assembly_alerts", "assembly_alerts.tsv", "alerts", alerts)
 
@@ -265,12 +405,23 @@ async def run_organpipe_qc(**kwargs):
         ("concordance_pairs", "Concordance Pairs"),
         ("composition", "Composition"),
         ("rscu", "RSCU"),
+        ("heteroplasmy", "Heteroplasmy"),
+        ("heteroplasmy_sites", "Heteroplasmy Sites"),
+        ("species", "Species ID"),
+        ("species_hits", "Species Top Hits"),
+        ("reference", "RefSeq Comparison"),
+        ("reference_genes", "RefSeq Gene Lengths"),
+        ("reference_genomes", "RefSeq Genomes"),
+        ("validation", "NCBI Validation"),
+        ("validation_messages", "NCBI Messages"),
     ]
     excel_sheets = [(sheet, tables[key]) for key, sheet in sheet_names if key in tables and not tables[key].empty]
 
     html.update({key: tables.get(key, pd.DataFrame()) for key in (
         "completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment", "nhmmer", "read_qc", "benchmarks", "alerts",
         "junction", "integrity", "integrity_issues", "concordance", "concordance_pairs", "composition", "rscu", "scores",
+        "heteroplasmy", "heteroplasmy_sites", "species", "species_hits", "reference", "reference_genes", "reference_genomes",
+        "validation", "validation_messages",
     )})
     html["coverage_windows"] = windows
     html["identity_histograms"] = histograms

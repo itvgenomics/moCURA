@@ -438,6 +438,22 @@ code { word-break: break-all; font-size: 11px; }
 .reco-score-note { font-size: 10.5px; font-weight: 500; color: var(--muted); line-height: 1.3; margin-top: 2px; }
 .reco-score-note .info-dot { vertical-align: -1px; }
 .ranking-table th.help-head { cursor: help; }
+.verdict-chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; white-space: nowrap; background: #e2e8f0; color: #334155; }
+.verdict-chip.Confirmed { background: #e7f6ef; color: #05624b; }
+.verdict-chip.Ambiguous { background: #fff4e0; color: #92400e; }
+.verdict-chip.Not-confirmed { background: #fde8e4; color: #9a3412; }
+.verdict-chip.No-reference { background: #f1f5f9; color: #475569; }
+.species-table td { vertical-align: top; }
+.sp-list { display: grid; gap: 3px; min-width: 390px; }
+.sp-hit { display: grid; grid-template-columns: 14px minmax(210px,1fr) 64px 52px; gap: 6px; align-items: center; font-size: 12px; text-align: left; }
+.sp-hit .sp-rank { color: #94a3b8; font-size: 10.5px; text-align: right; }
+.sp-hit a { color: #0f172a; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-hit a:hover { text-decoration: underline; }
+.sp-hit.declared a { color: #05624b; font-weight: 750; }
+.sp-hit .reco-bar { height: 6px; }
+.sp-hit .sp-id { font-variant-numeric: tabular-nums; text-align: right; color: #334155; }
+.sp-empty { color: var(--muted); font-size: 12px; }
+.reco-species { margin-top: 2px; }
 .reco-details { margin-top: 14px; }
 .reco-details > summary, .ranking-details > summary { list-style: none; display: flex; align-items: center; gap: 10px; }
 .reco-details > summary::-webkit-details-marker, .ranking-details > summary::-webkit-details-marker { display: none; }
@@ -616,8 +632,9 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       <a class="nav-link" href="#assemblies" data-tooltip="Linked NOVOPlasty assembly metrics. Hovering one run highlights the same run in all four panels.">Assemblies</a>
       <a class="nav-link" href="#pilon" data-tooltip="Interactive polishing metrics from Pilon.">Pilon</a>
       <a class="nav-link" href="#genome" data-tooltip="Marker and tandem-repeat positions for every assembly that passes the filters.">Genome</a>
-      <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, junction support, annotation integrity and concordance.">Quality</a>
+      <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, junction support, annotation integrity, concordance, heteroplasmy and NCBI validation.">Quality</a>
       <a class="nav-link" href="#composition" data-tooltip="GC content, skews and codon usage (RSCU).">Composition</a>
+      <a class="nav-link" href="#species" data-tooltip="Species identification against BOLD and GenBank, and comparison with RefSeq genomes of the same genus or family.">Species</a>
       <a class="nav-link" href="#markers" data-tooltip="Marker lengths with an independent min–max color scale for every marker column.">Markers</a>
       <a class="nav-link" href="#repeats" data-tooltip="TRF repeat families, genomic context and comparative table.">Repeats</a>
       <a class="nav-link" href="#snps" data-tooltip="True-SNP matrices rendered directly with D3 in a Snipit-like layout.">SNPs</a>
@@ -763,6 +780,58 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       <div id="concordanceSubtitle" class="chart-subtitle"></div>
       <div id="concordanceGrid" class="concordance-grid"></div>
     </div>
+    <div class="card table-card" style="margin-top:16px">
+      <div class="table-toolbar">
+        <div><div class="table-title">Heteroplasmy candidates <span class="info-dot" data-tooltip="Sites where a second base is present in the reads of the rotated BAM. High confidence: depth, minor reads and frequency above the thresholds, minor base on both strands, away from the contig ends, outside tandem repeats and not in a cluster of candidate sites. Frequencies are a lower bound because the BAM holds the reads NOVOPlasty assembled; a NUMT or contamination gives the same signal.">i</span></div><div id="heteroplasmyCount" class="table-count"></div></div>
+        <div class="table-tools">
+          <div class="table-search-control"><div class="table-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input id="heteroplasmySearch" type="search" placeholder="Search project, gene or position..."></div></div>
+          <label class="quality-only-alerts"><input id="heteroplasmyShowLow" type="checkbox"> Show low-confidence sites</label>
+        </div>
+      </div>
+      <div class="table-scroll" style="max-height:460px"><table id="heteroplasmyTable" class="assembly-table"><thead id="heteroplasmyHead"></thead><tbody id="heteroplasmyBody"></tbody></table></div>
+    </div>
+    <div class="card table-card" style="margin-top:16px">
+      <div class="table-toolbar">
+        <div><div class="table-title">NCBI submission check (table2asn) <span class="info-dot" data-tooltip="The GenBank of each checked assembly is converted into a submission (feature table with NCBI product names, incomplete stop codons completed by polyadenylation) and validated with table2asn. Rejects, errors and FATAL discrepancies would block or delay a GenBank submission. The .sqn, .tbl, .fsa and .gbf files are in the folder shown.">i</span></div><div id="validationCount" class="table-count"></div></div>
+      </div>
+      <div class="table-scroll" style="max-height:420px"><table id="validationTable" class="assembly-table"><thead id="validationHead"></thead><tbody id="validationBody"></tbody></table></div>
+      <details class="quality-guide" id="validationMessagesDetails">
+        <summary id="validationMessagesSummary">Messages</summary>
+        <div class="table-scroll" style="max-height:420px"><table id="validationMessagesTable" class="assembly-table"><thead id="validationMessagesHead"></thead><tbody id="validationMessagesBody"></tbody></table></div>
+      </details>
+    </div>
+  </section>
+
+  <section id="species" class="section">
+    <h2>Species identification and RefSeq references <span class="info-dot" data-tooltip="The barcode of one assembly per sample (COI for mitochondria, rbcL and matK for chloroplasts) is searched in BOLD and GenBank. The taxonomy of the declared species, or of the best match, then selects RefSeq genomes of the same genus (or family) to compare genome length, gene lengths and tandem repeats.">i</span></h2>
+    <div id="speciesSubtitle" class="section-note"></div>
+    <div class="card table-card" style="margin-top:12px">
+      <div class="table-toolbar"><div><div class="table-title">Species identification <span class="info-dot" data-tooltip="Species are ranked by their best identity among hits overlapping at least the minimum length (bit score favours long partial genomes over barcodes). With metadata: Confirmed when the declared species is at or above the identity threshold and no other species is clearly closer; Ambiguous when another species is closer; Not confirmed below the threshold; No reference when neither database has the declared species. Without metadata the most similar species of each database are listed.">i</span></div><div id="speciesCount" class="table-count"></div></div></div>
+      <div class="table-scroll"><table id="speciesTable" class="assembly-table species-table"><thead id="speciesHead"></thead><tbody id="speciesBody"></tbody></table></div>
+    </div>
+    <div class="card chart-card" style="margin-top:16px">
+      <div class="chart-title">Assemblies against the RefSeq genomes <span class="info-dot" data-tooltip="One row per sample. Grey diamonds are RefSeq genomes of the genus (or family) of the sample; the green band is their range widened by the tolerance in config.yml. Circles are the assemblies in view, green inside the band and orange outside; the outlined circle is the recommended assembly. For genome length the scale spans 15% around the references: assemblies beyond it (partial contigs) are triangles at the edge, with their length in the tooltip.">i</span></div>
+      <div id="referenceSubtitle" class="chart-subtitle"></div>
+      <div class="composition-controls">
+        <label for="referenceMetric">Compare</label>
+        <select id="referenceMetric"><option value="length">Genome length (bp)</option><option value="repeats">Bases in tandem repeats (TRF)</option></select>
+      </div>
+      <div class="rscu-scroll"><div id="referenceStrip" class="chart" style="min-height:0"></div></div>
+    </div>
+    <div class="card chart-card" style="margin-top:16px">
+      <div class="chart-title">Gene lengths against the RefSeq genomes <span class="info-dot" data-tooltip="Difference between the length of each gene and the median length of the same gene in the RefSeq genomes. Outlined cells fall outside the reference range widened by the gene tolerance; grey cells with a cross are genes found in most references but not in the assembly.">i</span></div>
+      <div id="referenceGenesSubtitle" class="chart-subtitle"></div>
+      <div class="composition-controls">
+        <label for="referenceGenesScope">Assemblies</label>
+        <select id="referenceGenesScope"><option value="recommended">Recommended assembly of each sample</option><option value="all">Every assembly in view</option></select>
+      </div>
+      <div id="referenceGenesLegend" class="rscu-legend"></div>
+      <div class="rscu-scroll"><div id="referenceGenes" class="chart" style="min-height:0"></div></div>
+    </div>
+    <details class="card quality-guide" style="margin-top:16px" id="referenceListDetails">
+      <summary id="referenceListSummary">RefSeq genomes used</summary>
+      <div class="table-scroll" style="max-height:420px"><table id="referenceListTable" class="assembly-table"><thead id="referenceListHead"></thead><tbody id="referenceListBody"></tbody></table></div>
+    </details>
   </section>
 
   <section id="composition" class="section">
@@ -2907,6 +2976,17 @@ function scoreBreakdownHtml(row) {
   return `<b>Score ${fmtNum(row.Score,'.1f')}</b> (weighted mean × 100)<br>${SCORE_COMPONENTS.map(([column,label])=>`${label}: ${num(row[column])===null?naText:d3.format('.2f')(num(row[column]))}`).join('<br>')}<br><br>${esc(row['Score breakdown'])}`;
 }
 
+function speciesNote(project) {
+  const rows=(ORGANPIPE.species||[]).filter(row=>text(row['Project name'])===project&&row.Verdict);
+  if(!rows.length)return '';
+  return '<br>Species: '+rows.map(row=>{
+    const identity=num(row['Identity to declared species (%)']);
+    const verdict=text(row.Verdict);
+    if(verdict==='Not declared')return `${esc(row.Marker)} closest to <em>${esc(text(row['Probable species']).split(';')[0])}</em>`;
+    return `<span class="verdict-chip ${verdict.replace(/\s+/g,'-')}">${esc(verdict)}</span> ${esc(row.Marker)}${identity===null?'':` ${d3.format('.1f')(identity)}%`}`;
+  }).join(', ');
+}
+
 function recommendedPicks() {
   const all=ORGANPIPE.scores||[];
   const projects=[...state.projects].filter(project=>all.some(row=>text(row['Project name'])===project)).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
@@ -2975,7 +3055,7 @@ function renderRecommendation() {
       <div class="reco-info">
         <div class="reco-project">${projectDisplayHtml(projectRecord(project))}${location?` <span class="table-count">· ${esc(location)}</span>`:''}</div>
         <div class="reco-assembly">${esc(pick['Seed Input'])} · K-mer ${esc(pick['K-mer'])} · copy _${esc(pick['Assembly copy'])}</div>
-        <div class="reco-meta">${pick===overall?'Recommended':'Best in the current filters; the overall pick ('+esc(overall?`${overall['Seed Input']} · k${overall['K-mer']} · _${overall['Assembly copy']}`:'none')+') is filtered out'} · ${eligible} of ${ranked.length} assemblies circularized${runnerUp?` · next: ${esc(runnerUp['Seed Input'])} · k${esc(runnerUp['K-mer'])} (${fmtNum(runnerUp.Score,'.1f')})`:''}${alerts.length?`<br>Alerts: ${esc([...new Set(alerts)].join(', '))}`:''}</div>
+        <div class="reco-meta">${pick===overall?'Recommended':'Best in the current filters; the overall pick ('+esc(overall?`${overall['Seed Input']} · k${overall['K-mer']} · _${overall['Assembly copy']}`:'none')+') is filtered out'} · ${eligible} of ${ranked.length} assemblies circularized${runnerUp?` · next: ${esc(runnerUp['Seed Input'])} · k${esc(runnerUp['K-mer'])} (${fmtNum(runnerUp.Score,'.1f')})`:''}${alerts.length?`<br>Alerts: ${esc([...new Set(alerts)].join(', '))}`:''}${speciesNote(project)}</div>
       </div>
       <div class="reco-score">${fmtNum(pick.Score,'.1f')}<small> / 100</small><div class="reco-score-note">weighted mean of the components × 100 <span class="info-dot" data-tooltip-html="${esc(scoreBreakdownHtml(pick))}">i</span></div></div>
       <div class="reco-components">${bars}</div>
@@ -3020,6 +3100,251 @@ function renderProvenance() {
   body.querySelectorAll('table.pin-first').forEach(table=>pinColumns(table,1));
 }
 
+// ---------------- Phase 3: heteroplasmy, NCBI validation, species and RefSeq ----------------
+const PHASE3=ORGANPIPE.settings_phase3||{};
+function projectRows(key){return (ORGANPIPE[key]||[]).filter(row=>state.projects.has(text(row['Project name'])));}
+function runLabel(row){return `${esc(row['Seed Input'])} · k${esc(row['K-mer'])} · _${esc(row['Assembly copy'])}`;}
+function recommendedAssemblies(){return new Set((ORGANPIPE.scores||[]).filter(row=>row.Recommended===true).map(row=>text(row.Assembly)));}
+
+function renderHeteroplasmy() {
+  const showLow=document.getElementById('heteroplasmyShowLow').checked;
+  const query=text(document.getElementById('heteroplasmySearch').value).trim().toLowerCase();
+  const summary=organpipeRows('heteroplasmy');
+  const all=organpipeRows('heteroplasmy_sites');
+  const rows=sortAssemblyRows(all.filter(row=>showLow||text(row.Confidence)==='high')
+    .filter(row=>!query||[projectDisplayText(projectRecord(row['Project name'])),row['Project name'],row['Seed Input'],`k${text(row['K-mer'])}`,row.Region,row.Position,row.Reason].map(text).join(' ').toLowerCase().includes(query)))
+    .sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true})||text(a.Assembly).localeCompare(text(b.Assembly))||num(a.Position,0)-num(b.Position,0));
+  const settings=PHASE3.heteroplasmy||{};
+  const high=all.filter(row=>text(row.Confidence)==='high');
+  const withSites=new Set(high.map(row=>text(row.Assembly))).size;
+  const qualities=summary.some(row=>text(row['Base qualities']).startsWith('absent'))?' Base qualities are absent from the BAMs, so bases were not filtered by quality.':'';
+  document.getElementById('heteroplasmyCount').textContent=!ORGANPIPE.heteroplasmy
+    ? 'Heteroplasmy was not run.'
+    : `${summary.length} assemblies scanned · ${high.length} high-confidence sites in ${withSites} assemblies · ${all.length-high.length} low-confidence · depth ≥ ${text(settings.min_depth??20)}, minor base ≥ ${text(settings.min_minor_reads??3)} reads and ≥ ${d3.format('.0%')(num(settings.min_frequency,.1))}.${qualities}`;
+  const columns=['Project / species','Location','Seed · K-mer · copy','Position','Region','Depth','Change','Minor frequency','Minor reads (+ / −)','Confidence','Why low'];
+  document.getElementById('heteroplasmyHead').innerHTML=`<tr>${columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>`;
+  const shown=rows.slice(0,1500);
+  document.getElementById('heteroplasmyBody').innerHTML=shown.map(row=>{
+    const frequency=num(row['Minor frequency'],0);
+    return `<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td style="text-align:left">${esc(locationText(projectRecord(row['Project name'])))}</td><td>${runLabel(row)}</td><td class="q-num">${d3.format(',')(num(row.Position,0))}</td><td><strong>${esc(row.Region)}</strong></td><td class="q-num">${d3.format(',')(num(row.Depth,0))}</td><td><code>${esc(row['Major base'])}&gt;${esc(row['Minor base'])}</code></td>`
+      +`<td class="data-bar-cell q-num" style="--bar-width:${Math.min(100,200*frequency).toFixed(1)}%;--bar-color:rgba(204,120,188,.35)"><div class="cell-bar"></div><span class="cell-value">${d3.format('.1%')(frequency)}</span></td>`
+      +`<td>${esc(row['Minor reads forward'])} / ${esc(row['Minor reads reverse'])}</td><td class="${text(row.Confidence)==='high'?'q-warn':''}">${esc(row.Confidence)}</td><td style="text-align:left;white-space:normal;min-width:220px">${esc(row.Reason)}</td></tr>`;
+  }).join('')+(rows.length>shown.length?`<tr><td colspan="${columns.length}" class="table-count">${rows.length-shown.length} more rows in heteroplasmy/heteroplasmy_sites.tsv</td></tr>`:'')
+    || `<tr><td colspan="${columns.length}" class="table-count" style="padding:16px">${summary.length?'No candidate site for the current filters.':'No BAM was found for the assemblies in view.'}</td></tr>`;
+  pinColumns(document.getElementById('heteroplasmyTable'),2);
+}
+
+function renderValidation() {
+  const rows=sortAssemblyRows(organpipeRows('validation'));
+  const messages=sortAssemblyRows(organpipeRows('validation_messages'));
+  const blocking=row=>num(row.Rejects,0)+num(row.Errors,0)+num(row['Fatal discrepancies'],0);
+  document.getElementById('validationCount').textContent=!(ORGANPIPE.validation||[]).length
+    ? 'table2asn was not run (disabled, not installed, or no GenBank in view).'
+    : `${rows.length} assemblies checked · ${rows.filter(row=>blocking(row)).length} with rejects, errors or FATAL discrepancies · ${d3.sum(rows,row=>num(row['Incomplete stops completed'],0))} incomplete stop codons completed in the feature tables`;
+  const columns=['Project / species','Location','Seed · K-mer · copy','Organism used','Rejects','Errors','Warnings','FATAL','Discrepancies','Stops completed','Main issues','Submission files'];
+  document.getElementById('validationHead').innerHTML=`<tr>${columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>`;
+  const countCell=(value,bad)=>`<td class="q-num ${num(value,0)?(bad?'q-bad':'q-warn'):'q-ok'}">${esc(value)}</td>`;
+  document.getElementById('validationBody').innerHTML=rows.map(row=>`<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td style="text-align:left">${esc(locationText(projectRecord(row['Project name'])))}</td><td>${runLabel(row)}</td><td><em>${esc(row.Organism)}</em></td>${countCell(row.Rejects,true)}${countCell(row.Errors,true)}${countCell(row.Warnings,false)}${countCell(row['Fatal discrepancies'],true)}${countCell(row.Discrepancies,false)}<td class="q-num">${esc(row['Incomplete stops completed'])}</td><td style="text-align:left;white-space:normal;min-width:200px">${esc(row['Main issues'])||'<span class="table-count">none</span>'}</td><td style="text-align:left"><code class="path-code">${esc(row['Output folder'])}</code></td></tr>`).join('')
+    || `<tr><td colspan="${columns.length}" class="table-count" style="padding:16px">No checked assembly for the current filters.</td></tr>`;
+  document.getElementById('validationMessagesSummary').textContent=`Messages (${messages.length})`;
+  const messageColumns=['Project / species','Seed · K-mer · copy','Source','Severity','Code','Message','Location'];
+  const severityClass={reject:'q-bad',fatal:'q-bad',error:'q-bad',warning:'q-warn',discrepancy:'q-warn',info:''};
+  document.getElementById('validationMessagesHead').innerHTML=`<tr>${messageColumns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>`;
+  document.getElementById('validationMessagesBody').innerHTML=messages.slice(0,1500).map(row=>`<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td>${runLabel(row)}</td><td>${esc(row.Source)}</td><td class="${severityClass[text(row.Severity)]||''}">${esc(row.Severity)}</td><td><code>${esc(row.Code)}</code></td><td style="text-align:left;white-space:normal;min-width:320px">${esc(row.Message)}</td><td>${esc(row.Location)}</td></tr>`).join('')
+    || `<tr><td colspan="${messageColumns.length}" class="table-count" style="padding:16px">No message: the checked annotations are ready for submission.</td></tr>`;
+  pinColumns(document.getElementById('validationTable'),2);
+}
+
+function speciesHitList(hits,declared,database) {
+  if(!hits.length)return '<span class="sp-empty">no hit above the minimum overlap</span>';
+  const low=Math.min(85,d3.min(hits,hit=>num(hit['Identity (%)'],100))-1);
+  const sameSpecies=(a,b)=>text(a).split(/\s+/).slice(0,2).join(' ').toLowerCase()===text(b).split(/\s+/).slice(0,2).join(' ').toLowerCase();
+  return `<div class="sp-list">${hits.map(hit=>{
+    const identity=num(hit['Identity (%)'],0);
+    const record=text(hit['Best record']);
+    const url=database==='BOLD'?`https://portal.boldsystems.org/record/${encodeURIComponent(record)}`:`https://www.ncbi.nlm.nih.gov/nuccore/${encodeURIComponent(record)}`;
+    const tip=`${hit.Species}: ${d3.format('.2f')(identity)}% identity over ${d3.format(',')(num(hit['Overlap (bp)'],0))} bp; ${hit.Records} record(s) above the minimum overlap; best record ${record}${text(hit.BIN)?` (${hit.BIN})`:''}${text(hit.Title)?`. ${hit.Title}`:''}`;
+    return `<div class="sp-hit ${declared&&sameSpecies(hit.Species,declared)?'declared':''}" data-tooltip="${esc(tip)}"><span class="sp-rank">${esc(hit.Rank)}</span><a href="${url}" target="_blank" rel="noopener"><em>${esc(hit.Species)}</em></a><span class="reco-bar"><span style="width:${Math.max(2,100*(identity-low)/(100-low)).toFixed(1)}%"></span></span><span class="sp-id">${d3.format('.2f')(identity)}%</span></div>`;
+  }).join('')}</div>`;
+}
+
+function renderSpeciesId() {
+  const rows=projectRows('species').sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true}));
+  const hits=projectRows('species_hits');
+  const remote=PHASE3.remote||{};
+  const settings=PHASE3.species||{};
+  const section=document.getElementById('species');
+  const subtitle=document.getElementById('speciesSubtitle');
+  const ran=(ORGANPIPE.species||[]).length||(ORGANPIPE.reference||[]).length;
+  section.style.display=ran||remote.offline?'':'none';
+  subtitle.textContent=remote.offline
+    ? 'NCBI could not be reached when the report was built, so species identification and the RefSeq comparison were skipped.'
+    : `${text(PHASE3.organelle||'mitochondrion')} · ${PHASE3.metadata_species?'species declared in the metadata are checked':'no metadata: the most similar species of each database are listed'} · species ranked by identity over at least ${text(settings.min_overlap??400)} bp, confirmation at ${text(settings.identity_threshold??97)}% · ${text(remote.rate??3)} requests per second${remote.api_key?' (NCBI API key)':''} · ${num(remote.requests,0)?`${text(remote.requests)} requests to NCBI and BOLD${num(remote.failures,0)?`, ${remote.failures} failed`:''}`:'all answers read from the cache'} (species_identification/cache).`;
+  const verdicts=d3.rollup(rows,v=>v.length,row=>text(row.Verdict));
+  document.getElementById('speciesCount').textContent=rows.length?[...verdicts].map(([key,value])=>`${value} ${key.toLowerCase()}`).join(' · '):'';
+  const columns=['Project / species','Location','Marker (assembly)','Verdict','Identity to declared','BOLD: most similar species','GenBank: most similar species','Taxonomy (NCBI)'];
+  document.getElementById('speciesHead').innerHTML=`<tr>${columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>`;
+  document.getElementById('speciesBody').innerHTML=rows.map(row=>{
+    const project=text(row['Project name']);
+    const list=database=>hits.filter(hit=>text(hit['Project name'])===project&&text(hit.Marker)===text(row.Marker)&&text(hit.Database)===database).sort((a,b)=>num(a.Rank,0)-num(b.Rank,0));
+    const declared=text(row['Declared species']);
+    const identity=num(row['Identity to declared species (%)']);
+    const verdict=text(row.Verdict);
+    const assembly=(ORGANPIPE.scores||[]).find(item=>text(item.Assembly)===text(row.Assembly));
+    const lineage=['Genus','Family','Order','Class'].map(rank=>text(row[rank])).filter(Boolean).join(' · ');
+    return `<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(project))}${declared?'':' <span class="table-count">(no declared species)</span>'}</td><td style="text-align:left">${esc(locationText(projectRecord(project)))}</td>`
+      +`<td style="text-align:left"><strong>${esc(row.Marker)}</strong> <span class="table-count">${row['Marker length']?d3.format(',')(num(row['Marker length'],0))+' bp':''}</span><br><span class="table-count">${assembly?runLabel(assembly):esc(row.Assembly)}</span></td>`
+      +`<td><span class="verdict-chip ${verdict.replace(/\s+/g,'-')}">${esc(verdict)}</span></td>`
+      +`<td class="q-num">${identity===null?'—':`<strong>${d3.format('.2f')(identity)}%</strong>`}${[['BOLD','Declared species identity in BOLD (%)'],['GenBank','Declared species identity in GenBank (%)']].map(([name,column])=>num(row[column])===null?(declared?`<br><span class="table-count">${name}: not found</span>`:''):`<br><span class="table-count">${name}: ${d3.format('.2f')(num(row[column]))}%${name==='GenBank'&&row['Declared species GenBank record']?` (${esc(row['Declared species GenBank record'])})`:''}</span>`).join('')}</td>`
+      +`<td>${speciesHitList(list('BOLD'),declared,'BOLD')}${text(row['BOLD status'])==='failed'?'<span class="sp-empty">BOLD did not answer</span>':''}</td>`
+      +`<td>${speciesHitList(list('GenBank'),declared,'GenBank')}${text(row['GenBank status'])==='failed'?'<span class="sp-empty">GenBank did not answer</span>':''}</td>`
+      +`<td style="text-align:left;white-space:normal;min-width:160px">${esc(lineage)||'—'}${row['Taxonomy species']?`<br><span class="table-count">from ${esc(row['Taxonomy species'])}</span>`:''}</td></tr>`;
+  }).join('') || `<tr><td colspan="${columns.length}" class="table-count" style="padding:16px">No species identification for the current filters.</td></tr>`;
+  pinColumns(document.getElementById('speciesTable'),2);
+}
+
+let referenceMetric='length';
+function renderReferenceStrip() {
+  const container=document.getElementById('referenceStrip');
+  clearChart('referenceStrip');
+  const assemblies=organpipeRows('reference');
+  const genomes=projectRows('reference_genomes');
+  const settings=PHASE3.reference||{};
+  const subtitle=document.getElementById('referenceSubtitle');
+  if(!assemblies.length){subtitle.textContent='No RefSeq comparison for the current filters.';return;}
+  const length=referenceMetric==='length';
+  const value=row=>num(row[length?'Genome length':'Bases in repeats']);
+  const refValue=row=>num(row[length?'Genome length':'Bases in repeats']);
+  const tolerance=length?num(settings.length_tolerance_percent,5)/100:0;
+  const recommended=recommendedAssemblies();
+  const projects=[...new Set(assemblies.map(row=>text(row['Project name'])))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  const outside=assemblies.filter(row=>length?['Shorter','Longer'].includes(text(row['Genome length status'])):['More repeats','Fewer repeats'].includes(text(row['Repeat status']))).length;
+  subtitle.textContent=`${assemblies.length} assemblies of ${projects.length} sample(s) compared with ${new Set(genomes.map(row=>text(row.Accession))).size} RefSeq genomes · ${outside} outside the reference range${length?` (± ${d3.format('~g')(100*tolerance)}%)`:''}.`;
+  const values=[...assemblies.map(value),...genomes.map(refValue)].filter(v=>v!==null);
+  if(!values.length){emptyChart('referenceStrip','No value to compare (TRF may be disabled).');return;}
+  const labels=projects.map(project=>{const first=assemblies.find(row=>text(row['Project name'])===project);return `${projectDisplayText(projectRecord(project))} · ${text(first['Reference level'])} ${text(first['Reference taxon'])} (${text(first.References)})`;});
+  const labelWidth=Math.min(420,Math.max(220,svgLabelWidth(labels,10.5)+24));
+  const width=Math.max(760,container.clientWidth||1100);
+  const rowHeight=40, top=12, bottom=34;
+  const height=top+projects.length*rowHeight+bottom;
+  const svg=d3.select('#referenceStrip').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
+  let [low,high]=d3.extent(values);
+  const pad=Math.max(1,(high-low)*.08);
+  let domain=[low-pad,high+pad];
+  // Genome length: keep the scale around the references; partial contigs far from them sit at the edge.
+  const refAll=genomes.map(refValue).filter(v=>v!==null);
+  if(length&&refAll.length){
+    const [refLow,refHigh]=d3.extent(refAll);
+    domain=[Math.max(domain[0],refLow*.85),Math.min(domain[1],refHigh*1.15)];
+  }
+  const x=d3.scaleLinear().domain(domain).nice().range([labelWidth,width-18]);
+  const [xMin,xMax]=x.domain();
+  svg.append('g').attr('class','grid-line').attr('transform',`translate(0,${top})`).call(d3.axisTop(x).ticks(8).tickSize(-(projects.length*rowHeight)).tickFormat(''));
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${top+projects.length*rowHeight})`).call(d3.axisBottom(x).ticks(8).tickFormat(d3.format(',')));
+  svg.append('text').attr('x',(labelWidth+width-18)/2).attr('y',height-4).attr('text-anchor','middle').attr('font-size',10.5).attr('fill','#64748b').text(length?'Genome length (bp)':'Bases in tandem repeats (TRF)');
+  projects.forEach((project,index)=>{
+    const y=top+index*rowHeight+rowHeight/2;
+    const rows=assemblies.filter(row=>text(row['Project name'])===project);
+    const refs=genomes.filter(row=>text(row['Project name'])===project);
+    const first=rows[0];
+    const label=svg.append('text').attr('x',labelWidth-10).attr('y',y+4).attr('text-anchor','end').attr('font-size',10.5).attr('fill','#0f172a');
+    setSvgProjectLabel(label,projectRecord(project),{suffix:` · ${text(first['Reference level'])} ${text(first['Reference taxon'])} (${text(first.References)})`});
+    if(index)svg.append('line').attr('x1',8).attr('x2',width-18).attr('y1',y-rowHeight/2).attr('y2',y-rowHeight/2).attr('stroke','#e2e8f0');
+    const refValues=refs.map(refValue).filter(v=>v!==null);
+    if(refValues.length){
+      const [a,b]=d3.extent(refValues);
+      svg.append('rect').attr('x',x(a*(1-tolerance))).attr('y',y-11).attr('width',Math.max(2,x(b*(1+tolerance))-x(a*(1-tolerance)))).attr('height',22).attr('rx',4).attr('fill','#029E73').attr('fill-opacity',.12);
+    }
+    rows.forEach((row,i)=>{
+      const v=value(row); if(v===null)return;
+      const status=length?text(row['Genome length status']):text(row['Repeat status']);
+      const pick=recommended.has(text(row.Assembly));
+      const off=pick?0:((i%5)-2)*3.2;
+      const clipped=v<xMin?'left':(v>xMax?'right':null);
+      const mark=clipped
+        ? svg.append('path').attr('d',d3.symbol(d3.symbolTriangle,pick?90:42)()).attr('transform',`translate(${clipped==='left'?x(xMin)+5:x(xMax)-5},${y+off}) rotate(${clipped==='left'?-90:90})`)
+        : svg.append('circle').attr('cx',x(v)).attr('cy',y+off).attr('r',pick?6:3.6);
+      mark
+        .attr('fill',['Within'].includes(status)?'#029E73':(status==='NA'?'#94a3b8':'#DE8F05')).attr('fill-opacity',pick?1:.7)
+        .attr('stroke',pick?'#0f172a':'#fff').attr('stroke-width',pick?1.6:.6)
+        .on('mousemove',event=>hover(event,`<b>${esc(projectDisplayText(projectRecord(project)))}</b> · ${runLabel(row)}${pick?' (recommended)':''}${clipped?'<br>Outside the scale of the chart (triangle at the edge)':''}<br>${length?`${d3.format(',')(v)} bp · references ${d3.format(',')(num(row['Reference length min'],0))}–${d3.format(',')(num(row['Reference length max'],0))} bp`:`${d3.format(',')(v)} bp in ${esc(row['Tandem repeats'])} repeats · references ${d3.format(',')(num(row['Reference bases in repeats min'],0))}–${d3.format(',')(num(row['Reference bases in repeats max'],0))} bp`}<br>${esc(status)}`)).on('mouseleave',unhover);
+    });
+    refs.forEach(ref=>{
+      const v=refValue(ref); if(v===null)return;
+      svg.append('path').attr('d',d3.symbol(d3.symbolDiamond,70)()).attr('transform',`translate(${x(v)},${y})`).attr('fill','#475569').attr('stroke','#fff').attr('stroke-width',.8)
+        .on('mousemove',event=>hover(event,`<b><i>${esc(ref.Organism)}</i></b> · ${esc(ref.Accession)} (RefSeq)<br>${d3.format(',')(num(ref['Genome length'],0))} bp · ${esc(ref.Genes)} genes · ${ref['Tandem repeats']===null||ref['Tandem repeats']===undefined?'TRF not run':`${esc(ref['Tandem repeats'])} tandem repeats, ${d3.format(',')(num(ref['Bases in repeats'],0))} bp`}`)).on('mouseleave',unhover);
+    });
+  });
+}
+
+let referenceGenesScope='recommended';
+function renderReferenceGenes() {
+  const container=document.getElementById('referenceGenes');
+  clearChart('referenceGenes');
+  const legend=document.getElementById('referenceGenesLegend');
+  const settings=PHASE3.reference||{};
+  const tolerance=num(settings.gene_tolerance_percent,10);
+  const recommended=recommendedAssemblies();
+  let rows=organpipeRows('reference_genes');
+  if(referenceGenesScope==='recommended')rows=rows.filter(row=>recommended.has(text(row.Assembly)));
+  const subtitle=document.getElementById('referenceGenesSubtitle');
+  if(!rows.length){subtitle.textContent='No gene comparison for the current filters.';legend.innerHTML='';return;}
+  const assemblies=sortAssemblyRows([...d3Group(rows,row=>text(row.Assembly)).values()].map(group=>group[0]));
+  const expected=(ORGANPIPE.expected_markers||[]).map(text);
+  const markers=[...new Set(rows.map(row=>text(row.Marker)))].sort((a,b)=>{const ia=expected.indexOf(a), ib=expected.indexOf(b);return (ia<0?999:ia)-(ib<0?999:ib)||a.localeCompare(b);});
+  const byKey=new Map(rows.map(row=>[`${text(row.Assembly)}\0${text(row.Marker)}`,row]));
+  const flagged=rows.filter(row=>['Shorter','Longer','Absent'].includes(text(row.Status)));
+  subtitle.textContent=`${assemblies.length} assemblies × ${markers.length} genes · ${flagged.length} gene lengths outside the reference range widened by ${d3.format('~g')(tolerance)}% or absent.`;
+  const limit=Math.max(2*tolerance,20);
+  const color=d3.scaleDiverging(t=>d3.interpolateRdBu(1-t)).domain([-limit,0,limit]).clamp(true);
+  legend.innerHTML=`<span><i style="background:${color(-limit)}"></i>${-limit}% or shorter than the reference median</span><span><i style="background:${color(0)};border:1px solid #cbd5e1"></i>same length</span><span><i style="background:${color(limit)}"></i>+${limit}% or longer</span><span><i style="background:#fff;border:2px solid #DE8F05"></i>outside the reference range</span><span><i style="background:#e2e8f0"></i>absent from the assembly</span>`;
+  const labels=assemblies.map(row=>`${projectDisplayText(projectRecord(row['Project name']))} · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`);
+  const labelWidth=Math.min(400,Math.max(220,svgLabelWidth(labels,10)+30));
+  const width=Math.max(900,container.clientWidth||1100);
+  const cell=Math.max(14,Math.min(28,(width-labelWidth-12)/markers.length));
+  const rowHeight=16, top=70;
+  let cursor=top, previous=null;
+  const layout=assemblies.map(row=>{if(previous!==null&&text(row['Project name'])!==previous)cursor+=6;previous=text(row['Project name']);const item={row,y:cursor};cursor+=rowHeight;return item;});
+  const height=cursor+10, svgWidth=labelWidth+markers.length*cell+12;
+  const svg=d3.select('#referenceGenes').append('svg').attr('width',svgWidth).attr('height',height).attr('viewBox',`0 0 ${svgWidth} ${height}`);
+  markers.forEach((marker,j)=>{const cx=labelWidth+(j+.5)*cell;svg.append('text').attr('x',cx).attr('y',top-6).attr('transform',`rotate(-90,${cx},${top-6})`).attr('font-size',9.5).attr('fill','#334155').text(marker);});
+  layout.forEach(({row,y})=>{
+    const pick=recommended.has(text(row.Assembly));
+    const label=svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-4).attr('text-anchor','end').attr('font-size',10).attr('fill','#0f172a').attr('font-weight',pick?700:400);
+    setSvgProjectLabel(label,projectRecord(row['Project name']),{suffix:` · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}${pick?' ★':''}`});
+    markers.forEach((marker,j)=>{
+      const item=byKey.get(`${text(row.Assembly)}\0${marker}`);
+      const x0=labelWidth+j*cell;
+      if(!item)return;
+      const status=text(item.Status), deviation=num(item['Deviation from median (%)']);
+      const out=status==='Shorter'||status==='Longer';
+      const rect=svg.append('rect').attr('x',x0+.5).attr('y',y+.5).attr('width',cell-1.6).attr('height',rowHeight-1.6).attr('rx',2)
+        .attr('fill',status==='Absent'?'#e2e8f0':color(deviation??0)).attr('stroke',out?'#DE8F05':'none').attr('stroke-width',out?2:0);
+      if(status==='Absent')svg.append('text').attr('x',x0+cell/2).attr('y',y+rowHeight-4.5).attr('text-anchor','middle').attr('font-size',9).attr('fill','#64748b').attr('pointer-events','none').text('×');
+      rect.on('mousemove',event=>hover(event,`<b>${esc(marker)}</b> · ${esc(projectDisplayText(projectRecord(row['Project name'])))} · ${runLabel(row)}<br>${status==='Absent'?'Absent from the assembly':`${d3.format(',')(num(item.Length,0))} bp (${deviation===null?'—':d3.format('+.1f')(deviation)+'%'} from the reference median)`}<br>RefSeq: ${d3.format(',')(num(item['Reference min'],0))}–${d3.format(',')(num(item['Reference max'],0))} bp, median ${d3.format(',')(num(item['Reference median'],0))} bp, ${esc(item['References with the gene'])} genome(s)<br>${esc(status)}`)).on('mouseleave',unhover);
+    });
+  });
+}
+
+function renderReferenceList() {
+  const rows=projectRows('reference_genomes').sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true})||text(a.Accession).localeCompare(text(b.Accession)));
+  document.getElementById('referenceListSummary').textContent=`RefSeq genomes used (${new Set(rows.map(row=>text(row.Accession))).size} genomes for ${new Set(rows.map(row=>text(row['Project name']))).size} samples)`;
+  const columns=['Project / species','Level','Taxon','Accession','Organism','Genome length','Genes','Tandem repeats','Bases in repeats'];
+  document.getElementById('referenceListHead').innerHTML=`<tr>${columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>`;
+  document.getElementById('referenceListBody').innerHTML=rows.map(row=>`<tr><td style="text-align:left">${projectDisplayHtml(projectRecord(row['Project name']))}</td><td>${esc(row['Reference level'])}</td><td><em>${esc(row['Reference taxon'])}</em></td><td><a href="https://www.ncbi.nlm.nih.gov/nuccore/${encodeURIComponent(text(row.Accession))}" target="_blank" rel="noopener">${esc(row.Accession)}</a></td><td style="text-align:left"><em>${esc(row.Organism)}</em></td><td class="q-num">${d3.format(',')(num(row['Genome length'],0))}</td><td class="q-num">${esc(row.Genes)}</td><td class="q-num">${esc(row['Tandem repeats']??'—')}</td><td class="q-num">${row['Bases in repeats']===null||row['Bases in repeats']===undefined?'—':d3.format(',')(num(row['Bases in repeats'],0))}</td></tr>`).join('')
+    || `<tr><td colspan="${columns.length}" class="table-count" style="padding:16px">No RefSeq genome for the current filters.</td></tr>`;
+  pinColumns(document.getElementById('referenceListTable'),1);
+}
+
+function renderPhase3() {
+  renderHeteroplasmy();
+  renderValidation();
+  renderSpeciesId();
+  renderReferenceStrip();
+  renderReferenceGenes();
+  renderReferenceList();
+}
+
 function renderOrganpipeSections() {
   renderRecommendation();
   renderIntegrityTable();
@@ -3029,6 +3354,7 @@ function renderOrganpipeSections() {
   renderReadQc();
   renderCompletenessHeatmap();
   renderQualityTable();
+  renderPhase3();
   renderProvenance();
 }
 
@@ -4156,6 +4482,10 @@ document.getElementById('rscuView').addEventListener('change',event=>{ rscuView=
 document.getElementById('pilonShowValues').addEventListener('change',event=>{ pilonShowValues=event.target.checked; renderPilonMetrics(); });
 document.getElementById('qualityOnlyAlerts').addEventListener('change',renderQualityTable);
 document.getElementById('repeatSearch').addEventListener('input',renderRepeatTable);
+document.getElementById('heteroplasmySearch').addEventListener('input',renderHeteroplasmy);
+document.getElementById('heteroplasmyShowLow').addEventListener('change',renderHeteroplasmy);
+document.getElementById('referenceMetric').addEventListener('change',event=>{ referenceMetric=event.target.value; renderReferenceStrip(); });
+document.getElementById('referenceGenesScope').addEventListener('change',event=>{ referenceGenesScope=event.target.value; renderReferenceGenes(); });
 
 start();
 </script>

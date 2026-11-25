@@ -601,6 +601,8 @@ ORGANPIPE_TABLES = (
     "completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment",
     "nhmmer", "read_qc", "benchmarks", "alerts", "provenance",
     "junction", "integrity", "integrity_issues", "concordance", "concordance_pairs", "composition", "scores",
+    "heteroplasmy", "heteroplasmy_sites", "species", "species_hits", "reference", "reference_genes", "reference_genomes",
+    "validation", "validation_messages",
 )
 
 
@@ -642,13 +644,15 @@ def organpipe_report_data(**kwargs):
         "identity_histograms": list(organpipe.get("identity_histograms", []) or []),
         "settings": dict(organpipe.get("settings", {}) or {}),
         "settings_phase2": dict(organpipe.get("settings_phase2", {}) or {}),
+        "settings_phase3": dict(organpipe.get("settings_phase3", {}) or {}),
         "rscu": compact_rscu(dataframe=organpipe.get("rscu")),
     }
 
     for key in ORGANPIPE_TABLES:
         value = organpipe.get(key)
         records = dataframe_records(dataframe=value) if isinstance(value, pd.DataFrame) else []
-        if key not in {"provenance", "benchmarks"}:
+        # species_hits has its own Species column (the hit), which the metadata must not overwrite.
+        if key not in {"provenance", "benchmarks", "species_hits"}:
             records = apply_metadata_to_records(records, metadata_lookup)
         output[key] = records
 

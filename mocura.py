@@ -63,6 +63,7 @@ def main():
             --config: YAML file containing report and plot settings.
             --metadata: Optional metadata table mapped by Project name.
             --organpipe-dir: Optional OrganPipe root (results/, workflow/reports/, benchmarks/).
+            --env-file: Optional .env file with NCBI_API_KEY (and NCBI_EMAIL) for NCBI queries.
             """
         ),
     )
@@ -96,6 +97,15 @@ def main():
         help=(
             "Optional OrganPipe run root holding results/, workflow/reports/ "
             "and benchmarks/. Inferred from --results-dir when omitted."
+        ),
+    )
+
+    input_group.add_argument(
+        "--env-file",
+        default=None,
+        help=(
+            "Optional .env file with NCBI_API_KEY=... (and NCBI_EMAIL=...). "
+            "With a key, NCBI and BOLD are queried at 10 requests per second; without it, 3."
         ),
     )
 
@@ -184,6 +194,7 @@ def main():
                 fig_format=arguments.fig_format,
                 metadata_path=arguments.metadata,
                 organpipe_dir=arguments.organpipe_dir,
+                env_file=arguments.env_file,
             )
         )
     except Exception as error:

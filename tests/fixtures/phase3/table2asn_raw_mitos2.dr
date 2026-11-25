@@ -1,0 +1,67 @@
+Discrepancy Report Results
+
+Summary
+COUNT_NUCLEOTIDES: 1 nucleotide Bioseq is present
+NO_ANNOTATION: 13 bioseqs have no features
+SOURCE_QUALS: taxname (all present, all unique)
+SOURCE_QUALS: location (all present, all unique)
+CITSUBAFFIL_CONFLICT: Citsub affiliation conflicts found
+FEATURE_COUNT: CDS: 13 present
+FEATURE_COUNT: gene: 13 present
+FEATURE_COUNT: rRNA: 2 present
+FEATURE_COUNT: tRNA: 21 present
+RNA_NO_PRODUCT: 21 RNA features have no product and are not pseudo
+AUTODEF_USER_OBJECT: 1 nucleotide sequence has no autodef user objects
+DUP_DEFLINE: All deflines are unique
+
+Detailed Report
+
+COUNT_NUCLEOTIDES: 1 nucleotide Bioseq is present
+asm1.sqn:asm1 (length 15536)
+NO_ANNOTATION: 13 bioseqs have no features
+asm1.sqn:asm1_1 (length 380)
+asm1.sqn:asm1_2 (length 173)
+asm1.sqn:asm1_3 (length 600)
+asm1.sqn:asm1_4 (length 454)
+asm1.sqn:asm1_5 (length 106)
+asm1.sqn:asm1_6 (length 116)
+asm1.sqn:asm1_7 (length 261)
+asm1.sqn:asm1_8 (length 226)
+asm1.sqn:asm1_9 (length 59)
+asm1.sqn:asm1_10 (length 225)
+asm1.sqn:asm1_11 (length 516)
+asm1.sqn:asm1_12 (length 345)
+asm1.sqn:asm1_13 (length 314)
+SOURCE_QUALS: taxname (all present, all unique)
+SOURCE_QUALS: location (all present, all unique)
+CITSUBAFFIL_CONFLICT: Citsub affiliation conflicts found
+CITSUBAFFIL_CONFLICT: No citsubs were found!
+FEATURE_COUNT: CDS: 13 present
+FEATURE_COUNT: gene: 13 present
+FEATURE_COUNT: rRNA: 2 present
+FEATURE_COUNT: tRNA: 21 present
+RNA_NO_PRODUCT: 21 RNA features have no product and are not pseudo
+asm1.sqn:tRNA	tRNA	lcl|asm1:c1177-1108	
+asm1.sqn:tRNA	tRNA	lcl|asm1:2326-2395	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c4789-4718	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c4855-4789	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c4925-4856	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c6661-6592	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c7083-7016	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c8791-8719	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c9538-9471	
+asm1.sqn:tRNA	tRNA	lcl|asm1:9541-9611	
+asm1.sqn:tRNA	tRNA	lcl|asm1:11193-11262	
+asm1.sqn:tRNA	tRNA	lcl|asm1:11272-11337	
+asm1.sqn:tRNA	tRNA	lcl|asm1:11364-11436	
+asm1.sqn:tRNA	tRNA	lcl|asm1:11438-11506	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c11578-11508	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c12684-12616	
+asm1.sqn:tRNA	tRNA	lcl|asm1:12684-12754	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c12825-12754	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c13868-13794	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c15536-15467	
+asm1.sqn:tRNA	tRNA	lcl|asm1:c1031-963	
+AUTODEF_USER_OBJECT: 1 nucleotide sequence has no autodef user objects
+asm1.sqn:asm1 (length 15536)
+DUP_DEFLINE: All deflines are unique

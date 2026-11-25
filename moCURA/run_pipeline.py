@@ -289,6 +289,11 @@ async def run_pipeline(**kwargs):
         allowed_keys=build_allowed_assembly_keys(dataframe=plot_df),
         summary_dataframe=summary_df,
         config=config,
+        metadata_path=metadata_path,
+        env_file=kwargs.get("env_file"),
+        trf_config=trf_config,
+        trf_summary_dataframe=trf_summary_df,
+        trf_repeats_dataframe=trf_repeats_df,
     )
 
     excel_path = generate_excel(
@@ -458,6 +463,7 @@ async def run_pipeline(**kwargs):
         "--threads": concurrency,
         "--only-circularized": only_circularized,
         "--metadata": metadata_path,
+        "--env-file": kwargs.get("env_file") or config_section(config=config, keys=["remote_services"]).get("env_file"),
     }
     if provenance_enabled:
         organpipe_results["html"]["provenance"] = build_provenance(

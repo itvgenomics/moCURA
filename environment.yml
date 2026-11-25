@@ -19,6 +19,7 @@ dependencies:
 - setuptools=83.0.0
 - singularity=2.4.2
 - syngenes=1.0.6
+- table2asn=1.29.324
 - trf=4.09.1
 - pip:
   - snipit==1.7
