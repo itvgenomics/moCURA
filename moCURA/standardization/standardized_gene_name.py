@@ -68,6 +68,10 @@ def standardized_gene_name(**kwargs):
         if normalize_gene_name(gene_name=raw_name) in normalized:
             return standard_name
 
-    # If no match is found, return the original value without any directory path
-    return re.split(r"[\\/]", str(value))[-1]
+    # If no match is found (e.g. plastid seeds such as rbcL or matK), return the name
+    # without directory, FASTA extension or seed-order prefix: "1-rbcL.fasta" -> "rbcL",
+    # the same name the assembly files carry.
+    name = re.split(r"[\\/]", str(value))[-1]
+    name = re.sub(r"\.(fasta|fas|fa|fna)$", "", name, flags=re.IGNORECASE)
+    return re.sub(r"^\d+-", "", name)
 

@@ -602,8 +602,10 @@ ORGANPIPE_TABLES = (
     "nhmmer", "read_qc", "benchmarks", "alerts", "provenance",
     "junction", "integrity", "integrity_issues", "concordance", "concordance_pairs", "composition", "scores",
     "heteroplasmy", "heteroplasmy_sites", "species", "species_hits", "reference", "reference_genes", "reference_genomes",
-    "validation", "validation_messages",
+    "reference_gene_lengths", "reference_composition", "validation", "validation_messages",
 )
+# Tables keyed by RefSeq accession: the project metadata does not apply to them.
+REFERENCE_TABLES = {"reference_gene_lengths", "reference_composition"}
 
 
 def compact_rscu(**kwargs):
@@ -628,6 +630,25 @@ def compact_rscu(**kwargs):
     return {"codons": codons, "amino_acids": order["Amino acid"].tolist(), "assemblies": assemblies}
 
 
+def compact_reference_rscu(**kwargs):
+    """One record per RefSeq genome with its RSCU values, in the codon order of the assemblies."""
+
+    dataframe = kwargs.get("dataframe")
+    codons = kwargs.get("codons") or []
+    if dataframe is None or dataframe.empty or not codons:
+        return []
+    records = []
+    for accession, group in dataframe.groupby("Accession", sort=True):
+        values = dict(zip(group["Codon"], group["RSCU"]))
+        counts = dict(zip(group["Codon"], group["Count"]))
+        records.append({
+            "Accession": clean_scalar(accession), "Organism": clean_scalar(group.iloc[0]["Organism"]),
+            "RSCU": [clean_scalar(values.get(codon)) for codon in codons],
+            "Counts": [clean_scalar(counts.get(codon)) for codon in codons],
+        })
+    return records
+
+
 def organpipe_report_data(**kwargs):
     """Records of the Phase 1 OrganPipe analyses for the HTML report."""
 
@@ -647,12 +668,13 @@ def organpipe_report_data(**kwargs):
         "settings_phase3": dict(organpipe.get("settings_phase3", {}) or {}),
         "rscu": compact_rscu(dataframe=organpipe.get("rscu")),
     }
+    output["reference_rscu"] = compact_reference_rscu(dataframe=organpipe.get("reference_rscu"), codons=output["rscu"]["codons"])
 
     for key in ORGANPIPE_TABLES:
         value = organpipe.get(key)
         records = dataframe_records(dataframe=value) if isinstance(value, pd.DataFrame) else []
         # species_hits has its own Species column (the hit), which the metadata must not overwrite.
-        if key not in {"provenance", "benchmarks", "species_hits"}:
+        if key not in {"provenance", "benchmarks", "species_hits"} | REFERENCE_TABLES:
             records = apply_metadata_to_records(records, metadata_lookup)
         output[key] = records
 

@@ -66,7 +66,9 @@ moCURA currently provides:
 - candidate heteroplasmic sites from a pileup of the rotated BAMs;
 - a GenBank submission check of the annotation with NCBI table2asn, with the submission files ready for review;
 - species identification of every sample against BOLD and GenBank (confirmation of the species in the metadata, or the most similar species when none is given);
-- comparison of genome length, gene lengths and tandem repeats with RefSeq genomes of the same genus or family.
+- comparison of genome length, gene lengths, tandem repeats, base composition and codon usage with RefSeq genomes of the same genus or family;
+- mitochondrial and chloroplast (plastid) assemblies: the organelle is read from the OrganPipe config or the NOVOPlasty log;
+- a `How to read this` card on every chart and table of the report, with an animated schematic, what it shows, how to read it and what to look for.
 
 ## Pipelines currently supported
 ##### [:rocket: Go to Contents Overview](#contents-overview)
@@ -183,6 +185,8 @@ Run the command help:
 ```bash
 /usr/bin/singularity exec mocura.sif python mocura.py --help
 ```
+
+To query NCBI and BOLD at 10 requests per second, put a `.env` with your key at the project root before building (copy `.env.example`); `mocura.def` copies it into the image as `/opt/mocura/.env`, which moCURA reads by default. Without a `.env` the build still works and the image uses 3 requests per second. See [Rate limits and cache](#curation-analyses-phase-3).
 
 ## Basic usage
 ##### [:rocket: Go to Contents Overview](#contents-overview)
@@ -717,7 +721,7 @@ heteroplasmy:
   bam_template: null               # same placeholders as junction_validation
 
 remote_services:                   # shared by species_identification and reference_comparison
-  env_file: null                   # or --env-file; NCBI_API_KEY and NCBI_EMAIL
+  env_file: null                   # or --env-file; null reads the .env at the moCURA root
   cache_dir: null                  # default: <output>/species_identification/cache
   refresh: false                   # true queries again instead of reading the cache
   timeout: 120
@@ -729,7 +733,7 @@ remote_services:                   # shared by species_identification and refere
 species_identification:
   enabled: true
   output_folder: species_identification
-  organelle: null                  # null: OrganPipe config, then mitochondrion
+  organelle: null                  # null: OrganPipe config, then the NOVOPlasty log (Type = chloro), then mitochondrion
   markers: null                    # null: COI (mitochondrion) or rbcL and matK (chloroplast)
   bold_database: null              # null: public.tax-derep (animals) or public.plants
   bold_min_identity: 0.9
@@ -767,7 +771,7 @@ ncbi_validation:
 | Heteroplasmy | `Heteroplasmy`, `Heteroplasmy Sites` | `heteroplasmy/heteroplasmy_summary.tsv`, `heteroplasmy_sites.tsv` | Quality: Heteroplasmy candidates; alerts |
 | NCBI validation | `NCBI Validation`, `NCBI Messages` | `ncbi_validation/ncbi_validation_summary.tsv`, `ncbi_validation_messages.tsv`, one folder per assembly | Quality: NCBI submission check; alerts |
 | Species identification | `Species ID`, `Species Top Hits` | `species_identification/species_identification.tsv`, `species_top_hits.tsv`, `cache/` | Species section; recommendation cards; alerts |
-| RefSeq comparison | `RefSeq Comparison`, `RefSeq Gene Lengths`, `RefSeq Genomes` | `reference_comparison/reference_comparison.tsv`, `reference_genes.tsv`, `reference_genomes.tsv`, `refseq/` | Species section; alerts |
+| RefSeq comparison | `RefSeq Comparison`, `RefSeq Gene Lengths`, `RefSeq Genomes`, `RefSeq Genes`, `RefSeq Composition`, `RefSeq RSCU` | `reference_comparison/reference_comparison.tsv`, `reference_genes.tsv`, `reference_genomes.tsv`, `reference_gene_lengths.tsv`, `reference_composition.tsv`, `reference_rscu.tsv`, `refseq/` | Species section; Composition section; Marker comparison; alerts |
 
 **Heteroplasmy.** The NOVOPlasty heteroplasmy file (MAF) is empty in OrganPipe, so moCURA counts the bases at every position of the rotated BAM (pysam pileup; the index is written to `heteroplasmy/bam_index/`, never next to the input). A position is a candidate when its depth, the reads with the second base and that base's frequency reach the thresholds. A candidate is low confidence when it is within `edge_exclusion` bp of a contig end, has more than `max_cluster_sites` other candidates within `cluster_window` bp (typical of misaligned repeats or NUMTs), shows the second base on one strand only, or falls in a TRF tandem repeat; the others are high confidence. Only high-confidence sites count in the summary and the alerts. OrganPipe BAMs store no base qualities (`*`), so bases cannot be filtered by quality there; the summary says so. The BAM holds the reads NOVOPlasty assembled, which under-represent reads that differ from the assembly: frequencies are a lower bound, and a nuclear copy (NUMT) or a contamination gives the same signal as heteroplasmy.
 
@@ -791,7 +795,7 @@ With `--metadata`, the declared species of each project is also searched on its 
 
 Without metadata the verdict is `Not declared` and the probable species are listed (three from BOLD and three from GenBank by default). The NCBI taxonomy (genus, family, order, class) of the declared species, or of the best match, is added for the RefSeq comparison.
 
-**Rate limits and cache.** Every request to NCBI and BOLD goes through one limiter: 3 requests per second, or 10 with `NCBI_API_KEY` in the `--env-file`:
+**Rate limits and cache.** Every request to NCBI and BOLD goes through one limiter: 3 requests per second, or 10 with `NCBI_API_KEY` in a `.env` file:
 
 ```text
 # .env
@@ -799,14 +803,34 @@ NCBI_API_KEY=0123456789abcdef0123456789abcdef0123
 NCBI_EMAIL=you@example.org
 ```
 
-BLAST also follows NCBI's own rules for its URL API: at least 10 s between submissions and one status check per minute for each search, whatever the key. BOLD answers 503 when it is busy; the submission is retried after 30, 60 and 90 s. Every answer is cached in `cache_dir` (one JSON file per request), so a second run reads the cache instead of querying again; set `refresh: true` to query again. Failed requests are logged and leave the corresponding values empty.
+moCURA reads the `.env` at its root (next to `mocura.py`; `/opt/mocura/.env` in the container) unless `--env-file` or `remote_services.env_file` names another file. `.env.example` is a template; `.env` is listed in `.gitignore`. With no `.env`, or a `.env` without a key, moCURA uses 3 requests per second; when NCBI rejects the key (HTTP 400), moCURA logs it and continues at 3 requests per second. The key is never written to the outputs, but a `.env` copied into a `.sif` can be read by anyone who has the image.
+
+BLAST also follows NCBI's own rules for its URL API: at least 10 s between submissions and one status check per minute for each search, whatever the key. Identical searches (several samples with the same barcode) share one submission, and a search that NCBI drops or that does not finish within `blast_max_wait` is submitted once more; in the example, seven identical COI searches had all run out the 30 min limit before, while one shared search finishes in about 35 s. BOLD answers 503 when it is busy; the submission is retried after 30, 60 and 90 s. Every answer is cached in `cache_dir` (one JSON file per request), so a second run reads the cache instead of querying again; set `refresh: true` to query again. A search that still fails is logged, shown as `did not answer; run again to retry` in the report, and leaves its values empty; running moCURA again only repeats the missing searches.
 
 **RefSeq comparison.** RefSeq complete genomes of the same organelle are searched in the genus of the sample (`txid<genus>[Organism:exp] AND srcdb_refseq[PROP] AND mitochondrion[filter] AND "complete genome"[Title]`). When the genus has fewer than `min_references`, the family is used, and so on through `levels`. RefSeq is used because its records are curated. The genomes are saved in `reference_comparison/refseq/`. Gene names of the references are standardized like those of the assemblies; RefSeq tRNA names (`tRNA-Leu` with its anticodon) are first written as MITOS2 names (`trnL1`, `trnL2`), so the two leucine and serine tRNAs are told apart. Every assembly of the project is then compared with the references:
 - genome length against the reference range widened by `length_tolerance_percent`;
 - each gene against the range of the same gene in the references, widened by `gene_tolerance_percent`, and genes present in most references but absent from the assembly;
-- tandem repeats: TRF runs on every reference with the `trf` settings, and the number of repeats and bases in repeats of the assembly are compared with the reference range.
+- tandem repeats: TRF runs on every reference with the `trf` settings, and the number of repeats and bases in repeats of the assembly are compared with the reference range;
+- base composition and codon usage: GC %, AT and GC skews of the genome and of the protein-coding genes by strand, and the RSCU, computed for every reference with the genetic code of the run, exactly as for the assemblies. The report draws them next to the assemblies (Composition section).
+
+The length of every gene in every reference is kept (`reference_gene_lengths.tsv`, sheet `RefSeq Genes`) for the gene-length chart and the RefSeq row of the marker comparison.
 
 In the example, the genus *Kinosternon* has one RefSeq mitogenome (*K. leucostomum*, NC_014577), so it is used for every sample. The comparison needs the taxonomy found by `species_identification`: with that analysis disabled (or without network access), the RefSeq comparison is skipped with a warning.
+
+### Chloroplast (plastid) assemblies
+
+OrganPipe assembles chloroplasts with `organelle: chloro` (NOVOPlasty `Type = chloro`), annotates them with CPGAVAS2 or Chloë instead of MITOS2 and rotates the GenBank to start at psbA. moCURA reads the organelle from `species_identification.organelle`, else the OrganPipe `config/config.yaml`, else the `Type` line of the first NOVOPlasty log, and then:
+
+| Setting | Mitochondrion | Chloroplast |
+| --- | --- | --- |
+| Genetic code (when neither config.yml nor OrganPipe sets it) | 2, vertebrate mitochondrial | 11, plastid |
+| Barcode for species identification | COI | rbcL and matK |
+| BOLD database | `public.tax-derep` | `public.plants` |
+| RefSeq search | `mitochondrion[filter]` | `chloroplast[filter]` |
+| table2asn source | `[location=mitochondrion]` | `[location=chloroplast]` |
+| Gene completeness (37 expected genes) | from MITOS2 | not scored (no MITOS2) |
+
+Plastid gene symbols are kept as the annotator writes them (`psbA`, `rbcL`, `rps12`, `ycf1`, `trnH-GUG`, `trnfM-CAU`, `rrn16`, `rrn4.5`): a plastome has several tRNAs for the same amino acid, which the mitochondrial names (`tRNA-Ile`) would merge. rRNAs without a gene symbol are recognized by their product when it is plastid-specific (`23S`, `4.5S`, `5S ribosomal RNA`); a bare `16S ribosomal RNA` is also the large mitochondrial rRNA, so plastid 16S needs `/gene="rrn16"`, as RefSeq writes it. Seeds named after plastid genes (`1-rbcL.fasta`) are matched to the assembly files (`CA_1_<sample>_1-rbcL_33_1`). For the GenBank submission check, the source line carries `[pgcode=11]`, the trans-spliced rps12 (exons on both strands) gets `exception trans-splicing`, and a coding sequence starting with ACG (psbL, ndhD; the start is created by RNA editing) gets `transl_except (pos:...,aa:Met)` and `exception RNA editing`. Everything else (coverage, Pilon, TRF, concordance, composition, RSCU, marker comparison, SNPs, RefSeq comparison, table2asn) runs as for mitochondria. moCURA was tested on a plastome built from *Ipomoea pes-caprae* (GenBank LC729555, 161,618 bp) laid out as an OrganPipe run with four NOVOPlasty runs (seeds rbcL and matK, K-mers 33 and 39): rbcL and matK confirmed the species at 100% identity in BOLD (`public.plants`) and GenBank, 21 RefSeq *Ipomoea* plastomes (160,082–162,663 bp) were compared, and table2asn reported no error once the exceptions above were written. A real OrganPipe chloroplast run (CPGAVAS2 or Chloë annotation) has not been processed yet, so check the first one carefully.
 
 ## Interactive HTML report
 ##### [:rocket: Go to Contents Overview](#contents-overview)
@@ -893,21 +917,16 @@ The left information area identifies the project/species and locality and lists 
 - genomic context;
 - the full consensus sequence.
 
-### Marker length heatmap
+### Marker comparison
 
-The marker heatmap has three mutually exclusive classes:
+One row per assembly copy and one column per marker, grouped by sample. Every cell shows the length of the marker in bp, and its colour shows the difference from the mode of the sample (the most common length of that marker among its assemblies):
 
-- PCGs, selected by default;
-- tRNAs;
-- rRNAs.
+- the first, bold row of each sample is the mode; when the RefSeq comparison ran, an italic row gives the median length in the RefSeq genomes (in red when it differs from the mode);
+- white cells have the mode length; blue cells are shorter and orange cells longer, with a square-root scale so that a 1 bp difference is already visible; hatched cells are markers not annotated in that assembly;
+- `Cells show` switches between the length and the difference from the mode (+/− bp); `Only assemblies that differ from the mode` hides the assemblies identical to the mode, and the mode row then says how many of the sample differ;
+- one class at a time: PCGs (default), rRNAs, tRNAs, or all markers. Every annotated gene that is not a tRNA, an rRNA or a non-coding region is a PCG, so plastid genes are classified too.
 
-Choosing one class automatically deselects the previous class.
-
-Each marker column is normalized independently from its own minimum to maximum. This is intentional: a difference of only a few base pairs within one gene can therefore use the complete color scale instead of being hidden by the absolute size differences among genes.
-
-The absolute marker length is printed inside every heatmap cell.
-
-The PCG classifier recognizes common mitochondrial gene aliases such as ATP6, ATP8, COI/COII/COIII, COX1/COX2/COX3, CYTB/COB and ND/NAD genes. rRNA and tRNA names are classified separately.
+The previous min–max colour scale of each column made a 1 bp difference look as strong as a 500 bp one; the mode-based colours show which assemblies and markers disagree, and by how much.
 
 ### Tandem repeats
 
@@ -968,6 +987,10 @@ When an alignment column occurs before the first nucleotide of the selected refe
 
 Reference selection affects both SNP coordinate labels and the SNP summary used by the sampling map.
 
+### How to read this
+
+Every chart and table has a `How to read this` card under its title, with a one-line summary. Clicking it opens a panel with an animated schematic of the chart (cells appearing, a band growing, points sliding into place, the important element pulsing) and three blocks: what it shows, how to read it and what to look for. The animation replays at every opening and is disabled when the system asks for reduced motion. The card of `Quality per assembly` also lists the definition of every column.
+
 ### Recommendation
 
 The first section of the report shows one card per selected project:
@@ -984,7 +1007,7 @@ The cards sit one per row inside `Recommended assembly per sample`, collapsed by
 Built from the OrganPipe quality analyses and filtered by the same project, seed, K-mer, status and repeat filters as the rest of the report:
 
 - **Gene completeness**: one row per assembly and one column per mitochondrial gene (present, absent, duplicated, partial at origin), plus whether the gene order matches the project mode. Rows are grouped under a project title, and each Seed + K-mer combination is a separate shaded block.
-- **Quality per assembly**: one row per assembly copy, grouped by project, with columns grouped by source: annotation (genes found, gene order, integrity errors/warnings), coverage (mean depth, CV, bases below the depth threshold, weakest window), read recruitment (reads aligned, reads below the identity threshold, assembly covered), Pilon (corrections, unresolved breaks), junction support and alerts. The thresholds in the column titles come from `config.yml`. Cells are green when within the expected range, orange when worth checking and red for a problem; columns without a fixed threshold are left uncoloured. The table is as wide as its columns need and scrolls sideways; the `Project / species` and `Seed · K-mer · copy` columns and the project title (species and location) stay visible while scrolling. `How to read this table` (collapsed) explains every column, each title has a tooltip, and the table can be searched or limited to assemblies with alerts.
+- **Quality per assembly**: one row per assembly copy, grouped by project, with columns grouped by source: annotation (genes found, gene order, integrity errors/warnings), coverage (mean depth, CV, bases below the depth threshold, weakest window), read recruitment (reads aligned, reads below the identity threshold, assembly covered), Pilon (corrections, unresolved breaks), junction support and alerts. The thresholds in the column titles come from `config.yml`. Cells are green when within the expected range, orange when worth checking and red for a problem; columns without a fixed threshold are left uncoloured. The table is as wide as its columns need and scrolls sideways; the `Project / species` and `Seed · K-mer · copy` columns and the project title (species and location) stay visible while scrolling. Its header, row height and font are those of the other tables; an assembly with more than two alerts shows the first two and `+N more`, whose tooltip lists the rest. `How to read this` explains every column, each title has a tooltip, and the table can be searched or limited to assemblies with alerts.
 - **Annotation integrity**: every error and warning with gene, position and detail; informative checks (incomplete stop codons) can be shown with a checkbox.
 - **Concordance**: one identity matrix per project, ordered by group and as wide as the card, with the assemblies labelled on both axes. Assemblies outside the majority group are labelled in red; hatched cells compare less than the minimum coverage.
 - **Genome structure** gains a depth track on the same coordinate scale, with a depth axis (0, median and the top of the scale, labelled vertically so it never covers the values), a dashed median line and the mean, median and weakest window written under the assembly name. It also gets Pilon change marks above the plus strand and hatched bands for unresolved Pilon breaks.
@@ -995,16 +1018,21 @@ Built from the OrganPipe quality analyses and filtered by the same project, seed
 
 ### Sequence composition
 
-GC %, AT and GC skews of every genome and of the protein-coding genes by strand, and the RSCU of the protein-coding genes in two views:
+GC %, AT and GC skews of every genome and of the protein-coding genes by strand, and the RSCU of the protein-coding genes, next to the RefSeq genomes of the genus (or family) when the RefSeq comparison ran:
+
+- **Composition against the RefSeq genomes**: one row per sample, in the layout of the genome-length chart. Grey diamonds are the RefSeq genomes, the green band is their range and circles are the assemblies (the recommended one of each sample by default, or every assembly in view); the outlined circle is the recommended assembly. `Compare` chooses GC %, AT skew or GC skew of the genome or of the protein-coding genes. With a single reference genome there is no range; the tooltips give the difference to it.
+- **Composition per assembly**: the table lists, under the assemblies of each sample, the RefSeq genomes compared with it, in grey with a `RefSeq` label and a link to NCBI.
 
 - **One assembly** (the recommended one by default): one stacked bar per amino acid, the usual layout of mitogenome papers. Amino acids with six codons are split into their two codon boxes (Leu CTN and Leu TTR, Ser TCN and Ser AGY); under each bar, a grey box names the amino acid and its codon box, and one coloured box per codon (in the colour and order of its segment, from the bottom of the bar up) gives the codon and `n=`, the number of times it was counted, as in PhyloSuite. Hovering a segment or a codon box outlines both. A dashed line marks the height of a box with no preference.
-- **Compare assemblies**: a heatmap with one row per assembly in view and one column per codon, grouped by amino acid. Blue is below 1, white is 1 (no preference) and red is above 1. An assembly whose row stands out from the others of its project, such as an alternative `_2` copy, deserves a look.
+- **Compare assemblies**: a heatmap with one row per assembly in view and one column per codon, grouped by amino acid, followed by the RefSeq genomes in italics. Blue is below 1, white is 1 (no preference) and red is above 1. An assembly whose row stands out from the others of its project, such as an alternative `_2` copy, deserves a look.
+- The RefSeq genomes can also be chosen in `One assembly`, under `RefSeq genomes`.
 
 ### Species identification and RefSeq references
 
 - **Species identification**: one row per sample with the marker and the assembly used, the verdict, the identity to the declared species, and the most similar species of BOLD and of GenBank, each with an identity bar and a link to the record (the declared species is in green). The NCBI taxonomy used for the references is in the last column. The verdict also appears on the recommendation card.
 - **Assemblies against the RefSeq genomes**: one row per sample. Grey diamonds are the RefSeq genomes; the green band is their range widened by the tolerance; circles are the assemblies in view (green inside, orange outside), and the outlined circle is the recommended one. For genome length the scale spans 15% around the references; assemblies beyond it, such as partial contigs of about 1 kb, are triangles at the edge with their length in the tooltip. `Compare` switches between genome length and bases in tandem repeats.
-- **Gene lengths against the RefSeq genomes**: one row per assembly (the recommended ones by default, or every assembly in view) and one column per gene, coloured by the difference to the reference median; outlined cells are outside the reference range and grey cells with a cross are genes missing from the assembly.
+- **Gene lengths against the RefSeq genomes**: the layout of the genome-length chart, with one row per gene (grouped into PCGs, rRNAs and tRNAs). The axis is the difference from the median length of the gene in the RefSeq genomes, in percent; diamonds are the references, the green band their range widened by `gene_tolerance_percent`, and circles the assemblies (the recommended one of each sample by default, or every assembly in view), green inside and orange outside. On the right: the reference length in bp and how many assemblies are outside or lack the gene. `Only genes outside the reference range` keeps the rows worth checking.
+- A BOLD or GenBank search that failed shows `did not answer; run again to retry` in its column.
 - **RefSeq genomes used** (collapsed): accession (linked to NCBI), organism, length, genes and tandem repeats of every reference.
 
 ### Sampling map
@@ -1156,6 +1184,8 @@ mocura_output/
         └── ...
 ```
 
+In `moCURA_summary.xlsx` the `Recommendation` sheet comes first, followed by `Summary` (the NOVOPlasty assembly overview) and the other sheets.
+
 Static figure folders appear only when their respective `plots.*.enabled` setting is true. With OrganPipe files, each quality and curation analysis adds its own folder (`mitos2_completeness/`, `coverage_profile/`, `pilon_changes/`, `read_recruitment/`, `assembly_alerts/`, `provenance/`, `junction_validation/`, `annotation_integrity/`, `assembly_concordance/`, `sequence_composition/`, `assembly_score/`, `heteroplasmy/`, `ncbi_validation/`, `species_identification/`, `reference_comparison/`).
 
 ## Large datasets and HPC recommendations
@@ -1215,8 +1245,11 @@ The project includes `mocura.def`.
 Build from the project root because `%files` uses relative project paths:
 
 ```bash
+cp .env.example .env    # optional: add NCBI_API_KEY=... for 10 requests per second
 sudo /usr/bin/singularity build mocura.sif mocura.def
 ```
+
+`%files` copies `.env*` from the project root into `/opt/mocura/`: the `.env` when it exists, and always `.env.example`, so the build works with or without a key. The build log says whether the image carries a key (`moCURA: NCBI_API_KEY found in .env ...` or `no NCBI_API_KEY in the image ...`) without printing it. The image then reads `/opt/mocura/.env` by default. Anyone who has the `.sif` can read that key: keep the image private, or build without a `.env` and pass one at run time (`--bind /host/.env:/config/.env --env-file /config/.env`).
 
 or:
 
@@ -1276,7 +1309,7 @@ singularity run \
 
 ### Tests
 
-Unit tests for the OrganPipe parsers use small excerpts of the example dataset in `tests/fixtures/`. nhmmer, fastp and Snakemake benchmark files are not in the example dataset; their fixtures in `tests/fixtures/format_examples/` follow the documented formats. The Phase 2 tests use the rotated GenBank of one ITV38325 assembly and the reads of its rotated BAM within 1 kb of either end (`tests/fixtures/ITV38325/rotated.gb`, `rotated_origin.bam`). The Phase 3 tests (`tests/fixtures/phase3/`) use the reads of another ITV38325 rotated BAM around a candidate heteroplasmic site, the table2asn output of a raw MITOS2 GenBank, and saved answers of BOLD, NCBI BLAST and NCBI taxonomy, plus the RefSeq genome NC_014577; they do not need network access. The table2asn test is skipped when table2asn is not installed.
+Unit tests for the OrganPipe parsers use small excerpts of the example dataset in `tests/fixtures/`. nhmmer, fastp and Snakemake benchmark files are not in the example dataset; their fixtures in `tests/fixtures/format_examples/` follow the documented formats. The Phase 2 tests use the rotated GenBank of one ITV38325 assembly and the reads of its rotated BAM within 1 kb of either end (`tests/fixtures/ITV38325/rotated.gb`, `rotated_origin.bam`). The Phase 3 tests (`tests/fixtures/phase3/`) use the reads of another ITV38325 rotated BAM around a candidate heteroplasmic site, the table2asn output of a raw MITOS2 GenBank, and saved answers of BOLD, NCBI BLAST and NCBI taxonomy, plus the RefSeq genome NC_014577; they do not need network access. The table2asn test is skipped when table2asn is not installed. `tests/test_refseq_plastid_env.py` covers the RefSeq composition and RSCU (NC_014577), plastid gene names on 4.9 kb of the *Ipomoea pes-caprae* plastome (`phase3/LC729555_rbcL_region.gb`, with trnM-CAU, atpE, atpB and rbcL), the organelle read from the NOVOPlasty log, the default `.env`, the fallback when NCBI rejects a key, identical BLAST searches sharing one submission, the second submission of a dropped search, and the Recommendation sheet coming first.
 
 ```bash
 conda activate mocura_env

@@ -19,6 +19,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 import time
 import urllib.error
 import urllib.parse
@@ -29,15 +30,33 @@ import uuid
 USER_AGENT = "moCURA (organelle assembly curation; https://github.com/itvgenomics)"
 
 
+# The .env at the moCURA root (next to mocura.py; /opt/mocura/.env in the container).
+DEFAULT_ENV_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".env")
+
+
+def resolve_env_file(**kwargs):
+    """(path, explicit) of the .env to read: --env-file / config.yml, else the .env at the moCURA root."""
+
+    path = kwargs.get("path")
+    if path:
+        return str(path), True
+    return DEFAULT_ENV_FILE, False
+
+
 def read_env_file(**kwargs):
-    """Read KEY=VALUE lines of a .env file. Missing file: empty dict and a warning."""
+    """Read KEY=VALUE lines of a .env file.
+
+    A missing file gives an empty dict: with a warning when the path was given
+    explicitly, silently for the default .env at the moCURA root.
+    """
 
     path = kwargs.get("path")
     values = {}
     if not path:
         return values
     if not os.path.isfile(path):
-        logging.warning("Environment file not found: %s", path)
+        if kwargs.get("explicit", True):
+            logging.warning("Environment file not found: %s", path)
         return values
     with open(path, encoding="utf-8") as handle:
         for line in handle:
@@ -86,6 +105,8 @@ class RemoteService:
         self.blast_max_wait = float(kwargs.get("blast_max_wait", 1800))
         self.blast_lock = asyncio.Lock()
         self.blast_last_submit = 0.0
+        # Identical searches running at the same time share one request.
+        self.in_flight = {}
         self.requests = 0
         self.failures = 0
         if self.cache_dir:
@@ -145,13 +166,30 @@ class RemoteService:
         self.failures += 1
         return None, None
 
-    async def available(self):
-        """One quick request to NCBI; False when the network or the service is unreachable."""
+    def drop_api_key(self, reason):
+        logging.warning("NCBI_API_KEY ignored (%s): using 3 requests per second", reason)
+        self.api_key = None
+        self.rate = 3
+        self.limiter = RateLimiter(self.rate)
 
+    async def available(self):
+        """One quick request to NCBI; False when the network or the service is unreachable.
+
+        With an API key the request carries it: NCBI answers 400 to an invalid
+        key, and moCURA then continues without it at 3 requests per second.
+        """
+
+        url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/einfo.fcgi?" + urllib.parse.urlencode(self.eutils_params({"retmode": "json"}))
         try:
             await self.limiter.wait()
-            status, _ = await asyncio.to_thread(self._request_sync, "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/einfo.fcgi?retmode=json&tool=moCURA")
+            status, _ = await asyncio.to_thread(self._request_sync, url)
             return status == 200
+        except urllib.error.HTTPError as error:
+            if self.api_key and error.code in (400, 401, 403):
+                self.drop_api_key(f"NCBI answered HTTP {error.code}")
+                return await self.available()
+            logging.warning("NCBI is not reachable: HTTP %s", error.code)
+            return False
         except (urllib.error.URLError, TimeoutError, OSError) as error:
             logging.warning("NCBI is not reachable: %s", error)
             return False
@@ -203,6 +241,33 @@ class RemoteService:
         cached = self.cache_get(key)
         if cached is not None:
             return cached
+        token = json.dumps(key, sort_keys=True)
+        if token in self.in_flight:
+            return await asyncio.shield(self.in_flight[token])
+        task = asyncio.ensure_future(self.blast_search(params=params, sequence=sequence, key=key))
+        self.in_flight[token] = task
+        try:
+            return await asyncio.shield(task)
+        finally:
+            if task.done():
+                self.in_flight.pop(token, None)
+
+    async def blast_search(self, **kwargs):
+        """Submit one BLAST search, wait for it and download the report (retried once if NCBI drops it)."""
+
+        params, sequence, key = kwargs.get("params"), kwargs.get("sequence"), kwargs.get("key")
+        for attempt in (1, 2):
+            report = await self.blast_once(params=params, sequence=sequence)
+            if report is not None:
+                self.cache_put(key, report)
+                return report
+            if attempt == 1:
+                logging.info("Submitting the BLAST search again")
+        self.failures += 1
+        return None
+
+    async def blast_once(self, **kwargs):
+        params, sequence = kwargs.get("params"), kwargs.get("sequence")
 
         async with self.blast_lock:
             delay = self.blast_last_submit + self.blast_submit_interval - time.monotonic()
@@ -221,8 +286,8 @@ class RemoteService:
             elif line.startswith("RTOE ="):
                 rtoe = line.split("=", 1)[1].strip()
         if not rid:
-            logging.warning("BLAST submission failed (no RID returned)")
-            self.failures += 1
+            message = re.search(r"Message ID#\d+ Error: ([^<\n]+)", text or "") or re.search(r"<p class=\"error\">([^<]+)", text or "")
+            logging.warning("BLAST submission failed (no RID returned)%s", f": {message.group(1).strip()}" if message else "")
             return None
 
         waited = 0.0
@@ -239,13 +304,11 @@ class RemoteService:
                 break
             if state in ("FAILED", "UNKNOWN"):
                 logging.warning("BLAST search %s ended with status %s", rid, state)
-                self.failures += 1
                 return None
             await asyncio.sleep(self.blast_poll_interval)
             waited += self.blast_poll_interval
         else:
             logging.warning("BLAST search %s did not finish within %d s", rid, self.blast_max_wait)
-            self.failures += 1
             return None
 
         status, text = await self.request(f"https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Get&RID={rid}&FORMAT_TYPE=JSON2_S")
@@ -253,10 +316,8 @@ class RemoteService:
             report = json.loads(text)
         except (TypeError, ValueError):
             logging.warning("BLAST search %s returned no JSON report", rid)
-            self.failures += 1
             return None
         report["rid"] = rid
-        self.cache_put(key, report)
         return report
 
     # ----------------------------------------------------------------- BOLD

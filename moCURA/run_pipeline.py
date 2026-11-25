@@ -139,7 +139,9 @@ async def run_pipeline(**kwargs):
     config_directory = os.path.dirname(os.path.abspath(config_file)) if config_file else os.getcwd()
 
     if metadata_path and not os.path.isabs(str(metadata_path)):
-        metadata_path = os.path.join(config_directory, str(metadata_path))
+        # --metadata is relative to the working directory; html_report.metadata_path to config.yml.
+        from_cli = bool(kwargs.get("metadata_path"))
+        metadata_path = os.path.abspath(str(metadata_path)) if from_cli and os.path.isfile(str(metadata_path)) else os.path.join(config_directory, str(metadata_path))
 
     if not metadata_path:
         for candidate_name in ("metadata.xlsx", "metadata.ods", "metadata.tsv", "metadata.csv"):
@@ -463,7 +465,7 @@ async def run_pipeline(**kwargs):
         "--threads": concurrency,
         "--only-circularized": only_circularized,
         "--metadata": metadata_path,
-        "--env-file": kwargs.get("env_file") or config_section(config=config, keys=["remote_services"]).get("env_file"),
+        "--env-file": kwargs.get("env_file") or config_section(config=config, keys=["remote_services"]).get("env_file") or "default (.env at the moCURA root)",
     }
     if provenance_enabled:
         organpipe_results["html"]["provenance"] = build_provenance(

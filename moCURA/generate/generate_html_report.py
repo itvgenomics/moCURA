@@ -571,6 +571,80 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
   .side-nav { flex-direction: row; flex-wrap: wrap; }
   .shell { padding: 16px; }
 }
+/* How-to-read cards: one per chart or table, opened with an animated panel. */
+.guide-slot { margin-top: 12px; }
+.guide-card { margin: 8px 0 10px; border: 1px solid #cfe3f1; border-radius: 12px; background: linear-gradient(180deg,#f7fbfe 0%,#ffffff 100%); overflow: hidden; transition: border-color .2s ease, box-shadow .2s ease; }
+.guide-card:hover { border-color: #93c5fd; }
+.guide-card.open { border-color: var(--brand); box-shadow: 0 6px 22px rgba(1,115,178,.10); }
+.table-toolbar .guide-card { margin: 2px 0 0; }
+.guide-toggle { width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 0; background: transparent; color: #0f172a; text-align: left; font-size: 12.5px; }
+.guide-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; border-radius: 12px; }
+.guide-icon { flex: 0 0 auto; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; background: var(--brand-soft); color: var(--brand); transition: background .2s ease, color .2s ease, transform .3s ease; }
+.guide-icon svg { width: 16px; height: 16px; }
+.guide-card.open .guide-icon { background: var(--brand); color: #fff; transform: rotate(-8deg) scale(1.05); }
+.guide-label { flex: 0 0 auto; font-weight: 750; color: #075985; }
+.guide-summary { min-width: 0; color: #475569; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.guide-chevron { margin-left: auto; flex: 0 0 auto; width: 8px; height: 8px; border-right: 2px solid #475569; border-bottom: 2px solid #475569; transform: rotate(45deg); transition: transform .3s ease; }
+.guide-card.open .guide-chevron { transform: rotate(-135deg); }
+.guide-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .42s cubic-bezier(.2,.8,.2,1); }
+.guide-panel.open { grid-template-rows: 1fr; }
+.guide-inner { overflow: hidden; min-height: 0; }
+.guide-body { display: grid; grid-template-columns: 260px minmax(0,1fr); gap: 18px; padding: 4px 14px 14px; border-top: 1px solid #e2eef7; opacity: 0; transform: translateY(-6px); transition: opacity .3s ease .08s, transform .35s ease .08s; }
+.guide-panel.open .guide-body { opacity: 1; transform: none; }
+.guide-art { align-self: start; margin-top: 10px; padding: 8px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0; }
+.guide-art svg { display: block; width: 100%; height: auto; overflow: visible; }
+.guide-text { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.guide-block h4 { margin: 10px 0 5px; font-size: 12px; color: #0173B2; }
+.guide-block p, .guide-block li { font-size: 12px; line-height: 1.5; color: #334155; text-align: left; }
+.guide-block p { margin: 0; }
+.guide-block ul { margin: 0; padding-left: 16px; display: grid; gap: 4px; }
+.guide-panel.open .guide-block li, .guide-panel.open .guide-block p { animation: guideText .45s ease both; animation-delay: calc(var(--i,0) * 70ms + 160ms); }
+.guide-extra { padding: 0 14px 14px; }
+.guide-columns-title { font-size: 12px; font-weight: 750; color: #0173B2; margin: 2px 0 6px; }
+.guide-extra .quality-guide-grid { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+@keyframes guideText { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+.guide-art svg * { transform-box: fill-box; transform-origin: center; }
+.guide-panel.open .g-pop { animation: gPop .45s cubic-bezier(.2,.9,.3,1.3) both; animation-delay: var(--d,0ms); }
+.guide-panel.open .g-fade { animation: gFade .5s ease both; animation-delay: var(--d,0ms); }
+.guide-panel.open .g-grow { transform-origin: bottom; animation: gGrow .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d,0ms); }
+.guide-panel.open .g-growx { transform-origin: left; animation: gGrowX .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d,0ms); }
+.guide-panel.open .g-slide { animation: gSlide .7s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d,0ms); }
+.guide-panel.open .g-ring { animation: gRing 1.8s ease-in-out 1.1s infinite both; }
+.guide-panel.open .g-ring.g-late { animation-delay: 1.9s; }
+.guide-panel.open .g-sweep-y { animation: gSweepY 3.2s ease-in-out .9s infinite both; }
+.guide-panel.open .g-sweep-x { animation: gSweepX 3.6s ease-in-out .9s infinite both; }
+.guide-panel.open .g-draw { animation: gDraw 1.2s ease 1s both; }
+@keyframes gPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes gFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes gGrow { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes gGrowX { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes gSlide { from { opacity: 0; transform: translateX(var(--from,-60px)); } to { opacity: 1; transform: none; } }
+@keyframes gRing { 0%,100% { opacity: .15; } 50% { opacity: 1; } }
+@keyframes gSweepY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(72px); } }
+@keyframes gSweepX { 0%,100% { transform: translateX(0); } 50% { transform: translateX(162px); } }
+@keyframes gDraw { from { stroke-dashoffset: 160; } to { stroke-dashoffset: 0; } }
+@media (max-width: 1100px) { .guide-body { grid-template-columns: 1fr; } .guide-art { max-width: 300px; } .guide-text { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .guide-panel, .guide-body, .guide-chevron, .guide-icon { transition: none !important; } .guide-panel * { animation: none !important; } }
+.composition-controls label.inline-check { display: inline-flex; align-items: center; gap: 6px; font-weight: 650; cursor: pointer; }
+.composition-controls label.inline-check input { accent-color: var(--brand); width: 15px; height: 15px; margin: 0; }
+.rscu-legend .hatch-swatch { background: repeating-linear-gradient(135deg,#f1f5f9 0 3px,#94a3b8 3px 4px); }
+#compositionTable tr.ref-row td { background: #f1f5f9 !important; color: #475569; font-style: normal; }
+#compositionTable tr.ref-row td:first-child { white-space: nowrap; }
+.ref-badge { display: inline-block; padding: 0 6px; margin-right: 6px; border-radius: 5px; background: #475569; color: #fff; font-size: 10px; font-weight: 750; letter-spacing: .02em; }
+.marker-heatmap-scroll svg { display: block; width: auto; max-width: none; }
+#referenceGenes svg, #compositionStrip svg { max-width: 100%; }
+/* Quality per assembly: same header, row height and font as the other tables. */
+#qualityTable { font-size: 13px; }
+#qualityTable th, #qualityTable td { padding: 8px 10px; }
+#qualityTable thead tr.group-head th { top: 0; height: 30px; background: #e2e8f0; color: #334155; text-align: center; border-left: 1px solid #f8fafc; border-bottom: 1px solid #cbd5e1; font-size: 10.5px; letter-spacing: .06em; }
+#qualityTable thead tr.column-head th { top: 30px; text-transform: uppercase; letter-spacing: .035em; font-size: 11px; white-space: nowrap; line-height: 1.2; vertical-align: middle; border-left: 1px solid #f1f5f9; color: #475569; }
+#qualityTable thead tr.column-head th.q-sticky { min-width: 0; }
+#qualityTable .q-sub { display: inline; margin-left: 4px; font-size: 11px; }
+#qualityTable td.q-ok, #qualityTable td.q-warn, #qualityTable td.q-bad { font-weight: 650; }
+#qualityTable tr.q-project td { background: #e8f3f9 !important; font-size: 13px; border-top: 12px solid var(--bg); padding: 7px 10px; }
+#qualityTable td.q-alerts { white-space: nowrap; min-width: 0; max-width: none; }
+#qualityTable td.q-alerts .alert-chip { white-space: nowrap; }
+.alert-chip.more { border-style: dashed; color: #475569; background: #f8fafc; cursor: help; }
 </style>
 </head>
 <body>
@@ -647,6 +721,7 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
   <section id="recommendation" class="section">
     <h2>Recommendation <span class="info-dot" data-tooltip="A transparent weighted score combines annotation completeness, integrity alerts, junction support, coverage uniformity, Pilon confirmed bases, membership of the majority concordance group and closeness to the modal genome length. Only circularized assemblies can be recommended. Nothing is discarded.">i</span></h2>
     <div id="recommendationSubtitle" class="section-note"></div>
+    <div class="guide-slot" data-guide="recommendation"></div>
     <div class="card paths-card">
       <div class="paths-head">
         <div class="chart-title">Files of the recommended assemblies <span class="info-dot" data-tooltip="Absolute paths of the files of the recommended assembly of every project in the current filters, one per line, ready to paste into a terminal (for example after cp or scp). Pilon FASTA is the polished sequence; the rotated GenBank starts at rrnS.">i</span></div>
@@ -694,6 +769,7 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
     <div id="assemblySubtitle" class="section-note"></div>
     <div id="assemblyInteractionStatus" class="assembly-interaction-note"><strong>Interactive selection:</strong> click any point to isolate that same Project + Seed + K-mer combination across all four plots. Click the selected point again to restore all values.</div>
     <div id="assemblyLegend" class="card assembly-legend"></div>
+    <div class="guide-slot" data-guide="assemblyPanels"></div>
     <div class="assembly-metric-grid">
       <div class="card assembly-metric-card"><div class="chart-title">Total contigs</div><div class="chart-subtitle">Number of contigs recovered for each project, seed and K-mer combination.</div><div id="metricTotalContigs" class="assembly-metric-chart"></div></div>
       <div class="card assembly-metric-card"><div class="chart-title">Largest contig</div><div class="chart-subtitle">Largest assembled contig relative to the configured organelle genome range.</div><div id="metricLargestContig" class="assembly-metric-chart"></div></div>
@@ -701,7 +777,7 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       <div class="card assembly-metric-card"><div class="chart-title">Average organelle coverage</div><div class="chart-subtitle">Average organelle coverage reported by NOVOPlasty.</div><div id="metricAverageCoverage" class="assembly-metric-chart"></div></div>
     </div>
 
-    <div class="card table-card">
+    <div class="card table-card" data-guide="assemblyTable">
       <div class="table-toolbar">
         <div><div class="table-title">Assembly data</div><div id="assemblyTableCount" class="table-count"></div></div>
         <div class="table-tools">
@@ -723,16 +799,17 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
     <h2>Pilon polishing <span class="info-dot" data-tooltip="Summarizes Pilon coverage, confirmation and sequence corrections for the filtered runs.">i</span></h2>
     <div class="section-note">Interactive replacements for the static Pilon summary figures.</div>
     <div id="pilonPrimaryGrid" class="chart-grid pilon-grid">
-      <div class="card chart-card"><div class="chart-title">Pilon metrics</div><div class="chart-subtitle">One row per project (per seed when a single project is selected), with the median of its runs. Every column has its own unit and its own colour scale, from the lowest to the highest value in that column; the range is written under each title.</div><label class="heatmap-toggle"><input id="pilonShowValues" type="checkbox"> Show values in the cells</label><div id="pilonMetricsHeatmap" class="chart" style="min-height:0"></div></div>
-      <div class="card chart-card"><div class="chart-title">Genome length before and after Pilon</div><div class="chart-subtitle">Median comparison.</div><div id="pilonBeforeAfterChart" class="chart"></div></div>
+      <div class="card chart-card" data-guide="pilonMetrics"><div class="chart-title">Pilon metrics</div><div class="chart-subtitle">One row per project (per seed when a single project is selected), with the median of its runs. Every column has its own unit and its own colour scale, from the lowest to the highest value in that column; the range is written under each title.</div><label class="heatmap-toggle"><input id="pilonShowValues" type="checkbox"> Show values in the cells</label><div id="pilonMetricsHeatmap" class="chart" style="min-height:0"></div></div>
+      <div class="card chart-card" data-guide="pilonBeforeAfter"><div class="chart-title">Genome length before and after Pilon</div><div class="chart-subtitle">Median comparison.</div><div id="pilonBeforeAfterChart" class="chart"></div></div>
     </div>
-    <div class="card chart-card" style="margin-top:16px"><div class="chart-title">Pilon corrections</div><div class="chart-subtitle">SNPs, insertions and deletions.</div><div id="pilonCorrectionsChart" class="chart"></div></div>
+    <div class="card chart-card" data-guide="pilonCorrections" style="margin-top:16px"><div class="chart-title">Pilon corrections</div><div class="chart-subtitle">SNPs, insertions and deletions.</div><div id="pilonCorrectionsChart" class="chart"></div></div>
   </section>
 
   <section id="genome" class="section">
     <h2>Genome structure and tandem-repeat positions <span class="info-dot" data-tooltip="Every filtered rotated assembly is drawn as a separate genomic track. Colored blocks are annotated markers and orange blocks are TRF tandem repeats.">i</span></h2>
     <div class="section-note">Assemblies are grouped by identical Seed + K-mer combinations. Within each group, projects share the same coordinate scale, gene colors and repeat-family colors so differences are easy to compare. The consensus sequence of every tandem repeat is written next to its block and listed under the assembly name.</div>
     <div class="genome-legend"><span><i style="background:#0173B2"></i>Genes on the + strand (top line) and − strand (second line)</span><span><i style="background:#DE8F05"></i>TRF tandem repeat, labelled with its consensus sequence. "Repeat 1: 70 bp = 35.5 copies of 2 bp" reads as a 70 bp array made of 35.5 copies of a 2 bp unit</span><span><svg width="12" height="10" aria-hidden="true"><path d="M1,1 h10 l-5,8 z" fill="#D55E00"></path></svg>Pilon correction</span><span><i style="background:rgba(1,115,178,.35)"></i>Read depth</span><span><i style="background:rgba(213,94,0,.25)"></i>Unresolved Pilon break</span></div>
+    <div class="guide-slot" data-guide="genome"></div>
     <div class="card chart-card genome-scroll" style="margin-top:10px"><div id="genomeTimeline" class="chart"></div></div>
   </section>
 
@@ -740,14 +817,14 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
     <h2>Assembly quality <span class="info-dot" data-tooltip="Read directly from the OrganPipe outputs: MITOS2 gene annotation, samtools depth, BLAST read recruitment, Pilon change lists and nhmmer intergenic searches.">i</span></h2>
     <div id="qualitySubtitle" class="section-note"></div>
     <div class="quality-note">Coverage and read recruitment come from the reads NOVOPlasty used to build each assembly (<code>Assembled_reads</code>). They tend to agree with the assembly by construction, so they flag problems but do not independently validate it.</div>
-    <div class="card chart-card">
+    <div class="card chart-card" data-guide="completeness">
       <div class="chart-title">Gene completeness <span class="info-dot" data-tooltip="Each row is one assembly, each column one of the 37 mitochondrial genes annotated by MITOS2. Partial at origin marks genes kept only as a fragment because they cross the contig origin.">i</span></div>
       <div class="chart-subtitle">37 genes from MITOS2: present, absent, duplicated or kept only as a fragment at the contig origin. Assemblies are grouped by project, then by Seed + K-mer (shaded blocks); the rows of a block are its assembly copies. The last column compares the gene order with the most common order in the project.</div>
       <div class="completeness-scroll"><div id="completenessHeatmap" class="chart"></div></div>
     </div>
-    <div class="card table-card" style="margin-top:16px">
+    <div class="card table-card" data-guide="quality" style="margin-top:16px">
       <div class="table-toolbar">
-        <div><div class="table-title">Quality per assembly <span class="info-dot" data-tooltip="One row per assembly copy, grouped by project. Hover a column title for its definition, or open the guide below the title.">i</span></div><div id="qualityTableCount" class="table-count"></div></div>
+        <div><div class="table-title">Quality per assembly <span class="info-dot" data-tooltip="One row per assembly copy, grouped by project. Hover a column title for its definition, or open How to read this for every column.">i</span></div><div id="qualityTableCount" class="table-count"></div></div>
         <div class="table-tools">
           <div class="table-search-control">
             <div class="table-search-wrap">
@@ -758,14 +835,10 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
           <label class="quality-only-alerts"><input id="qualityOnlyAlerts" type="checkbox"> Only assemblies with alerts</label>
         </div>
       </div>
-      <details class="quality-guide" id="qualityGuide">
-        <summary>How to read this table</summary>
-        <div id="qualityGuideBody" class="quality-guide-grid"></div>
-      </details>
       <div class="quality-legend"><span><i style="background:#e7f6ef;border:1px solid #9fd8c0"></i>Within the expected range</span><span><i style="background:#fff4e0;border:1px solid #f5c26b"></i>Worth checking</span><span><i style="background:#fde8e4;border:1px solid #f0a28f"></i>Problem</span><span>Uncoloured cells have no fixed threshold; compare them across rows.</span></div>
       <div id="qualityTableScroll" class="table-scroll"><table id="qualityTable" class="assembly-table"><thead id="qualityTableHead"></thead><tbody id="qualityTableBody"></tbody></table></div>
     </div>
-    <div class="card table-card" style="margin-top:16px">
+    <div class="card table-card" data-guide="integrity" style="margin-top:16px">
       <div class="table-toolbar">
         <div><div class="table-title">Annotation integrity <span class="info-dot" data-tooltip="Checks of every annotated gene in the rotated GenBank: internal stop codons, frame, start and stop codons, genes crossing the origin and lengths far from the project mode.">i</span></div><div id="integrityCount" class="table-count"></div></div>
         <div class="table-tools">
@@ -775,12 +848,12 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       </div>
       <div class="table-scroll" style="max-height:460px"><table id="integrityTable" class="assembly-table"><thead id="integrityHead"></thead><tbody id="integrityBody"></tbody></table></div>
     </div>
-    <div class="card chart-card" style="margin-top:16px">
+    <div class="card chart-card" data-guide="concordance" style="margin-top:16px">
       <div class="chart-title">Concordance among assemblies of the same sample <span class="info-dot" data-tooltip="Rotated genomes of each project aligned with MAFFT. Identity excludes gap columns; coverage is the share of the longer genome compared. Linked assemblies (identity and coverage above the thresholds) form groups; the largest is the majority group.">i</span></div>
       <div id="concordanceSubtitle" class="chart-subtitle"></div>
       <div id="concordanceGrid" class="concordance-grid"></div>
     </div>
-    <div class="card table-card" style="margin-top:16px">
+    <div class="card table-card" data-guide="heteroplasmy" style="margin-top:16px">
       <div class="table-toolbar">
         <div><div class="table-title">Heteroplasmy candidates <span class="info-dot" data-tooltip="Sites where a second base is present in the reads of the rotated BAM. High confidence: depth, minor reads and frequency above the thresholds, minor base on both strands, away from the contig ends, outside tandem repeats and not in a cluster of candidate sites. Frequencies are a lower bound because the BAM holds the reads NOVOPlasty assembled; a NUMT or contamination gives the same signal.">i</span></div><div id="heteroplasmyCount" class="table-count"></div></div>
         <div class="table-tools">
@@ -790,7 +863,7 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       </div>
       <div class="table-scroll" style="max-height:460px"><table id="heteroplasmyTable" class="assembly-table"><thead id="heteroplasmyHead"></thead><tbody id="heteroplasmyBody"></tbody></table></div>
     </div>
-    <div class="card table-card" style="margin-top:16px">
+    <div class="card table-card" data-guide="validation" style="margin-top:16px">
       <div class="table-toolbar">
         <div><div class="table-title">NCBI submission check (table2asn) <span class="info-dot" data-tooltip="The GenBank of each checked assembly is converted into a submission (feature table with NCBI product names, incomplete stop codons completed by polyadenylation) and validated with table2asn. Rejects, errors and FATAL discrepancies would block or delay a GenBank submission. The .sqn, .tbl, .fsa and .gbf files are in the folder shown.">i</span></div><div id="validationCount" class="table-count"></div></div>
       </div>
@@ -805,11 +878,11 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
   <section id="species" class="section">
     <h2>Species identification and RefSeq references <span class="info-dot" data-tooltip="The barcode of one assembly per sample (COI for mitochondria, rbcL and matK for chloroplasts) is searched in BOLD and GenBank. The taxonomy of the declared species, or of the best match, then selects RefSeq genomes of the same genus (or family) to compare genome length, gene lengths and tandem repeats.">i</span></h2>
     <div id="speciesSubtitle" class="section-note"></div>
-    <div class="card table-card" style="margin-top:12px">
+    <div class="card table-card" data-guide="species" style="margin-top:12px">
       <div class="table-toolbar"><div><div class="table-title">Species identification <span class="info-dot" data-tooltip="Species are ranked by their best identity among hits overlapping at least the minimum length (bit score favours long partial genomes over barcodes). With metadata: Confirmed when the declared species is at or above the identity threshold and no other species is clearly closer; Ambiguous when another species is closer; Not confirmed below the threshold; No reference when neither database has the declared species. Without metadata the most similar species of each database are listed.">i</span></div><div id="speciesCount" class="table-count"></div></div></div>
       <div class="table-scroll"><table id="speciesTable" class="assembly-table species-table"><thead id="speciesHead"></thead><tbody id="speciesBody"></tbody></table></div>
     </div>
-    <div class="card chart-card" style="margin-top:16px">
+    <div class="card chart-card" data-guide="referenceStrip" style="margin-top:16px">
       <div class="chart-title">Assemblies against the RefSeq genomes <span class="info-dot" data-tooltip="One row per sample. Grey diamonds are RefSeq genomes of the genus (or family) of the sample; the green band is their range widened by the tolerance in config.yml. Circles are the assemblies in view, green inside the band and orange outside; the outlined circle is the recommended assembly. For genome length the scale spans 15% around the references: assemblies beyond it (partial contigs) are triangles at the edge, with their length in the tooltip.">i</span></div>
       <div id="referenceSubtitle" class="chart-subtitle"></div>
       <div class="composition-controls">
@@ -818,12 +891,13 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       </div>
       <div class="rscu-scroll"><div id="referenceStrip" class="chart" style="min-height:0"></div></div>
     </div>
-    <div class="card chart-card" style="margin-top:16px">
-      <div class="chart-title">Gene lengths against the RefSeq genomes <span class="info-dot" data-tooltip="Difference between the length of each gene and the median length of the same gene in the RefSeq genomes. Outlined cells fall outside the reference range widened by the gene tolerance; grey cells with a cross are genes found in most references but not in the assembly.">i</span></div>
+    <div class="card chart-card" data-guide="referenceGenes" style="margin-top:16px">
+      <div class="chart-title">Gene lengths against the RefSeq genomes <span class="info-dot" data-tooltip="One row per gene, on the same layout as the genome-length chart: diamonds are the RefSeq genomes, the green band is their range widened by the gene tolerance, circles are the assemblies. The axis is the difference from the median length of the gene in the references.">i</span></div>
       <div id="referenceGenesSubtitle" class="chart-subtitle"></div>
       <div class="composition-controls">
         <label for="referenceGenesScope">Assemblies</label>
         <select id="referenceGenesScope"><option value="recommended">Recommended assembly of each sample</option><option value="all">Every assembly in view</option></select>
+        <label class="inline-check"><input id="referenceGenesOutside" type="checkbox"> Only genes outside the reference range</label>
       </div>
       <div id="referenceGenesLegend" class="rscu-legend"></div>
       <div class="rscu-scroll"><div id="referenceGenes" class="chart" style="min-height:0"></div></div>
@@ -837,7 +911,18 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
   <section id="composition" class="section">
     <h2>Sequence composition <span class="info-dot" data-tooltip="GC content and AT/GC skews of the whole genome and of the protein-coding genes by strand, and the relative synonymous codon usage (RSCU) of the protein-coding genes.">i</span></h2>
     <div id="compositionSubtitle" class="section-note"></div>
-    <div class="card chart-card" style="margin-top:12px">
+    <div id="compositionStripCard" class="card chart-card" data-guide="compositionStrip" style="margin-top:12px">
+      <div class="chart-title">Composition against the RefSeq genomes <span class="info-dot" data-tooltip="Base composition of the assemblies of each sample and of the RefSeq genomes compared with it (same genus, or family). Diamonds: RefSeq genomes; green band: their range; circles: assemblies, outlined when recommended.">i</span></div>
+      <div id="compositionStripSubtitle" class="chart-subtitle"></div>
+      <div class="composition-controls">
+        <label for="compositionMetric">Compare</label>
+        <select id="compositionMetric"></select>
+        <label for="compositionScope">Assemblies</label>
+        <select id="compositionScope"><option value="recommended">Recommended assembly of each sample</option><option value="all">Every assembly in view (partial contigs included)</option></select>
+      </div>
+      <div class="rscu-scroll"><div id="compositionStrip" class="chart" style="min-height:0"></div></div>
+    </div>
+    <div class="card chart-card" data-guide="rscu" style="margin-top:16px">
       <div class="chart-title">Relative synonymous codon usage</div>
       <div class="chart-subtitle">RSCU = observed count / mean count of the synonymous codons of that amino acid. 1 means no preference; above 1, the codon is used more than its synonyms. Terminal stop codons and incomplete codons are left out. Amino acids with six codons are split into their two codon boxes (for example Leu CTN and Leu TTR).</div>
       <div class="composition-controls">
@@ -848,31 +933,38 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       <div id="rscuLegend" class="rscu-legend"></div>
       <div class="rscu-scroll"><div id="rscuChart" class="chart" style="min-height:0"></div></div>
     </div>
-    <div class="card table-card">
+    <div class="card table-card" data-guide="compositionTable">
       <div class="table-toolbar"><div><div class="table-title">Composition per assembly</div><div id="compositionCount" class="table-count"></div></div></div>
       <div class="table-scroll"><table id="compositionTable" class="assembly-table"><thead id="compositionHead"></thead><tbody id="compositionBody"></tbody></table></div>
     </div>
   </section>
 
   <section id="markers" class="section">
-    <h2>Marker comparison <span class="info-dot" data-tooltip="Each marker column uses its own minimum-to-maximum color scale so small length differences remain visible.">i</span></h2>
-    <div class="section-note">Each marker is an independently scaled heatmap column. A shared relative legend indicates Min and Max for each marker column.</div>
-    <div class="card chart-card marker-heatmap-card">
-      <div class="chart-title">Marker length heatmap <span class="info-dot" data-tooltip="Choose one marker class at a time. PCGs is selected by default; selecting tRNAs or rRNAs automatically clears the previous selection.">i</span></div>
+    <h2>Marker comparison <span class="info-dot" data-tooltip="Length of every annotated marker in every assembly, compared with the most common length of the same marker in the sample (the mode) and with the median of the RefSeq genomes.">i</span></h2>
+    <div class="section-note">Cells keep their length in bp; the colour shows how far it is from the mode of the sample, so the assemblies and markers that disagree stand out.</div>
+    <div class="card chart-card marker-heatmap-card" data-guide="markers">
+      <div class="chart-title">Marker lengths against the mode of each sample</div>
+      <div id="markerSubtitle" class="chart-subtitle"></div>
       <div class="marker-category-controls" aria-label="Marker class">
         <label class="marker-category-option"><input class="marker-category-checkbox" type="checkbox" value="PCGs" checked> PCGs</label>
-        <label class="marker-category-option"><input class="marker-category-checkbox" type="checkbox" value="tRNAs"> tRNAs</label>
         <label class="marker-category-option"><input class="marker-category-checkbox" type="checkbox" value="rRNAs"> rRNAs</label>
+        <label class="marker-category-option"><input class="marker-category-checkbox" type="checkbox" value="tRNAs"> tRNAs</label>
+        <label class="marker-category-option"><input class="marker-category-checkbox" type="checkbox" value="All"> All markers</label>
       </div>
-      <div class="chart-subtitle">Only the selected marker class is shown. Each marker column is independently normalized from its own minimum to maximum.</div>
-      <div class="marker-heatmap-scroll"><div id="markerLengthHeatmap" class="chart"></div></div>
+      <div class="composition-controls">
+        <label for="markerValueMode">Cells show</label>
+        <select id="markerValueMode"><option value="length">Length (bp)</option><option value="difference">Difference from the mode (bp)</option></select>
+        <label class="inline-check"><input id="markerOnlyDifferent" type="checkbox"> Only assemblies that differ from the mode</label>
+      </div>
+      <div id="markerLegend" class="rscu-legend"></div>
+      <div class="marker-heatmap-scroll"><div id="markerLengthHeatmap" class="chart" style="min-height:0"></div></div>
     </div>
   </section>
 
   <section id="repeats" class="section">
     <h2>Tandem repeats <span class="info-dot" data-tooltip="Comparative TRF repeat table with proportional in-cell bars, project/species metadata, location, gene context and consensus.">i</span></h2>
     <div id="repeatSubtitle" class="section-note"></div>
-    <div class="card table-card">
+    <div class="card table-card" data-guide="repeats">
       <div class="table-toolbar">
         <div><div class="table-title">Comparative repeat table</div><div id="repeatTableCount" class="table-count"></div></div>
         <div class="table-tools">
@@ -893,6 +985,7 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
   <section id="snps" class="section">
     <h2>Marker SNPs <span class="info-dot" data-tooltip="Only true SNP positions are shown. Each nucleotide state is drawn directly with D3 from the SNP matrix table.">i</span></h2>
     <div id="snpSubtitle" class="section-note"></div>
+    <div class="guide-slot" data-guide="snps"></div>
     <div class="snp-toolbar">
       <label><input id="snpIncludeIncomplete" type="checkbox"> Include incomplete or non-circularized sequences</label>
       <span id="snpToolbarNote"></span>
@@ -903,6 +996,7 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
   <section id="map" class="section">
     <h2>Sampling map <span class="info-dot" data-tooltip="Sampling localities are integrated with the current SNP matrices. Choose which markers contribute to the map statistics and optionally display a haplotype network.">i</span></h2>
     <div id="mapSubtitle" class="section-note">Sampling localities are filtered together with Marker SNPs. Hover or click a point to inspect the exact markers carrying differences.</div>
+    <div class="guide-slot" data-guide="map"></div>
     <div class="map-analysis-panel">
       <div>
         <div class="map-analysis-title">Markers included in the map <span class="info-dot" data-tooltip="Only checked markers contribute to SNP differences, marker counts and the haplotype network. This does not change the Marker SNP cards above.">i</span></div>
@@ -1176,7 +1270,9 @@ function styleProjectAxisTicks(axisGroup,{rotate90=false}={}) {
 }
 
 function locationText(row) {
-  return text(row['Location'] ?? row.location).trim();
+  const value=text(row['Location'] ?? row.location).trim();
+  // Without metadata, Location of the marker table is a feature location such as [14405:14475](-).
+  return /^\[\d+:\d+\]/.test(value)?'':value;
 }
 
 function tableColumnLabel(column) {
@@ -2682,7 +2778,9 @@ function renderQualityTable() {
     const support=junction?text(junction['Junction support']):'';
     const coordinate=cov['Coordinate system']&&!text(cov['Coordinate system']).startsWith('C')?' <span class="q-sub">(A) pre-Pilon</span>':'';
     const mismatchBar=mismatch===null||maxMismatch<=0?0:Math.min(100,100*mismatch/maxMismatch);
-    const chips=assemblyAlerts.map(a=>`<span class="alert-chip ${esc(a.Severity)}" data-tooltip="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`).join('');
+    const chip=a=>`<span class="alert-chip ${esc(a.Severity)}" data-tooltip="${esc(a.Detail)}">${esc(a['Alert type'])}</span>`;
+    const rest=assemblyAlerts.slice(2);
+    const chips=assemblyAlerts.slice(0,2).map(chip).join('')+(rest.length?`<span class="alert-chip more" data-tooltip-html="${esc(rest.map(a=>`<b>${esc(a['Alert type'])}</b>: ${esc(a.Detail)}`).join('<br>'))}">+${rest.length} more</span>`:'');
     const integrityText=integrity?`${num(integrity.Errors,0)} / ${num(integrity.Warnings,0)}`:'—';
     return header+'<tr>'+[
       cell(projectDisplayHtml(projectRecord(row['Project name'])),'q-project-cell'),
@@ -2803,14 +2901,22 @@ function renderComposition() {
     ['PCG − GC %',row=>fmtNum(row['PCG - GC %'],'.2f')],['PCG − AT skew',row=>fmtNum(row['PCG - AT skew'],'.3f')],['PCG − GC skew',row=>fmtNum(row['PCG - GC skew'],'.3f')],
     ['Codons',row=>d3.format(',')(num(row['Codons counted'],0))]];
   document.getElementById('compositionHead').innerHTML=`<tr>${columns.map(([label])=>`<th>${esc(label)}</th>`).join('')}</tr>`;
-  document.getElementById('compositionCount').textContent=`${rows.length} assembl${rows.length===1?'y':'ies'}`;
-  let previous=null;
-  document.getElementById('compositionBody').innerHTML=rows.map(row=>{
-    let header='';
-    if(text(row['Project name'])!==previous){previous=text(row['Project name']);const location=locationText(projectRecord(previous));header=`<tr class="q-project"><td colspan="${columns.length}" style="text-align:left;background:#e8f3f9"><span class="row-head">${projectDisplayHtml(projectRecord(previous))}${location?` · ${esc(location)}`:''}</span></td></tr>`;}
-    return header+`<tr>${columns.map(([,render])=>`<td>${render(row)}</td>`).join('')}</tr>`;
+  // The RefSeq genomes compared with each sample follow its assemblies, in grey.
+  const accessions=referenceAccessionsByProject();
+  const referenceRows=project=>(accessions.get(project)||[]).map(accession=>referenceCompositionByAccession.get(accession)).filter(Boolean);
+  const referenceCount=new Set([...new Set(rows.map(row=>text(row['Project name'])))].flatMap(project=>referenceRows(project).map(ref=>text(ref.Accession)))).size;
+  document.getElementById('compositionCount').textContent=`${rows.length} assembl${rows.length===1?'y':'ies'}${referenceCount?` · ${referenceCount} RefSeq genome${referenceCount===1?'':'s'} in grey under each sample`:''}`;
+  const referenceLabel=ref=>`<span class="ref-badge">RefSeq</span><a href="https://www.ncbi.nlm.nih.gov/nuccore/${encodeURIComponent(text(ref.Accession))}" target="_blank" rel="noopener">${esc(ref.Accession)}</a> · <em>${esc(ref.Organism)}</em>`;
+  const groups=d3.groups(rows,row=>text(row['Project name']));
+  document.getElementById('compositionBody').innerHTML=groups.map(([project,items])=>{
+    const location=locationText(projectRecord(project));
+    const header=`<tr class="q-project"><td colspan="${columns.length}" style="text-align:left;background:#e8f3f9"><span class="row-head">${projectDisplayHtml(projectRecord(project))}${location?` · ${esc(location)}`:''}</span></td></tr>`;
+    const assemblyRows=items.map(row=>`<tr>${columns.map(([,render])=>`<td>${render(row)}</td>`).join('')}</tr>`).join('');
+    const refs=referenceRows(project).map(ref=>`<tr class="ref-row">${columns.map(([label,render],index)=>`<td>${index===0?referenceLabel(ref):render(ref)}</td>`).join('')}</tr>`).join('');
+    return header+assemblyRows+refs;
   }).join('');
   pinColumns(document.getElementById('compositionTable'),1);
+  renderCompositionStrip();
 
   renderRscu();
 }
@@ -2834,6 +2940,7 @@ function rscuFamilies(rscu) {
 }
 
 function rscuAssemblyLabel(row) {
+  if(row.isReference)return `RefSeq ${text(row.Accession)} · ${shortSpeciesName(row.Organism)}`;
   return `${projectDisplayText(projectRecord(row['Project name']))} · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`;
 }
 
@@ -2848,12 +2955,17 @@ function renderRscu() {
   document.getElementById('rscuSelectLabel').style.display=stacked?'':'none';
   if(!available.length){select.innerHTML='';legend.innerHTML='';emptyChart('rscuChart','No codon usage for the current filters.');return;}
   const recommended=new Set(organpipeRows('scores').filter(row=>row.Recommended===true).map(row=>text(row.Assembly)));
-  if(!rscuSelection||!available.some(row=>text(row.Assembly)===rscuSelection))rscuSelection=text((available.find(row=>recommended.has(text(row.Assembly)))||available[0]).Assembly);
-  select.innerHTML=available.map(row=>`<option value="${esc(row.Assembly)}" ${text(row.Assembly)===rscuSelection?'selected':''}>${esc(rscuAssemblyLabel(row))}${recommended.has(text(row.Assembly))?' (recommended)':''}</option>`).join('');
+  const references=referenceRscuItems();
+  const choices=[...available,...references];
+  if(!rscuSelection||!choices.some(row=>text(row.Assembly)===rscuSelection))rscuSelection=text((available.find(row=>recommended.has(text(row.Assembly)))||available[0]).Assembly);
+  const option=row=>`<option value="${esc(row.Assembly)}" ${text(row.Assembly)===rscuSelection?'selected':''}>${esc(rscuAssemblyLabel(row))}${recommended.has(text(row.Assembly))?' (recommended)':''}</option>`;
+  select.innerHTML=references.length
+    ? `<optgroup label="Assemblies">${available.map(option).join('')}</optgroup><optgroup label="RefSeq genomes">${references.map(option).join('')}</optgroup>`
+    : available.map(option).join('');
   const families=rscuFamilies(rscu);
   clearChart('rscuChart');
-  if(stacked)renderRscuStacked(rscu,families,available.find(row=>text(row.Assembly)===rscuSelection));
-  else renderRscuHeatmap(rscu,families,available,recommended);
+  if(stacked)renderRscuStacked(rscu,families,choices.find(row=>text(row.Assembly)===rscuSelection));
+  else renderRscuHeatmap(rscu,families,[...available,...references],recommended);
 }
 
 function renderRscuStacked(rscu,families,item) {
@@ -2911,7 +3023,7 @@ function renderRscuHeatmap(rscu,families,assemblies,recommended) {
   const legend=document.getElementById('rscuLegend');
   const maximum=Math.max(2,d3.max(assemblies,row=>d3.max(row.RSCU,value=>num(value,0)))||2);
   const color=d3.scaleDiverging(t=>d3.interpolateRdBu(1-t)).domain([0,1,maximum]);
-  legend.innerHTML=`<span><i style="background:${color(0)}"></i>0, codon not used</span><span><i style="background:${color(1)};border:1px solid #cbd5e1"></i>1, no preference</span><span><i style="background:${color(maximum)}"></i>${d3.format('.1f')(maximum)}, strongly preferred</span><span>Rows marked ★ are the recommended assemblies. An assembly whose row stands out from the others of its project deserves a look.</span>`;
+  legend.innerHTML=`<span><i style="background:${color(0)}"></i>0, codon not used</span><span><i style="background:${color(1)};border:1px solid #cbd5e1"></i>1, no preference</span><span><i style="background:${color(maximum)}"></i>${d3.format('.1f')(maximum)}, strongly preferred</span><span>Rows marked ★ are the recommended assemblies; RefSeq genomes are the italic rows at the bottom. An assembly whose row stands out from the others of its project and from the references deserves a look.</span>`;
   const container=document.getElementById('rscuChart');
   const width=Math.max(900,container.clientWidth||1100);
   const columns=families.flatMap(family=>family.items.map(codon=>({...codon,family})));
@@ -2919,7 +3031,7 @@ function renderRscuHeatmap(rscu,families,assemblies,recommended) {
   const cellWidth=Math.max(11,(width-labelWidth-12)/columns.length);
   const rowHeight=14, top=78;
   let cursor=top, previous=null;
-  const layout=assemblies.map(row=>{ if(previous!==null&&text(row['Project name'])!==previous)cursor+=8; previous=text(row['Project name']); const item={row,y:cursor}; cursor+=rowHeight; return item; });
+  const layout=assemblies.map(row=>{ const group=row.isReference?'\u0000refseq':text(row['Project name']); if(previous!==null&&group!==previous)cursor+=row.isReference?16:8; previous=group; const item={row,y:cursor}; cursor+=rowHeight; return item; });
   const height=cursor+12;
   const svgWidth=labelWidth+columns.length*cellWidth+12;
   const svg=d3.select('#rscuChart').append('svg').attr('width',svgWidth).attr('height',height).attr('viewBox',`0 0 ${svgWidth} ${height}`);
@@ -2937,8 +3049,9 @@ function renderRscuHeatmap(rscu,families,assemblies,recommended) {
   });
   layout.forEach(({row,y})=>{
     const isPick=recommended.has(text(row.Assembly));
-    const label=svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-3.5).attr('text-anchor','end').attr('font-size',9.5).attr('fill','#0f172a').attr('font-weight',isPick?700:400);
-    setSvgProjectLabel(label,projectRecord(row['Project name']),{suffix:` · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}${isPick?' ★':''}`});
+    const label=svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-3.5).attr('text-anchor','end').attr('font-size',9.5).attr('fill',row.isReference?'#475569':'#0f172a').attr('font-weight',isPick?700:400);
+    if(row.isReference)label.attr('font-style','italic').text(rscuAssemblyLabel(row));
+    else setSvgProjectLabel(label,projectRecord(row['Project name']),{suffix:` · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}${isPick?' ★':''}`});
     columns.forEach((codon,c)=>{
       const value=num(row.RSCU[codon.index],0);
       svg.append('rect').attr('x',labelWidth+c*cellWidth).attr('y',y).attr('width',cellWidth-.6).attr('height',rowHeight-.6).attr('fill',color(value))
@@ -3196,8 +3309,8 @@ function renderSpeciesId() {
       +`<td style="text-align:left"><strong>${esc(row.Marker)}</strong> <span class="table-count">${row['Marker length']?d3.format(',')(num(row['Marker length'],0))+' bp':''}</span><br><span class="table-count">${assembly?runLabel(assembly):esc(row.Assembly)}</span></td>`
       +`<td><span class="verdict-chip ${verdict.replace(/\s+/g,'-')}">${esc(verdict)}</span></td>`
       +`<td class="q-num">${identity===null?'—':`<strong>${d3.format('.2f')(identity)}%</strong>`}${[['BOLD','Declared species identity in BOLD (%)'],['GenBank','Declared species identity in GenBank (%)']].map(([name,column])=>num(row[column])===null?(declared?`<br><span class="table-count">${name}: not found</span>`:''):`<br><span class="table-count">${name}: ${d3.format('.2f')(num(row[column]))}%${name==='GenBank'&&row['Declared species GenBank record']?` (${esc(row['Declared species GenBank record'])})`:''}</span>`).join('')}</td>`
-      +`<td>${speciesHitList(list('BOLD'),declared,'BOLD')}${text(row['BOLD status'])==='failed'?'<span class="sp-empty">BOLD did not answer</span>':''}</td>`
-      +`<td>${speciesHitList(list('GenBank'),declared,'GenBank')}${text(row['GenBank status'])==='failed'?'<span class="sp-empty">GenBank did not answer</span>':''}</td>`
+      +`<td>${text(row['BOLD status'])==='failed'?'':speciesHitList(list('BOLD'),declared,'BOLD')}${text(row['BOLD status'])==='failed'?'<span class="sp-empty" data-tooltip="The BOLD search failed (no network, or BOLD busy). Run moCURA again: answers already received are read from the cache.">BOLD did not answer; run again to retry</span>':''}</td>`
+      +`<td>${text(row['GenBank status'])==='failed'?'':speciesHitList(list('GenBank'),declared,'GenBank')}${text(row['GenBank status'])==='failed'?'<span class="sp-empty" data-tooltip="The NCBI BLAST search failed or did not finish within blast_max_wait (config.yml). Run moCURA again: answers already received are read from the cache.">GenBank BLAST did not answer; run again to retry</span>':''}</td>`
       +`<td style="text-align:left;white-space:normal;min-width:160px">${esc(lineage)||'—'}${row['Taxonomy species']?`<br><span class="table-count">from ${esc(row['Taxonomy species'])}</span>`:''}</td></tr>`;
   }).join('') || `<tr><td colspan="${columns.length}" class="table-count" style="padding:16px">No species identification for the current filters.</td></tr>`;
   pinColumns(document.getElementById('speciesTable'),2);
@@ -3277,55 +3390,6 @@ function renderReferenceStrip() {
   });
 }
 
-let referenceGenesScope='recommended';
-function renderReferenceGenes() {
-  const container=document.getElementById('referenceGenes');
-  clearChart('referenceGenes');
-  const legend=document.getElementById('referenceGenesLegend');
-  const settings=PHASE3.reference||{};
-  const tolerance=num(settings.gene_tolerance_percent,10);
-  const recommended=recommendedAssemblies();
-  let rows=organpipeRows('reference_genes');
-  if(referenceGenesScope==='recommended')rows=rows.filter(row=>recommended.has(text(row.Assembly)));
-  const subtitle=document.getElementById('referenceGenesSubtitle');
-  if(!rows.length){subtitle.textContent='No gene comparison for the current filters.';legend.innerHTML='';return;}
-  const assemblies=sortAssemblyRows([...d3Group(rows,row=>text(row.Assembly)).values()].map(group=>group[0]));
-  const expected=(ORGANPIPE.expected_markers||[]).map(text);
-  const markers=[...new Set(rows.map(row=>text(row.Marker)))].sort((a,b)=>{const ia=expected.indexOf(a), ib=expected.indexOf(b);return (ia<0?999:ia)-(ib<0?999:ib)||a.localeCompare(b);});
-  const byKey=new Map(rows.map(row=>[`${text(row.Assembly)}\0${text(row.Marker)}`,row]));
-  const flagged=rows.filter(row=>['Shorter','Longer','Absent'].includes(text(row.Status)));
-  subtitle.textContent=`${assemblies.length} assemblies × ${markers.length} genes · ${flagged.length} gene lengths outside the reference range widened by ${d3.format('~g')(tolerance)}% or absent.`;
-  const limit=Math.max(2*tolerance,20);
-  const color=d3.scaleDiverging(t=>d3.interpolateRdBu(1-t)).domain([-limit,0,limit]).clamp(true);
-  legend.innerHTML=`<span><i style="background:${color(-limit)}"></i>${-limit}% or shorter than the reference median</span><span><i style="background:${color(0)};border:1px solid #cbd5e1"></i>same length</span><span><i style="background:${color(limit)}"></i>+${limit}% or longer</span><span><i style="background:#fff;border:2px solid #DE8F05"></i>outside the reference range</span><span><i style="background:#e2e8f0"></i>absent from the assembly</span>`;
-  const labels=assemblies.map(row=>`${projectDisplayText(projectRecord(row['Project name']))} · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`);
-  const labelWidth=Math.min(400,Math.max(220,svgLabelWidth(labels,10)+30));
-  const width=Math.max(900,container.clientWidth||1100);
-  const cell=Math.max(14,Math.min(28,(width-labelWidth-12)/markers.length));
-  const rowHeight=16, top=70;
-  let cursor=top, previous=null;
-  const layout=assemblies.map(row=>{if(previous!==null&&text(row['Project name'])!==previous)cursor+=6;previous=text(row['Project name']);const item={row,y:cursor};cursor+=rowHeight;return item;});
-  const height=cursor+10, svgWidth=labelWidth+markers.length*cell+12;
-  const svg=d3.select('#referenceGenes').append('svg').attr('width',svgWidth).attr('height',height).attr('viewBox',`0 0 ${svgWidth} ${height}`);
-  markers.forEach((marker,j)=>{const cx=labelWidth+(j+.5)*cell;svg.append('text').attr('x',cx).attr('y',top-6).attr('transform',`rotate(-90,${cx},${top-6})`).attr('font-size',9.5).attr('fill','#334155').text(marker);});
-  layout.forEach(({row,y})=>{
-    const pick=recommended.has(text(row.Assembly));
-    const label=svg.append('text').attr('x',labelWidth-8).attr('y',y+rowHeight-4).attr('text-anchor','end').attr('font-size',10).attr('fill','#0f172a').attr('font-weight',pick?700:400);
-    setSvgProjectLabel(label,projectRecord(row['Project name']),{suffix:` · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}${pick?' ★':''}`});
-    markers.forEach((marker,j)=>{
-      const item=byKey.get(`${text(row.Assembly)}\0${marker}`);
-      const x0=labelWidth+j*cell;
-      if(!item)return;
-      const status=text(item.Status), deviation=num(item['Deviation from median (%)']);
-      const out=status==='Shorter'||status==='Longer';
-      const rect=svg.append('rect').attr('x',x0+.5).attr('y',y+.5).attr('width',cell-1.6).attr('height',rowHeight-1.6).attr('rx',2)
-        .attr('fill',status==='Absent'?'#e2e8f0':color(deviation??0)).attr('stroke',out?'#DE8F05':'none').attr('stroke-width',out?2:0);
-      if(status==='Absent')svg.append('text').attr('x',x0+cell/2).attr('y',y+rowHeight-4.5).attr('text-anchor','middle').attr('font-size',9).attr('fill','#64748b').attr('pointer-events','none').text('×');
-      rect.on('mousemove',event=>hover(event,`<b>${esc(marker)}</b> · ${esc(projectDisplayText(projectRecord(row['Project name'])))} · ${runLabel(row)}<br>${status==='Absent'?'Absent from the assembly':`${d3.format(',')(num(item.Length,0))} bp (${deviation===null?'—':d3.format('+.1f')(deviation)+'%'} from the reference median)`}<br>RefSeq: ${d3.format(',')(num(item['Reference min'],0))}–${d3.format(',')(num(item['Reference max'],0))} bp, median ${d3.format(',')(num(item['Reference median'],0))} bp, ${esc(item['References with the gene'])} genome(s)<br>${esc(status)}`)).on('mouseleave',unhover);
-    });
-  });
-}
-
 function renderReferenceList() {
   const rows=projectRows('reference_genomes').sort((a,b)=>text(a['Project name']).localeCompare(text(b['Project name']),undefined,{numeric:true})||text(a.Accession).localeCompare(text(b.Accession)));
   document.getElementById('referenceListSummary').textContent=`RefSeq genomes used (${new Set(rows.map(row=>text(row.Accession))).size} genomes for ${new Set(rows.map(row=>text(row['Project name']))).size} samples)`;
@@ -3362,9 +3426,10 @@ function markerCategory(markerName) {
   const raw=text(markerName).trim();
   const normalized=raw.toUpperCase().replace(/[^A-Z0-9]/g,'');
   if(/^TRNA/.test(normalized)||/^TRN[A-Z]/.test(normalized)||raw.toLowerCase().startsWith('trna'))return 'tRNAs';
-  if(['12S','16S','RRNS','RRNL','12SRRNA','16SRRNA'].includes(normalized)||normalized.includes('RRNA'))return 'rRNAs';
-  const pcgs=new Set(['ATP6','ATP8','COI','COII','COIII','CO1','CO2','CO3','COX1','COX2','COX3','CYTB','COB','ND1','ND2','ND3','ND4','ND4L','ND5','ND6','NAD1','NAD2','NAD3','NAD4','NAD4L','NAD5','NAD6']);
-  return pcgs.has(normalized)?'PCGs':'Other';
+  if(['12S','16S','23S','45S','5S','RRNS','RRNL','12SRRNA','16SRRNA'].includes(normalized)||normalized.includes('RRNA')||/^RRN[0-9]/.test(normalized))return 'rRNAs';
+  if(/^(DLOOP|CONTROL|OH|OL|IGS|INTERGENIC|REPEAT|LSC|SSC)/.test(normalized))return 'Other';
+  // Every other annotated marker is a protein-coding gene (mitochondrial or plastid).
+  return 'PCGs';
 }
 
 function initMarkerCategoryControls() {
@@ -3378,99 +3443,6 @@ function initMarkerCategoryControls() {
     });
   });
 }
-
-function renderMarkerHeatmap() {
-  const rows=REPORT.markers.filter(matches).filter(row=>num(row['Marker length'])!==null).filter(row=>markerCategory(row.Marker)===markerCategorySelection);
-  if(!rows.length) return emptyChart('markerLengthHeatmap',`No ${markerCategorySelection} marker-length data for the selected filters.`);
-
-  clearChart('markerLengthHeatmap');
-
-  const markers=unique(rows,'Marker').map(text);
-  const rowMap=new Map();
-  rows.forEach(row=>{
-    const key=rowKey(row);
-    if(!rowMap.has(key)) rowMap.set(key,{key,row,values:new Map()});
-    rowMap.get(key).values.set(text(row.Marker),num(row['Marker length']));
-  });
-
-  const displayRows=[...rowMap.values()].sort((a,b)=>{
-    const project=projectDisplayText(a.row).localeCompare(projectDisplayText(b.row),undefined,{numeric:true});
-    if(project)return project;
-    const location=locationText(a.row).localeCompare(locationText(b.row),undefined,{numeric:true});
-    if(location)return location;
-    const seed=text(a.row['Seed Input']).localeCompare(text(b.row['Seed Input']),undefined,{numeric:true});
-    if(seed)return seed;
-    return num(a.row['K-mer'],0)-num(b.row['K-mer'],0);
-  });
-
-  const container=document.getElementById('markerLengthHeatmap');
-  const cellWidth=72;
-  const labelWidth=320;
-  const legendWidth=72;
-  const topSpace=20;
-  const rowHeight=30;
-  const bottomSpace=72;
-  const width=Math.max(container.clientWidth||980,labelWidth+markers.length*cellWidth+legendWidth+28);
-  const height=Math.max(330,topSpace+displayRows.length*rowHeight+bottomSpace);
-  const svg=d3.select('#markerLengthHeatmap').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
-  const x=d3.scaleBand().domain(markers).range([labelWidth,width-legendWidth-18]).paddingInner(.08);
-  const y=d3.scaleBand().domain(displayRows.map(item=>item.key)).range([topSpace,height-bottomSpace]).paddingInner(.05);
-  const markerStats=new Map();
-  markers.forEach(marker=>{
-    const values=displayRows.map(item=>item.values.get(marker)).filter(value=>value!==undefined&&value!==null);
-    markerStats.set(marker,{minimum:d3.min(values),maximum:d3.max(values)});
-  });
-
-  const matrixTop=topSpace;
-  const matrixBottom=height-bottomSpace;
-  const legendX=width-legendWidth+14;
-  const legendHeight=Math.max(80,matrixBottom-matrixTop);
-  const legendY=matrixTop;
-  const defs=svg.append('defs');
-  const gradient=defs.append('linearGradient').attr('id','markerRelativeGradientVertical').attr('x1','0%').attr('x2','0%').attr('y1','100%').attr('y2','0%');
-  d3.range(0,101,10).forEach(value=>gradient.append('stop').attr('offset',`${value}%`).attr('stop-color',d3.interpolateCividis(value/100)));
-
-  displayRows.forEach((item,index)=>{
-    if(index%2===0) svg.append('rect').attr('x',0).attr('y',y(item.key)).attr('width',width).attr('height',y.bandwidth()).attr('fill','#f8fafc');
-    if(index>0 && text(item.row['Project name'])!==text(displayRows[index-1].row['Project name'])) svg.append('line').attr('x1',0).attr('x2',width).attr('y1',y(item.key)-3).attr('y2',y(item.key)-3).attr('stroke','#cbd5e1').attr('stroke-width',1.5);
-    const label=svg.append('text').attr('x',labelWidth-10).attr('y',y(item.key)+11).attr('text-anchor','end').attr('font-size',9.2).attr('fill','#475569');
-    setSvgProjectLabel(label,item.row,{suffix:locationText(item.row)?` | ${locationText(item.row)}`:``,});
-    svg.append('text').attr('x',labelWidth-10).attr('y',y(item.key)+23).attr('text-anchor','end').attr('font-size',8.6).attr('fill','#64748b').text(`Seed ${text(item.row['Seed Input'])} | K-mer ${text(item.row['K-mer'])}`);
-
-    markers.forEach(marker=>{
-      const value=item.values.get(marker);
-      const stats=markerStats.get(marker);
-      const minimum=stats.minimum;
-      const maximum=stats.maximum;
-      const columnX=x(marker);
-      const columnWidth=x.bandwidth();
-      if(value===undefined||value===null){
-        svg.append('rect').attr('x',columnX).attr('y',y(item.key)).attr('width',columnWidth).attr('height',y.bandwidth()).attr('fill','#f1f5f9').attr('stroke','#ffffff').attr('stroke-width',.5);
-        return;
-      }
-      const ratio=minimum===maximum?0.5:(value-minimum)/(maximum-minimum);
-      const fill=d3.interpolateCividis(Math.max(0,Math.min(1,ratio)));
-      svg.append('rect').attr('x',columnX).attr('y',y(item.key)).attr('width',columnWidth).attr('height',y.bandwidth()).attr('fill',fill).attr('stroke','#ffffff').attr('stroke-width',.5).on('mousemove',event=>hover(event,`<b>${esc(marker)}</b><br>${projectDisplayHtml(item.row)}${locationText(item.row)?`<br>Location: ${esc(locationText(item.row))}`:''}<br>Seed: ${esc(item.row['Seed Input'])}<br>K-mer: ${esc(item.row['K-mer'])}<br>Length: ${d3.format(',d')(Math.round(value))} bp<br>Marker min: ${d3.format(',d')(Math.round(minimum))} bp<br>Marker max: ${d3.format(',d')(Math.round(maximum))} bp`)).on('mouseleave',unhover);
-      const rgb=d3.color(fill).rgb();
-      const luminance=(0.2126*rgb.r+0.7152*rgb.g+0.0722*rgb.b)/255;
-      const numberColor=luminance<0.52?'#ffffff':'#111827';
-      const outlineColor=luminance<0.52?'#111827':'#ffffff';
-      svg.append('text').attr('x',columnX+columnWidth/2).attr('y',y(item.key)+y.bandwidth()/2+3.5).attr('text-anchor','middle').attr('font-size',8.8).attr('font-weight',800).attr('fill',numberColor).attr('stroke',outlineColor).attr('stroke-width',1.2).attr('paint-order','stroke').attr('pointer-events','none').text(d3.format(',d')(Math.round(value)));
-    });
-  });
-
-  markers.forEach(marker=>{
-    const columnX=x(marker)+x.bandwidth()/2;
-    svg.append('text').attr('x',columnX).attr('y',height-26).attr('text-anchor','middle').attr('font-size',9.2).attr('font-weight',700).attr('fill','#0f172a').text(marker);
-  });
-  svg.append('text').attr('x',(labelWidth+(width-legendWidth-18))/2).attr('y',height-8).attr('text-anchor','middle').attr('font-size',9).attr('fill','#64748b').text('Markers');
-
-  svg.append('text').attr('x',legendX).attr('y',legendY-10).attr('font-size',9.4).attr('font-weight',700).attr('fill','#475569').text('Relative');
-  svg.append('rect').attr('x',legendX).attr('y',legendY).attr('width',16).attr('height',legendHeight).attr('rx',3).attr('fill','url(#markerRelativeGradientVertical)');
-  svg.append('text').attr('x',legendX+24).attr('y',legendY+8).attr('font-size',8.5).attr('fill','#64748b').text('Max');
-  svg.append('text').attr('x',legendX+24).attr('y',legendY+legendHeight).attr('dominant-baseline','ideographic').attr('font-size',8.5).attr('fill','#64748b').text('Min');
-}
-
 
 function renderRepeatTable() {
   const q=document.getElementById('repeatSearch').value.trim().toLowerCase();
@@ -4412,6 +4384,621 @@ function initSectionNavigation() {
   sections.forEach(section=>observer.observe(section));
 }
 
+// ---------------------------------------------------------------- chart guides
+// "How to read" cards: one per chart or table. Clicking the card opens an animated
+// panel with a small schematic of the chart and what it shows, how to read it and
+// what to look for. Animations replay on every opening and respect reduced motion.
+const GUIDE_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5A2.5 2.5 0 0 1 4 20.5z"></path><path d="M9 7h7M9 11h5"></path></svg>';
+
+function guideRect(x,y,w,h,fill,cls='g-pop',delay=0,extra='') { return `<rect class="${cls}" style="--d:${delay}ms" x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="${fill}" ${extra}/>`; }
+
+const GUIDE_ART={
+  heatmap:()=>{
+    const shades=['#dbeafe','#93c5fd','#60a5fa','#2563eb','#bfdbfe','#1d4ed8','#eff6ff'];
+    let s='';
+    for(let r=0;r<4;r++){ s+=guideRect(8,26+r*25,26,8,'#cbd5e1','g-fade',r*60); for(let c=0;c<7;c++) s+=guideRect(42+c*27,20+r*25,24,22,shades[(r*3+c*5)%7],'g-pop',(r*7+c)*28); }
+    for(let c=0;c<7;c++) s+=guideRect(46+c*27,6,16,7,'#cbd5e1','g-fade',c*40);
+    s+=`<rect class="g-ring" x="${42+4*27-3}" y="${20+2*25-3}" width="30" height="28" rx="4" fill="none" stroke="#DE8F05" stroke-width="2.5"/>`;
+    s+=`<rect class="g-sweep-x" x="42" y="18" width="24" height="100" rx="3" fill="#0f172a" fill-opacity=".06"/>`;
+    return s;
+  },
+  matrix:()=>{
+    let s=''; const n=6, size=19, x0=70, y0=14;
+    const group=i=>i<4?0:1;
+    for(let r=0;r<n;r++){
+      s+=guideRect(8,y0+r*size+6,group(r)?34:50,7,group(r)?'#D55E00':'#94a3b8','g-fade',r*70);
+      for(let c=0;c<n;c++){
+        const fill=r===c?'#0f172a':(group(r)===group(c)?(Math.abs(r-c)===1?'#1d4ed8':'#2563eb'):'#bfdbfe');
+        s+=guideRect(x0+c*size,y0+r*size,size-2,size-2,fill,'g-pop',(r*n+c)*22);
+      }
+    }
+    s+=`<rect class="g-ring" x="${x0-3}" y="${y0-3}" width="${4*size+4}" height="${4*size+4}" rx="4" fill="none" stroke="#029E73" stroke-width="2.4"/>`;
+    s+=`<rect class="g-ring g-late" x="${x0+4*size-3}" y="${y0+4*size-3}" width="${2*size+4}" height="${2*size+4}" rx="4" fill="none" stroke="#D55E00" stroke-width="2.4"/>`;
+    s+=`<g class="g-fade" style="--d:700ms"><rect x="${x0+n*size+12}" y="${y0}" width="9" height="${n*size-2}" rx="2" fill="url(#gGradBlue)"/><text x="${x0+n*size+25}" y="${y0+8}" font-size="8" fill="#64748b">100%</text><text x="${x0+n*size+25}" y="${y0+n*size-4}" font-size="8" fill="#64748b">min</text></g>`;
+    return `<defs><linearGradient id="gGradBlue" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#eff6ff"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient></defs>`+s;
+  },
+  strip:()=>{
+    let s=''; const rows=[30,66,102];
+    rows.forEach((y,i)=>{
+      s+=guideRect(8,y-4,36,8,'#cbd5e1','g-fade',i*80);
+      s+=`<line x1="52" x2="232" y1="${y}" y2="${y}" stroke="#e2e8f0"/>`;
+      s+=`<rect class="g-growx" style="--d:${150+i*90}ms" x="${112+i*6}" y="${y-11}" width="${64-i*8}" height="22" rx="4" fill="#029E73" fill-opacity=".15"/>`;
+      [124,150,166].forEach((cx,k)=>{ s+=`<g transform="translate(${cx+i*3},${y}) rotate(45)"><path class="g-pop" style="--d:${350+i*90+k*60}ms" d="M-4,-4h8v8h-8z" fill="#475569"/></g>`; });
+      const dots=i===1?[[138,'#029E73'],[156,'#029E73'],[206,'#DE8F05']]:[[132,'#029E73'],[146,'#029E73'],[160,'#029E73']];
+      dots.forEach(([cx,color],k)=>{ s+=`<circle class="g-slide" style="--d:${600+i*120+k*80}ms;--from:${-70+k*10}px" cx="${cx}" cy="${y+(k-1)*3}" r="${k===0?6:3.8}" fill="${color}" stroke="${k===0?'#0f172a':'#fff'}" stroke-width="${k===0?1.6:.6}"/>`; });
+    });
+    s+=`<circle class="g-ring" cx="206" cy="69" r="9" fill="none" stroke="#DE8F05" stroke-width="2"/>`;
+    return s;
+  },
+  bars:()=>{
+    let s=`<line x1="20" x2="232" y1="120" y2="120" stroke="#cbd5e1"/>`;
+    [[62,48],[58,52],[86,30],[44,40],[70,66],[36,34]].forEach(([a,b],i)=>{
+      const x=30+i*34;
+      s+=`<rect class="g-grow" style="--d:${i*90}ms" x="${x}" y="${120-a}" width="13" height="${a}" rx="2" fill="#0173B2"/>`;
+      s+=`<rect class="g-grow" style="--d:${i*90+60}ms" x="${x+14}" y="${120-b}" width="13" height="${b}" rx="2" fill="#DE8F05"/>`;
+    });
+    s+=`<rect class="g-ring" x="${30+2*34-3}" y="${120-86-3}" width="33" height="${86+6}" rx="4" fill="none" stroke="#0f172a" stroke-width="1.6"/>`;
+    return s;
+  },
+  scatter:()=>{
+    let s=`<rect class="g-growx" style="--d:0ms" x="20" y="38" width="212" height="30" fill="#B0E4CC" fill-opacity=".8"/><line x1="20" x2="232" y1="124" y2="124" stroke="#cbd5e1"/><line x1="20" x2="20" y1="10" y2="124" stroke="#cbd5e1"/>`;
+    const colors=['#0173B2','#DE8F05','#029E73','#CC78BC','#CA9161'];
+    [[40,52],[62,48],[84,100],[106,56],[128,58],[150,92],[172,50],[194,110],[216,54]].forEach(([x,y],i)=>{
+      const color=colors[i%5];
+      s+=i%2?`<g transform="translate(${x},${y})"><path class="g-pop" style="--d:${150+i*70}ms" d="M0,-5 L5,4 L-5,4 Z" fill="${color}" stroke="#202020" stroke-width=".6"/></g>`:`<circle class="g-pop" style="--d:${150+i*70}ms" cx="${x}" cy="${y}" r="5" fill="${color}" stroke="#202020" stroke-width=".6"/>`;
+    });
+    s+=`<circle class="g-ring" cx="84" cy="100" r="10" fill="none" stroke="#D55E00" stroke-width="2"/>`;
+    return s;
+  },
+  tracks:()=>{
+    let s='';
+    const genes=[[0,22,'#0173B2'],[26,18,'#029E73'],[48,30,'#CC78BC'],[82,14,'#CA9161'],[100,26,'#56B4E9'],[130,20,'#0173B2'],[154,28,'#029E73']];
+    [22,62,102].forEach((y,i)=>{
+      s+=`<line class="g-growx" style="--d:${i*120}ms" x1="20" x2="232" y1="${y+9}" y2="${y+9}" stroke="#94a3b8" stroke-width="1.5"/>`;
+      genes.forEach(([x,w,color],k)=>{ const shift=i===2&&k>3?6:0; s+=guideRect(26+x+shift,(k%3===1?y+12:y),w,9,color,'g-slide',200+i*120+k*50,''); });
+      s+=`<rect class="g-pop" style="--d:${700+i*120}ms" x="${200}" y="${y+2}" width="${i===1?26:12}" height="14" rx="2" fill="#DE8F05"/>`;
+      s+=`<g transform="translate(${90+i*30},${y-3})"><path class="g-pop" style="--d:${900+i*120}ms" d="M-4,-4 h8 l-4,6 z" fill="#D55E00"/></g>`;
+    });
+    s+=`<rect class="g-ring" x="195" y="58" width="38" height="24" rx="4" fill="none" stroke="#DE8F05" stroke-width="2"/>`;
+    return s;
+  },
+  table:()=>{
+    let s=guideRect(10,8,222,14,'#e2e8f0','g-fade',0);
+    const fills=[['#e7f6ef','#e7f6ef','#fff4e0','#ffffff'],['#e7f6ef','#fde8e4','#ffffff','#e7f6ef'],['#e7f6ef','#e7f6ef','#e7f6ef','#ffffff'],['#fff4e0','#e7f6ef','#ffffff','#fde8e4']];
+    fills.forEach((row,r)=>{
+      const y=26+r*24;
+      s+=guideRect(10,y,70,20,r%2?'#EEEEEE':'#ffffff','g-fade',80+r*90,'stroke="#e2e8f0"');
+      s+=guideRect(16,y+7,44,6,'#94a3b8','g-fade',100+r*90);
+      row.forEach((fill,c)=>{ s+=guideRect(82+c*38,y,36,20,fill,'g-pop',140+r*90+c*45,'stroke="#e2e8f0"'); });
+    });
+    s+=`<rect class="g-sweep-y" x="8" y="24" width="226" height="24" rx="4" fill="none" stroke="#0173B2" stroke-width="2"/>`;
+    return s;
+  },
+  stack:()=>{
+    let s=`<line x1="18" x2="232" y1="92" y2="92" stroke="#cbd5e1"/>`;
+    const colors=['#0173B2','#DE8F05','#029E73','#CC78BC'];
+    [[1.6,.9,.8,.7],[2.2,1.8],[1.1,1,.9,1],[2.6,.8,.4,.2],[1.3,.7]].forEach((stack,i)=>{
+      let base=92; const x=26+i*42;
+      stack.forEach((value,k)=>{ const h=value*14; s+=`<rect class="g-grow" style="--d:${i*110+k*70}ms" x="${x}" y="${base-h}" width="30" height="${h}" fill="${colors[k]}" stroke="#fff" stroke-width=".6"/>`; base-=h; });
+      s+=`<line class="g-fade" style="--d:${600+i*60}ms" x1="${x-2}" x2="${x+32}" y1="${92-stack.length*14}" y2="${92-stack.length*14}" stroke="#0f172a" stroke-dasharray="3,2" stroke-opacity=".6"/>`;
+      s+=guideRect(x,96,30,9,'#e2e8f0','g-fade',500+i*60);
+      stack.forEach((_,k)=>{ s+=guideRect(x,108+k*8,30,7,colors[k],'g-pop',650+i*60+k*40); });
+    });
+    return s;
+  },
+  snp:()=>{
+    let s=''; const base={A:'#029E73',C:'#0173B2',G:'#DE8F05',T:'#D55E00'};
+    const rows=['ACGTAC','ACGTAC','ATGTAC','ACGCAC','ATGTAG'];
+    rows.forEach((row,r)=>{ s+=guideRect(8,16+r*22+5,40,8,'#cbd5e1','g-fade',r*60); [...row].forEach((nt,c)=>{ const differs=r>0&&nt!==rows[0][c]; s+=`<g class="g-pop" style="--d:${(r*6+c)*30}ms"><rect x="${60+c*28}" y="${16+r*22}" width="25" height="19" rx="3" fill="${differs?base[nt]:'#f1f5f9'}" stroke="#e2e8f0"/><text x="${72.5+c*28}" y="${29+r*22}" text-anchor="middle" font-size="10" font-weight="700" fill="${differs?'#fff':'#94a3b8'}">${nt}</text></g>`; }); });
+    s+=`<rect class="g-ring" x="${60+28-3}" y="13" width="31" height="${5*22+2}" rx="4" fill="none" stroke="#0f172a" stroke-width="1.6"/>`;
+    return s;
+  },
+  map:()=>{
+    let s=`<path class="g-fade" d="M30,40 C60,10 120,18 150,30 C190,44 220,40 228,70 C236,104 190,124 140,118 C96,112 74,128 44,108 C20,92 14,62 30,40 Z" fill="#e2e8f0" stroke="#cbd5e1"/>`;
+    [[80,60,'#0173B2',7],[120,82,'#DE8F05',5],[170,66,'#029E73',9],[104,100,'#0173B2',5]].forEach(([x,y,color,r],i)=>{ s+=`<circle class="g-pop" style="--d:${300+i*140}ms" cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="#fff" stroke-width="1.5"/>`; });
+    s+=`<path class="g-draw" d="M80,60 L120,82 L170,66 M120,82 L104,100" fill="none" stroke="#475569" stroke-width="1.4" stroke-dasharray="160"/>`;
+    s+=`<circle class="g-ring" cx="170" cy="66" r="14" fill="none" stroke="#029E73" stroke-width="2"/>`;
+    return s;
+  },
+  list:()=>{
+    let s='';
+    [[0.95,'#05624b'],[0.83,'#029E73'],[0.78,'#029E73']].forEach(([w,color],i)=>{
+      const y=22+i*34;
+      s+=guideRect(10,y,14,10,'#cbd5e1','g-fade',i*90);
+      s+=guideRect(30,y,90,10,i?'#94a3b8':color,'g-fade',i*90+60);
+      s+=`<rect x="130" y="${y+1}" width="80" height="8" rx="4" fill="#e2e8f0"/><rect class="g-growx" style="--d:${250+i*140}ms" x="130" y="${y+1}" width="${80*w}" height="8" rx="4" fill="#029E73"/>`;
+      s+=`<text class="g-fade" style="--d:${450+i*140}ms" x="214" y="${y+9}" font-size="9" fill="#334155">${(97.6-i*1.2).toFixed(1)}%</text>`;
+    });
+    s+=`<rect class="g-ring" x="6" y="17" width="232" height="20" rx="5" fill="none" stroke="#029E73" stroke-width="2"/>`;
+    return s;
+  },
+  diverging:()=>{
+    let s='';
+    const values=[[0,0,0,0,0,0],[0,0,-3,0,0,0],[0,0,0,0,2,0],[0,-1,0,0,0,null],[0,0,0,0,0,0]];
+    const color=v=>v===null?'url(#gHatch)':(v===0?'#ffffff':(v<0?(v<-2?'#0173B2':'#9ccbe6'):(v>1?'#DE8F05':'#f3c98b')));
+    s+='<defs><pattern id="gHatch" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#f1f5f9"/><path d="M0,4 l4,-4" stroke="#94a3b8"/></pattern></defs>';
+    for(let c=0;c<6;c++) s+=guideRect(52+c*30,6,22,7,'#94a3b8','g-fade',c*40);
+    values.forEach((row,r)=>{ s+=guideRect(8,22+r*22+6,36,7,r===0?'#0f172a':'#cbd5e1','g-fade',r*60); row.forEach((v,c)=>{ s+=guideRect(50+c*30,20+r*22,27,19,color(v),'g-pop',(r*6+c)*26,'stroke="#e2e8f0"'); }); });
+    s+=`<rect class="g-ring" x="${50+2*30-3}" y="${20+22-3}" width="33" height="25" rx="4" fill="none" stroke="#0f172a" stroke-width="1.6"/>`;
+    return s;
+  }
+};
+
+const GUIDES={
+  recommendation:{art:'bars',summary:'Which assembly to keep for each sample, and why.',
+    what:'For each sample, the circularized assembly with the highest score. The score adds seven components, each from 0 (worst) to 1 (best) multiplied by its weight in config.yml, and is shown out of 100.',
+    read:['Each card is one sample: the recommended assembly, its score and one bar per component, with what the component measures.','NA components (for example no BAM for the junction) count as na_value in config.yml, 0.5 by default.','The full ranking lists every assembly of every sample with the same components, so you can see how close the runner-up is.','The file box gives the paths of the recommended assemblies, ready to copy.'],
+    look:['A runner-up within a few points: both are equally good, choose by the alerts.','A recommended assembly with alerts in the Quality section: the score ranks, it does not discard.','A species verdict other than Confirmed on the card.']},
+  assemblyPanels:{art:'scatter',summary:'The four NOVOPlasty statistics of every run, linked to each other.',
+    what:'Number of contigs, largest and smallest contig, and average organelle coverage of every NOVOPlasty run (one point per project, seed and K-mer).',
+    read:['Colour is the seed and shape is the K-mer (legend above).','The green band in the contig panels is the genome range of the NOVOPlasty configuration: a largest contig inside it is a candidate complete genome.','Click a point to keep the same run highlighted in the four panels; click it again to show all runs.'],
+    look:['Runs with many contigs or a largest contig below the band: fragmented assembly.','Seeds or K-mers that fail for every sample.','Coverage far below the other runs of the same sample.']},
+  assemblyTable:{art:'table',summary:'Every NOVOPlasty run with its status, contigs, coverage and Pilon metrics.',
+    what:'One row per run with the values of the NOVOPlasty log and of Pilon.',
+    read:['The first two columns stay visible while the table scrolls sideways.','The shaded bar inside a numeric cell is proportional to the largest value of its column.','Circularized is green when NOVOPlasty closed the genome into a circle.','The search box filters this table only.'],
+    look:['Circularized runs whose largest contig differs from the other runs of the sample.','Runs with low coverage or few Pilon-confirmed bases.']},
+  pilonMetrics:{art:'heatmap',summary:'Median Pilon statistics per project, each column on its own colour scale.',
+    what:'Median coverage, confirmed bases and corrections of the Pilon runs of each project (of each seed when one project is selected).',
+    read:['Each column has its own unit and colour scale, from its lowest to its highest value; the range is under the column title.','Darker means higher within that column only: do not compare colours across columns.','Tick "Show values in the cells" to print the numbers.'],
+    look:['Low Confirmed %: Pilon could not confirm many bases with the reads.','Many corrected SNPs or indels compared with the other projects.']},
+  pilonBeforeAfter:{art:'bars',summary:'Genome length before and after Pilon, median per project.',
+    what:'The median length of the assemblies of each project before and after polishing.',
+    read:['The two bars of a project are normally almost equal: Pilon changes few bases.','Hover a bar for the exact length.'],
+    look:['A difference of more than a few base pairs: Pilon inserted or removed sequence, often inside repeats.']},
+  pilonCorrections:{art:'bars',summary:'SNPs, insertions and deletions corrected by Pilon.',
+    what:'The median number of corrections of each type per project.',
+    read:['One group of bars per project; the colours are the correction types.'],
+    look:['A project with many more corrections than the others: low coverage, read errors or mixed haplotypes.']},
+  genome:{art:'tracks',summary:'Each rotated assembly as a linear map of genes, repeats, Pilon corrections and depth.',
+    what:'Every rotated assembly in view drawn as a track, grouped by Seed + K-mer so the tracks of a group share the coordinate scale.',
+    read:['Genes on the + strand are on the top line, genes on the − strand on the line below; the colour identifies the gene.','Orange blocks are TRF tandem repeats, labelled with their consensus.','Triangles mark Pilon corrections; the shaded profile is the read depth.'],
+    look:['Genes shifted or missing compared with the other tracks of the sample.','Depth falling to almost zero: possible misassembly.','Repeats present only in some assemblies (often the control region).']},
+  completeness:{art:'heatmap',summary:'Which expected genes the annotation found in each assembly.',
+    what:'Presence of every expected gene in each assembly, read from the annotation (MITOS2 for mitochondria).',
+    read:['Rows are assemblies, grouped by project and by Seed + K-mer (shaded blocks); columns are the expected genes.','Coloured cell: present. Empty: absent. Duplicated and "partial at origin" (only a fragment kept because the gene crosses the contig origin) have their own colours.','The last column compares the gene order with the most common order of the project.'],
+    look:['A column with many empty cells: a gene the annotation often misses, frequently a tRNA.','A row with several genes absent: partial assembly.','"Differs" in the order column: rearrangement or misassembly.']},
+  quality:{art:'table',summary:'One row per assembly copy with annotation, coverage, read, Pilon and junction checks.',
+    what:'The checks of each assembly copy side by side, with a colour wherever a threshold applies.',
+    read:['Green is within the expected range, orange is worth checking and red is a problem; uncoloured cells have no threshold, compare them across rows.','The first two columns stay visible while the table scrolls sideways.','Tick "Only assemblies with alerts" to shorten the table. The column definitions are below.'],
+    look:['Red or orange cells in a recommended assembly.','Low coverage windows and unsupported junctions in the same assembly.'],
+    extra:()=>'<div class="guide-columns-title">Columns</div><div id="qualityGuideBody" class="quality-guide-grid"></div>'},
+  integrity:{art:'table',summary:'Every problem found in the annotated genes of the rotated GenBank.',
+    what:'One row per gene and check: internal stop codons, reading frame, start and stop codons, genes crossing the origin and lengths far from the project mode.',
+    read:['Error: blocks a GenBank submission. Warning: worth checking.','Informative rows (hidden by default) list incomplete stop codons that polyadenylation completes; they are normal in mitochondria.','Position is on the rotated genome.'],
+    look:['Internal stop codons in a protein-coding gene: frameshift or annotation error.','The same issue in every assembly of a sample (biological or annotation) versus one assembly only (assembly error).']},
+  concordance:{art:'matrix',summary:'How identical the assemblies of the same sample are to each other.',
+    what:'Each card is one sample. Its rows and columns are the same assemblies, in the same order; each cell compares the assembly of its row with the assembly of its column after aligning the genomes with MAFFT.',
+    read:['The colour of a cell is the identity (%) of the two genomes, without the gap columns. Darker blue is more identical; the scale on the right starts at the lowest identity of the sample, so small differences remain visible.','The black diagonal is each assembly compared with itself.','Assemblies whose identity and coverage are above the thresholds are linked into groups; the largest is the majority group, framed in green in the schematic. Labels in red are outside it, with their group number.','Hatched cells compared less than the minimum coverage: one genome is partial, so the identity is not meaningful.'],
+    look:['A row and column lighter than the rest: an assembly that disagrees with the others (misassembly, contamination or another haplotype).','Two dark blocks along the diagonal: two groups that agree within but not between them.','Hatched cells: partial genomes, not real differences.']},
+  heteroplasmy:{art:'list',summary:'Positions where the reads carry a second base.',
+    what:'Sites of the rotated BAM where a minor base reaches the depth, read and frequency thresholds.',
+    read:['High confidence: the minor base is on both strands, away from the contig ends, outside tandem repeats and not in a cluster of candidates.','Minor frequency is a lower bound: the BAM holds the reads NOVOPlasty assembled.','Tick "Show low-confidence sites" to see the rest, with the reason.'],
+    look:['Several high-confidence sites in the same gene of different assemblies: real heteroplasmy, or a NUMT.','Many sites in a single assembly: contamination or mixed samples.']},
+  validation:{art:'table',summary:'Whether the GenBank of each assembly passes the NCBI submission checks.',
+    what:'The annotation converted into an NCBI submission (feature table with NCBI product names, incomplete stops completed) and validated with table2asn.',
+    read:['Rejects, errors and FATAL discrepancies would block or delay the submission; warnings and other discrepancies are worth reading.','Stops completed counts the transl_except added for incomplete stop codons.','The folder holds the .sqn, .tbl, .fsa and .gbf files; open Messages for every message.'],
+    look:['Any red cell in a recommended assembly before submitting it.']},
+  species:{art:'list',summary:'Does the barcode of each sample match the declared species?',
+    what:'The barcode (COI for mitochondria; rbcL and matK for chloroplasts) of the recommended assembly of each sample, searched in BOLD and in GenBank.',
+    read:['Confirmed: the declared species reaches the identity threshold and no other species is clearly closer. Ambiguous: another species is closer. Not confirmed: below the threshold. No reference: neither database has the species. Not declared: no metadata.','The BOLD and GenBank columns list the three most similar species with their best identity; the declared species is in green.','Click a species to open its best record.'],
+    look:['The declared species missing from the top three of both databases.','Several species within 1% of each other: the barcode does not separate them.','"did not answer": the search failed (network or a busy service); run moCURA again, answers already received come from the cache.']},
+  referenceStrip:{art:'strip',summary:'Genome length or repeats of each sample against RefSeq genomes of its genus or family.',
+    what:'One row per sample. Grey diamonds are RefSeq genomes of the genus of the sample (or of the family when the genus has none); circles are the assemblies in view.',
+    read:['The green band is the reference range widened by the tolerance of config.yml.','Green circles are inside the band and orange circles outside; the large outlined circle is the recommended assembly.','For genome length the scale spans 15% around the references; partial contigs beyond it are triangles at the edge.'],
+    look:['A recommended assembly outside the band: missing or duplicated region (often the control region).','A sample whose references are a different genus: the comparison is only approximate.']},
+  referenceGenes:{art:'strip',summary:'Length of every gene against the same gene in the RefSeq genomes.',
+    what:'One row per gene. The horizontal position is the difference from the median length of the gene in the RefSeq genomes, in percent; 0 is the median.',
+    read:['Grey diamonds are the RefSeq genomes; the green band is their range widened by the gene tolerance of config.yml.','Circles are the assemblies (the recommended assembly of each sample, or every assembly in view): green inside the band, orange outside. The tooltip gives the lengths in bp.','On the right: the reference length range and how many assemblies fall outside it. "absent" lists assemblies without a gene that most references have.'],
+    look:['Protein-coding genes outside the band: wrong start or stop, frameshift, or a truncated gene at the origin.','tRNAs and rRNAs vary more between annotators; check them against the alignment before editing.']},
+  compositionStrip:{art:'strip',summary:'Base composition of each sample against the RefSeq genomes.',
+    what:'GC content and skews of the assemblies and of the RefSeq genomes used in the comparison, one row per sample.',
+    read:['Grey diamonds are RefSeq genomes and the green band is their range; circles are the assemblies in view, the outlined one is the recommended assembly.','AT skew = (A − T)/(A + T) and GC skew = (G − C)/(G + C), on the strand written in the GenBank file; PCG + and PCG − use the protein-coding genes of each strand read on their own coding strand.'],
+    look:['An assembly far from the references and from the other assemblies of the sample: contamination, a NUMT or a strand inversion.']},
+  rscu:{art:'stack',summary:'Codon usage of the protein-coding genes.',
+    what:'Relative synonymous codon usage: how often each codon is used compared with its synonyms.',
+    read:['Stacked view: one bar per codon box; each segment is one codon, in the colour and order of the boxes under the bar, with n = times counted. The dashed line is the height with no preference.','Heatmap view: one row per assembly and per RefSeq genome, one column per codon; red above 1 (preferred), blue below 1.','RefSeq genomes can also be chosen in the stacked view.'],
+    look:['An assembly whose row differs from the others of its project and from the references: frameshifts or misannotated genes.']},
+  compositionTable:{art:'table',summary:'GC content, skews and codons per assembly, with the RefSeq genomes below each sample.',
+    what:'Composition of the whole genome and of the protein-coding genes by strand for each assembly; the grey rows are the RefSeq genomes compared with that sample.',
+    read:['Compare each assembly with the RefSeq rows of its sample: GC % usually stays within a few points inside a genus.','Codons is the number of codons counted for the RSCU.'],
+    look:['Differences much larger than among the references themselves.']},
+  markers:{art:'diverging',summary:'Length of every marker in every assembly, coloured by its difference from the sample mode.',
+    what:'One row per assembly copy, one column per marker. The number in a cell is the length of the marker in bp.',
+    read:['The first row of each sample (bold) is its mode: the most common length of each marker in that sample. The RefSeq row, when present, is the median in the reference genomes.','White cells have the mode length. Blue cells are shorter and orange cells longer; the stronger the colour, the larger the difference. Hatched cells: marker not annotated.','Choose "Difference from the mode" to print +/− bp instead of the length, and tick the box to show only the assemblies that differ.'],
+    look:['A column with many coloured cells: a marker whose boundaries vary between assemblies, often at the contig origin.','A single assembly with several coloured cells: likely misassembled.']},
+  repeats:{art:'table',summary:'Every TRF tandem repeat with its position, gene context and consensus.',
+    what:'One row per tandem repeat found by TRF in the assemblies in view.',
+    read:['Bars inside the cells are proportional to the largest value in the column.','Context gives the genes around the repeat; the consensus is the repeated unit.'],
+    look:['Repeats in the control region that differ in length between assemblies of the same sample: NOVOPlasty often collapses or expands them.']},
+  snps:{art:'snp',summary:'Only the positions where the sequences of a marker differ.',
+    what:'For every marker, the alignment of all assemblies in view reduced to the variable (SNP) positions.',
+    read:['Each row is one sequence and each column a variable position; grey cells match the reference row, coloured cells differ (colour = base).','The reference row can be chosen per marker; position numbers are on that reference.','Incomplete or non-circularized sequences are hidden unless the box above is ticked.'],
+    look:['Columns where one sample differs from the others: candidate population variation.','Rows with many differences: a divergent haplotype, or an assembly error.']},
+  map:{art:'map',summary:'Sampling localities with the SNP differences of the selected markers.',
+    what:'The localities of the metadata, with the number of SNP differences carried by the samples of each locality.',
+    read:['Choose the markers that count in the panel above; the map and the network update.','The haplotype network joins unique haplotypes (circle size = number of sequences) with the number of differences on each link.'],
+    look:['Haplotypes restricted to one locality, or shared across distant ones.']}
+};
+
+function guideHtml(key) {
+  const guide=GUIDES[key];
+  const art=(GUIDE_ART[guide.art]||GUIDE_ART.table)();
+  const list=items=>`<ul>${items.map((item,index)=>`<li style="--i:${index}">${esc(item)}</li>`).join('')}</ul>`;
+  return `<button type="button" class="guide-toggle" aria-expanded="false"><span class="guide-icon">${GUIDE_ICON}</span><span class="guide-label">How to read this</span><span class="guide-summary">${esc(guide.summary)}</span><span class="guide-chevron" aria-hidden="true"></span></button>`
+    +`<div class="guide-panel" role="region"><div class="guide-inner"><div class="guide-body">`
+    +`<div class="guide-art"><svg viewBox="0 0 240 140" role="img" aria-label="Schematic of the chart">${art}</svg></div>`
+    +`<div class="guide-text"><div class="guide-block"><h4>What it shows</h4><p>${esc(guide.what)}</p></div><div class="guide-block"><h4>How to read it</h4>${list(guide.read)}</div><div class="guide-block"><h4>What to look for</h4>${list(guide.look)}</div></div>`
+    +`</div>${guide.extra?`<div class="guide-extra">${guide.extra()}</div>`:''}</div></div>`;
+}
+
+function initChartGuides() {
+  document.querySelectorAll('[data-guide]').forEach(host=>{
+    if(host.dataset.guideReady)return;
+    const key=host.dataset.guide;
+    if(!GUIDES[key])return;
+    host.dataset.guideReady='1';
+    const card=document.createElement('div');
+    card.className='guide-card';
+    card.innerHTML=guideHtml(key);
+    if(host.classList.contains('guide-slot')) host.appendChild(card);
+    else if(host.tagName==='DETAILS') host.querySelector('summary').insertAdjacentElement('afterend',card);
+    else if(host.querySelector(':scope > .table-toolbar')) host.querySelector(':scope > .table-toolbar').appendChild(card);
+    else {
+      const subtitle=host.querySelector(':scope > .chart-title ~ .chart-subtitle')||host.querySelector(':scope > .chart-title');
+      (subtitle||host.firstElementChild).insertAdjacentElement('afterend',card);
+    }
+    const button=card.querySelector('.guide-toggle');
+    const panel=card.querySelector('.guide-panel');
+    button.addEventListener('click',()=>{
+      const open=!panel.classList.contains('open');
+      // Restart the animations on every opening.
+      if(open){ panel.classList.remove('open'); void panel.offsetWidth; }
+      panel.classList.toggle('open',open);
+      card.classList.toggle('open',open);
+      button.setAttribute('aria-expanded',String(open));
+    });
+  });
+}
+
+// ------------------------------------------------- RefSeq helpers (Phase 3, report)
+// RefSeq genomes compared with each project, and their per-accession tables.
+function referenceAccessionsByProject() {
+  const map=new Map();
+  (ORGANPIPE.reference_genomes||[]).forEach(row=>{
+    const project=text(row['Project name']);
+    if(!map.has(project))map.set(project,[]);
+    if(!map.get(project).includes(text(row.Accession)))map.get(project).push(text(row.Accession));
+  });
+  return map;
+}
+const referenceCompositionByAccession=new Map((ORGANPIPE.reference_composition||[]).map(row=>[text(row.Accession),row]));
+const referenceRscuByAccession=new Map((ORGANPIPE.reference_rscu||[]).map(row=>[text(row.Accession),row]));
+function referenceGeneLengths() {
+  const map=new Map();
+  (ORGANPIPE.reference_gene_lengths||[]).forEach(row=>{
+    const accession=text(row.Accession);
+    if(!map.has(accession))map.set(accession,{organism:text(row.Organism),genes:new Map()});
+    map.get(accession).genes.set(text(row.Marker),num(row.Length));
+  });
+  return map;
+}
+
+// Generic strip chart: one row per item, reference diamonds, a reference band and
+// points (assemblies). Values beyond the domain are triangles at the edge.
+function drawStripChart(id, options) {
+  const container=document.getElementById(id);
+  clearChart(id);
+  const rows=options.rows||[];
+  if(!rows.length){emptyChart(id,options.empty||'Nothing to compare for the current filters.');return;}
+  const labelWidth=options.labelWidth||220;
+  const rightWidth=options.rightWidth||0;
+  const width=Math.max(760,container.clientWidth||1100);
+  const rowHeight=options.rowHeight||34, top=options.axisTop?42:10, bottom=options.axisTop?10:38;
+  const headerGap=18;
+  let cursor=top;
+  const layout=rows.map(row=>{ if(row.header){const item={row,y:cursor};cursor+=headerGap;return item;} const item={row,y:cursor+rowHeight/2};cursor+=rowHeight;return item; });
+  const height=cursor+bottom;
+  const svg=d3.select('#'+id).append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
+  const x=d3.scaleLinear().domain(options.domain).range([labelWidth,width-rightWidth-16]);
+  const [xMin,xMax]=x.domain();
+  const plotBottom=cursor;
+  svg.append('g').attr('class','grid-line').attr('transform',`translate(0,${top})`).call(d3.axisTop(x).ticks(8).tickSize(-(plotBottom-top)).tickFormat(''));
+  if(options.zero!==undefined&&options.zero>=xMin&&options.zero<=xMax) svg.append('line').attr('x1',x(options.zero)).attr('x2',x(options.zero)).attr('y1',top).attr('y2',plotBottom).attr('stroke','#475569').attr('stroke-dasharray','3,3').attr('stroke-opacity',.6);
+  const axis=options.axisTop?d3.axisTop(x):d3.axisBottom(x);
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${options.axisTop?top:plotBottom})`).call(axis.ticks(8).tickFormat(options.tickFormat||d3.format(',')));
+  if(options.axisLabel) svg.append('text').attr('x',(labelWidth+width-rightWidth-16)/2).attr('y',options.axisTop?11:height-4).attr('text-anchor','middle').attr('font-size',10.5).attr('fill','#64748b').text(options.axisLabel);
+  const clipX=value=>value<xMin?'left':(value>xMax?'right':null);
+  layout.forEach(({row,y},index)=>{
+    if(row.header){
+      svg.append('text').attr('x',8).attr('y',y+13).attr('font-size',10.5).attr('font-weight',800).attr('fill','#0173B2').text(row.header);
+      svg.append('line').attr('x1',8).attr('x2',width-16).attr('y1',y+16).attr('y2',y+16).attr('stroke','#cbd5e1');
+      return;
+    }
+    if(index&&!layout[index-1].row.header) svg.append('line').attr('x1',8).attr('x2',width-16).attr('y1',y-rowHeight/2).attr('y2',y-rowHeight/2).attr('stroke','#f1f5f9');
+    const label=svg.append('text').attr('x',labelWidth-10).attr('y',y+4).attr('text-anchor','end').attr('font-size',10.5).attr('fill','#0f172a');
+    row.label(label);
+    (row.bands||[]).forEach(([a,b])=>{
+      const left=x(Math.max(xMin,Math.min(xMax,a))), right=x(Math.max(xMin,Math.min(xMax,b)));
+      svg.append('rect').attr('x',left).attr('y',y-rowHeight/2+5).attr('width',Math.max(3,right-left)).attr('height',rowHeight-10).attr('rx',4).attr('fill','#029E73').attr('fill-opacity',.13);
+    });
+    (row.refs||[]).forEach(ref=>{
+      if(ref.value===null||ref.value===undefined||clipX(ref.value))return;
+      svg.append('path').attr('d',d3.symbol(d3.symbolDiamond,64)()).attr('transform',`translate(${x(ref.value)},${y})`).attr('fill','#475569').attr('stroke','#fff').attr('stroke-width',.8)
+        .on('mousemove',event=>hover(event,ref.tip)).on('mouseleave',unhover);
+    });
+    (row.points||[]).forEach((point,i)=>{
+      if(point.value===null||point.value===undefined)return;
+      const clipped=clipX(point.value);
+      const off=point.pick?0:(((point.jitter??i)%5)-2)*Math.min(3.2,(rowHeight-14)/5);
+      const mark=clipped
+        ? svg.append('path').attr('d',d3.symbol(d3.symbolTriangle,point.pick?90:40)()).attr('transform',`translate(${clipped==='left'?x(xMin)+5:x(xMax)-5},${y+off}) rotate(${clipped==='left'?-90:90})`)
+        : svg.append('circle').attr('cx',x(point.value)).attr('cy',y+off).attr('r',point.pick?6:3.6);
+      mark.attr('fill',point.color||'#0173B2').attr('fill-opacity',point.pick?1:.72).attr('stroke',point.pick?'#0f172a':'#fff').attr('stroke-width',point.pick?1.6:.6)
+        .on('mousemove',event=>hover(event,point.tip+(clipped?'<br>Beyond the scale of the chart (triangle at the edge)':''))).on('mouseleave',unhover);
+      if(point.pick)mark.raise();
+    });
+    if(row.right) svg.append('text').attr('x',width-rightWidth-4).attr('y',y+4).attr('font-size',10).attr('fill',row.rightColor||'#64748b').text(row.right);
+    if(row.absent){ const t=svg.append('text').attr('x',x((xMin+xMax)/2)).attr('y',y+4).attr('text-anchor','middle').attr('font-size',10).attr('fill','#94a3b8').text(row.absent); if(row.absentTip)t.on('mousemove',event=>hover(event,row.absentTip)).on('mouseleave',unhover); }
+  });
+}
+
+// ----------------------------------------------- gene lengths against RefSeq (strip)
+let referenceGenesScope='recommended';
+let referenceGenesOnlyOutside=false;
+const GENE_CLASS_ORDER=['PCGs','rRNAs','tRNAs','Other'];
+function renderReferenceGenes() {
+  const legend=document.getElementById('referenceGenesLegend');
+  const settings=PHASE3.reference||{};
+  const tolerance=num(settings.gene_tolerance_percent,10);
+  const recommended=recommendedAssemblies();
+  let rows=organpipeRows('reference_genes');
+  if(referenceGenesScope==='recommended')rows=rows.filter(row=>recommended.has(text(row.Assembly)));
+  const subtitle=document.getElementById('referenceGenesSubtitle');
+  if(!rows.length){subtitle.textContent='No gene comparison for the current filters.';legend.innerHTML='';clearChart('referenceGenes');return;}
+  const accessions=referenceAccessionsByProject();
+  const lengths=referenceGeneLengths();
+  const byMarker=d3.group(rows,row=>text(row.Marker));
+  const expected=(ORGANPIPE.expected_markers||[]).map(text);
+  const order=(a,b)=>{const ia=expected.indexOf(a), ib=expected.indexOf(b);return (ia<0?999:ia)-(ib<0?999:ib)||a.localeCompare(b,undefined,{numeric:true});};
+  const outsideOf=items=>items.filter(row=>['Shorter','Longer','Absent'].includes(text(row.Status)));
+  let markers=[...byMarker.keys()].sort(order);
+  if(referenceGenesOnlyOutside)markers=markers.filter(marker=>outsideOf(byMarker.get(marker)).length);
+  const flagged=outsideOf(rows);
+  const assemblies=new Set(rows.map(row=>text(row.Assembly))).size;
+  subtitle.textContent=`${assemblies} assembl${assemblies===1?'y':'ies'} × ${byMarker.size} genes · ${flagged.length} gene lengths outside the RefSeq range widened by ${d3.format('~g')(tolerance)}%, or absent · ${new Set(flagged.map(row=>text(row.Marker))).size} genes affected.`;
+  legend.innerHTML=`<span><svg width="12" height="12"><path transform="translate(6,6)" d="${d3.symbol(d3.symbolDiamond,54)()}" fill="#475569"/></svg>RefSeq genome</span><span><i style="background:rgba(2,158,115,.18)"></i>reference range ± ${d3.format('~g')(tolerance)}%</span><span><i style="background:#029E73;border-radius:50%"></i>assembly inside</span><span><i style="background:#DE8F05;border-radius:50%"></i>assembly outside</span><span><i style="background:#fff;border:2px solid #0f172a;border-radius:50%"></i>recommended</span><span>0% = median length of the gene in the RefSeq genomes</span>`;
+  const limit=Math.max(15,tolerance*2.5);
+  const items=[];
+  let previousClass=null;
+  markers.forEach(marker=>{
+    const markerRows=byMarker.get(marker);
+    const category=markerCategory(marker);
+    if(category!==previousClass){items.push({header:category==='Other'?'Other genes':category});previousClass=category;}
+    const median=num(markerRows[0]['Reference median']);
+    const low=num(markerRows[0]['Reference min']), high=num(markerRows[0]['Reference max']);
+    const projects=[...new Set(markerRows.map(row=>text(row['Project name'])))];
+    // Diamonds: each RefSeq genome of the projects in view, relative to the median of its project.
+    const refs=[], seen=new Set(), bands=[];
+    projects.forEach(project=>{
+      const first=markerRows.find(row=>text(row['Project name'])===project);
+      const projectMedian=num(first['Reference median']);
+      if(!projectMedian)return;
+      const pct=value=>100*(value-projectMedian)/projectMedian;
+      bands.push([pct(num(first['Reference min'])*(1-tolerance/100)),pct(num(first['Reference max'])*(1+tolerance/100))]);
+      (accessions.get(project)||[]).forEach(accession=>{
+        const ref=lengths.get(accession); const value=ref?ref.genes.get(marker):null;
+        if(value===null||value===undefined||seen.has(accession))return;
+        seen.add(accession);
+        refs.push({value:pct(value),tip:`<b><i>${esc(ref.organism)}</i></b> · ${esc(accession)} (RefSeq)<br>${esc(marker)}: ${d3.format(',')(value)} bp (${d3.format('+.1f')(pct(value))}% from the median)`});
+      });
+    });
+    const uniqueBands=[...new Map(bands.map(band=>[band.map(v=>v.toFixed(3)).join(','),band])).values()];
+    const absent=markerRows.filter(row=>text(row.Status)==='Absent');
+    const points=markerRows.filter(row=>text(row.Status)!=='Absent').map((row,i)=>{
+      const deviation=num(row['Deviation from median (%)']);
+      const status=text(row.Status);
+      const pick=recommended.has(text(row.Assembly));
+      return {value:deviation,pick:referenceGenesScope==='all'&&pick,jitter:i,color:status==='Within'?'#029E73':'#DE8F05',
+        tip:`<b>${esc(marker)}</b> · ${esc(projectDisplayText(projectRecord(row['Project name'])))} · ${runLabel(row)}${pick?' (recommended)':''}<br>${d3.format(',')(num(row.Length,0))} bp, ${deviation===null?'—':d3.format('+.1f')(deviation)+'%'} from the RefSeq median (${d3.format(',')(num(row['Reference median'],0))} bp)<br>RefSeq ${d3.format(',')(num(row['Reference min'],0))}–${d3.format(',')(num(row['Reference max'],0))} bp in ${esc(row['References with the gene'])} genome(s) · ${esc(status)}`};
+    });
+    const outside=outsideOf(markerRows).length;
+    const range=low===high?`${d3.format(',')(low)} bp`:`${d3.format(',')(low)}–${d3.format(',')(high)} bp`;
+    items.push({
+      label:selection=>selection.attr('font-weight',outside?750:500).attr('fill',outside?'#9a3412':'#0f172a').text(marker),
+      refs, bands:uniqueBands, points,
+      right:`RefSeq ${range}${outside?` · ${outside} outside`:''}`, rightColor:outside?'#9a3412':'#64748b',
+      absent:absent.length&&!points.length?`absent from ${absent.length} assembl${absent.length===1?'y':'ies'}`:null,
+      absentTip:absent.length?`Absent from: ${absent.map(row=>esc(`${projectDisplayText(projectRecord(row['Project name']))} · ${text(row['Seed Input'])} · k${text(row['K-mer'])} · _${text(row['Assembly copy'])}`)).join('<br>')}`:null,
+    });
+    if(absent.length&&points.length)items[items.length-1].right+=` · absent in ${absent.length}`;
+  });
+  if(!markers.length){emptyChart('referenceGenes','Every gene in view is inside the RefSeq range.');return;}
+  drawStripChart('referenceGenes',{rows:items,domain:[-limit,limit],zero:0,labelWidth:110,rightWidth:230,rowHeight:26,axisTop:true,
+    tickFormat:value=>`${value>0?'+':''}${d3.format('~g')(value)}%`,axisLabel:'Difference from the median length of the gene in the RefSeq genomes'});
+}
+
+// ------------------------------------------- composition against RefSeq (strip)
+const COMPOSITION_METRICS=[
+  ['GC %','GC % (genome)','.2f'],['AT skew','AT skew (genome)','.3f'],['GC skew','GC skew (genome)','.3f'],
+  ['PCG GC %','GC % of the protein-coding genes','.2f'],['PCG + AT skew','AT skew, PCGs on the + strand','.3f'],['PCG + GC skew','GC skew, PCGs on the + strand','.3f'],
+  ['PCG - AT skew','AT skew, PCGs on the − strand','.3f'],['PCG - GC skew','GC skew, PCGs on the − strand','.3f'],
+];
+let compositionMetric='GC %';
+let compositionScope='recommended';
+function renderCompositionStrip() {
+  const card=document.getElementById('compositionStripCard');
+  const recommendedSet=recommendedAssemblies();
+  const rows=organpipeRows('composition').filter(row=>compositionScope==='all'||recommendedSet.has(text(row.Assembly)));
+  const accessions=referenceAccessionsByProject();
+  const hasReferences=rows.some(row=>(accessions.get(text(row['Project name']))||[]).some(accession=>referenceCompositionByAccession.has(accession)));
+  card.style.display=(ORGANPIPE.reference_composition||[]).length?'':'none';
+  if(!(ORGANPIPE.reference_composition||[]).length)return;
+  const [column,label,format]=COMPOSITION_METRICS.find(item=>item[0]===compositionMetric)||COMPOSITION_METRICS[0];
+  const recommended=recommendedAssemblies();
+  const projects=[...new Set(rows.map(row=>text(row['Project name'])))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  const items=[], values=[];
+  let outside=0, singleReference=0;
+  projects.forEach(project=>{
+    const assemblies=rows.filter(row=>text(row['Project name'])===project);
+    const refs=(accessions.get(project)||[]).map(accession=>referenceCompositionByAccession.get(accession)).filter(Boolean);
+    const refValues=refs.map(ref=>num(ref[column])).filter(value=>value!==null);
+    // A range needs two references; with one, the chart shows the distance to it without a verdict.
+    const [low,high]=refValues.length>1?d3.extent(refValues):[null,null];
+    const median=refValues.length?d3.median(refValues):null;
+    if(refValues.length===1)singleReference+=1;
+    const points=assemblies.map((row,i)=>{
+      const value=num(row[column]); if(value!==null)values.push(value);
+      const pick=recommended.has(text(row.Assembly));
+      const inside=low===null||value===null||(value>=low&&value<=high);
+      if(!inside)outside+=1;
+      return {value,pick,jitter:i,color:low===null?'#0173B2':(inside?'#029E73':'#DE8F05'),
+        tip:`<b>${esc(projectDisplayText(projectRecord(project)))}</b> · ${runLabel(row)}${pick?' (recommended)':''}<br>${esc(label)}: ${fmtNum(value,format)}${median===null?'':`<br>RefSeq ${low===null?fmtNum(median,format)+' (one genome)':`${fmtNum(low,format)} to ${fmtNum(high,format)} (median ${fmtNum(median,format)})`}; difference ${d3.format('+'+format)(value-median)}`}`};
+    });
+    refValues.forEach(value=>values.push(value));
+    items.push({
+      label:selection=>setSvgProjectLabel(selection,projectRecord(project),{suffix:refs.length?` · ${refs.length} RefSeq`:' · no RefSeq'}),
+      bands:low===null?[]:[[low,high]],
+      refs:refs.map(ref=>({value:num(ref[column]),tip:`<b><i>${esc(ref.Organism)}</i></b> · ${esc(ref.Accession)} (RefSeq)<br>${esc(label)}: ${fmtNum(ref[column],format)}`})),
+      points,
+    });
+  });
+  document.getElementById('compositionStripSubtitle').textContent=hasReferences
+    ? `${rows.length} assembl${rows.length===1?'y':'ies'} of ${projects.length} sample(s) · ${singleReference===projects.length?`one RefSeq genome per sample, so no range: read the distance between the circles and the diamond (tooltips give the difference)`:`${outside} outside the range of the RefSeq genomes of their sample for ${label}`}.`
+    : 'No RefSeq genome matches the samples in view.';
+  if(!values.length){emptyChart('compositionStrip','No composition value for the current filters.');return;}
+  let [low,high]=d3.extent(values);
+  const pad=Math.max(column.includes('skew')?.01:.5,(high-low)*.08);
+  drawStripChart('compositionStrip',{rows:items,domain:d3.scaleLinear().domain([low-pad,high+pad]).nice().domain(),labelWidth:Math.min(380,Math.max(240,svgLabelWidth(projects.map(project=>projectDisplayText(projectRecord(project))+' · 9 RefSeq'),10.5)+24)),
+    rowHeight:38,axisLabel:label,tickFormat:d3.format(column.includes('skew')?'.2f':'.1f'),zero:column.includes('skew')?0:undefined});
+}
+
+// --------------------------------------------- marker comparison (diverging)
+let markerValueMode='length';
+let markerOnlyDifferent=false;
+function markerModes(rows) {
+  const modes=new Map();
+  d3.groups(rows,row=>text(row.Marker)).forEach(([marker,items])=>{
+    const counts=d3.rollup(items,v=>v.length,row=>num(row['Marker length']));
+    modes.set(marker,[...counts].sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0][0]);
+  });
+  return modes;
+}
+
+function renderMarkerHeatmap() {
+  const legend=document.getElementById('markerLegend');
+  const all=REPORT.markers.filter(matches).filter(row=>num(row['Marker length'])!==null);
+  const rows=all.filter(row=>markerCategorySelection==='All'||markerCategory(row.Marker)===markerCategorySelection);
+  if(!rows.length){legend.innerHTML='';document.getElementById('markerSubtitle').textContent='';return emptyChart('markerLengthHeatmap',`No ${markerCategorySelection} marker-length data for the selected filters.`);}
+  clearChart('markerLengthHeatmap');
+  const expected=(ORGANPIPE.expected_markers||[]).map(text);
+  const markers=unique(rows,'Marker').map(text).sort((a,b)=>{const ca=GENE_CLASS_ORDER.indexOf(markerCategory(a)), cb=GENE_CLASS_ORDER.indexOf(markerCategory(b));const ia=expected.indexOf(a), ib=expected.indexOf(b);return ca-cb||(ia<0?999:ia)-(ib<0?999:ib)||a.localeCompare(b,undefined,{numeric:true});});
+  const copyKey=row=>`${rowKey(row)}\0${text(row['Assembly copy'])}`;
+  const assemblies=new Map();
+  rows.forEach(row=>{
+    const key=copyKey(row);
+    if(!assemblies.has(key))assemblies.set(key,{key,row,values:new Map()});
+    assemblies.get(key).values.set(text(row.Marker),num(row['Marker length']));
+  });
+  const accessions=referenceAccessionsByProject();
+  const refLengths=referenceGeneLengths();
+  const projects=d3.groups([...assemblies.values()],item=>text(item.row['Project name'])).sort((a,b)=>projectDisplayText(a[1][0].row).localeCompare(projectDisplayText(b[1][0].row),undefined,{numeric:true}));
+  const lines=[];
+  const recommendedNames=recommendedAssemblies();
+  let differing=0, total=0;
+  projects.forEach(([project,items])=>{
+    const projectRows=rows.filter(row=>text(row['Project name'])===project);
+    const modes=markerModes(projectRows);
+    items.sort((a,b)=>text(a.row['Seed Input']).localeCompare(text(b.row['Seed Input']),undefined,{numeric:true})||num(a.row['K-mer'],0)-num(b.row['K-mer'],0)||num(a.row['Assembly copy'],0)-num(b.row['Assembly copy'],0));
+    const differs=item=>markers.some(marker=>modes.has(marker)&&item.values.get(marker)!==modes.get(marker));
+    total+=items.length;
+    const shown=items.filter(item=>{const d=differs(item);if(d)differing+=1;return !markerOnlyDifferent||d;});
+    lines.push({type:'mode',project,modes,count:items.length,shown:shown.length,row:items[0].row});
+    const refs=(accessions.get(project)||[]).map(accession=>refLengths.get(accession)).filter(Boolean);
+    if(refs.length){
+      const medians=new Map(markers.map(marker=>{const values=refs.map(ref=>ref.genes.get(marker)).filter(value=>value!==undefined&&value!==null);return [marker,values.length?d3.median(values):null];}));
+      lines.push({type:'ref',project,medians,refs:refs.length,modes});
+    }
+    shown.forEach(item=>lines.push({type:'assembly',project,item,modes}));
+  });
+  document.getElementById('markerSubtitle').textContent=`${total} assembly copies of ${projects.length} sample(s) × ${markers.length} ${markerCategorySelection==='All'?'markers':markerCategorySelection} · ${differing} with at least one marker length different from the mode of their sample.`;
+  const limit=d3.max(lines.filter(line=>line.type==='assembly'),line=>d3.max(markers,marker=>{const value=line.item.values.get(marker), mode=line.modes.get(marker);return value===undefined||mode===undefined?0:Math.abs(value-mode);}))||1;
+  const scaleMax=Math.max(3,Math.min(60,limit));
+  const color=value=>{ if(value===0)return '#ffffff'; const t=Math.min(1,Math.sqrt(Math.abs(value)/scaleMax)); return value<0?d3.interpolateRgb('#e6f1f8','#0173B2')(t):d3.interpolateRgb('#fcefd9','#DE8F05')(t); };
+  legend.innerHTML=`<span><i style="background:#0173B2"></i>shorter than the mode</span><span><i style="background:#9ccbe6"></i>1–2 bp shorter</span><span><i style="background:#fff;border:1px solid #cbd5e1"></i>same length as the mode</span><span><i style="background:#f3c98b"></i>1–2 bp longer</span><span><i style="background:#DE8F05"></i>longer (full colour at ±${d3.format('~g')(scaleMax)} bp)</span><span><i class="hatch-swatch"></i>not annotated</span><span><b>Bold row</b>: mode of the sample · <b>RefSeq</b>: median of the reference genomes</span>`;
+  const container=document.getElementById('markerLengthHeatmap');
+  const labelWidth=Math.min(400,Math.max(250,svgLabelWidth(projects.map(([,items])=>projectDisplayText(items[0].row)+' · Mode (99 of 99 differ)'),10.5)+30));
+  const available=(container.clientWidth||1100)-labelWidth-12;
+  const cellWidth=Math.max(markerCategorySelection==='tRNAs'||markers.length>24?34:44,Math.min(72,available/markers.length));
+  const rotate=markers.some(marker=>marker.length*6.2>cellWidth-4);
+  const top=rotate?Math.min(96,18+d3.max(markers,marker=>marker.length)*5.4):26;
+  const rowHeight=22, gap=12;
+  let cursor=top;
+  const layout=lines.map((line,index)=>{ if(line.type==='mode'&&index)cursor+=gap; const y=cursor; cursor+=rowHeight; return {line,y}; });
+  const height=cursor+8, width=Math.max(container.clientWidth||900,labelWidth+markers.length*cellWidth+12);
+  const svg=d3.select('#markerLengthHeatmap').append('svg').attr('width',width).attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
+  const defs=svg.append('defs');
+  defs.append('pattern').attr('id','markerHatch').attr('patternUnits','userSpaceOnUse').attr('width',5).attr('height',5).html('<rect width="5" height="5" fill="#f1f5f9"/><path d="M0,5 l5,-5" stroke="#94a3b8" stroke-width="1"/>');
+  markers.forEach((marker,j)=>{
+    const cx=labelWidth+(j+.5)*cellWidth;
+    const label=svg.append('text').attr('font-size',10).attr('font-weight',750).attr('fill','#0f172a').text(marker);
+    if(rotate)label.attr('x',cx).attr('y',top-5).attr('transform',`rotate(-55,${cx},${top-5})`);
+    else label.attr('x',cx).attr('y',top-8).attr('text-anchor','middle');
+  });
+  const cellText=(value,mode)=>markerValueMode==='difference'&&mode!==undefined?(value===mode?'0':d3.format('+')(value-mode)):d3.format(',')(value);
+  layout.forEach(({line,y})=>{
+    if(line.type==='mode'){
+      svg.append('rect').attr('x',0).attr('y',y).attr('width',width).attr('height',rowHeight).attr('fill','#e8f3f9');
+      const label=svg.append('text').attr('x',labelWidth-10).attr('y',y+15).attr('text-anchor','end').attr('font-size',10.5).attr('fill','#0f172a');
+      setSvgProjectLabel(label,projectRecord(line.project),{suffix:markerOnlyDifferent?` · Mode (${line.shown} of ${line.count} differ)`:' · Mode'});
+      label.on('mousemove',event=>hover(event,`<b>${esc(projectDisplayText(projectRecord(line.project)))}</b><br>Most common length of each marker among the ${line.count} assembly copies of the sample${markerOnlyDifferent?` (${line.shown} differ and are shown)`:''}.`)).on('mouseleave',unhover);
+      markers.forEach((marker,j)=>{ const mode=line.modes.get(marker); if(mode===undefined)return; svg.append('text').attr('x',labelWidth+(j+.5)*cellWidth).attr('y',y+15).attr('text-anchor','middle').attr('font-size',10).attr('font-weight',800).attr('fill','#0f172a').text(d3.format(',')(mode)); });
+      return;
+    }
+    if(line.type==='ref'){
+      svg.append('text').attr('x',labelWidth-10).attr('y',y+15).attr('text-anchor','end').attr('font-size',10).attr('font-style','italic').attr('fill','#475569').text(`RefSeq median (${line.refs} genome${line.refs===1?'':'s'})`);
+      markers.forEach((marker,j)=>{
+        const median=line.medians.get(marker), mode=line.modes.get(marker);
+        if(median===null||median===undefined)return;
+        const differs=mode!==undefined&&Math.abs(median-mode)>0;
+        svg.append('text').attr('x',labelWidth+(j+.5)*cellWidth).attr('y',y+15).attr('text-anchor','middle').attr('font-size',9.5).attr('font-style','italic').attr('font-weight',differs?750:400).attr('fill',differs?'#9a3412':'#64748b').text(markerValueMode==='difference'&&mode!==undefined?(median===mode?'0':d3.format('+')(median-mode)):d3.format(',')(median))
+          .on('mousemove',event=>hover(event,`<b>${esc(marker)}</b> · RefSeq median ${d3.format(',')(median)} bp${mode!==undefined?`<br>Mode of the sample ${d3.format(',')(mode)} bp (${d3.format('+')(mode-median)} bp)`:''}`)).on('mouseleave',unhover);
+      });
+      return;
+    }
+    const {item,modes}=line;
+    const label=svg.append('text').attr('x',labelWidth-10).attr('y',y+15).attr('text-anchor','end').attr('font-size',10).attr('fill','#334155');
+    const file=text(item.row['GenBank file']);
+    const isPick=[...recommendedNames].some(name=>file===`${name}.rotated.gb`||file===`${name}.gb`);
+    label.text(`${text(item.row['Seed Input'])} · k${text(item.row['K-mer'])} · _${text(item.row['Assembly copy'])}${isPick?' ★':''}`).attr('font-weight',isPick?750:400);
+    markers.forEach((marker,j)=>{
+      const value=item.values.get(marker), mode=modes.get(marker);
+      const x0=labelWidth+j*cellWidth;
+      if(value===undefined||value===null){
+        svg.append('rect').attr('x',x0+1).attr('y',y+1).attr('width',cellWidth-2).attr('height',rowHeight-2).attr('rx',3).attr('fill','url(#markerHatch)')
+          .on('mousemove',event=>hover(event,`<b>${esc(marker)}</b> · ${esc(projectDisplayText(item.row))} · ${esc(item.row['Seed Input'])} · k${esc(item.row['K-mer'])} · _${esc(item.row['Assembly copy'])}<br>Not annotated in this assembly`)).on('mouseleave',unhover);
+        return;
+      }
+      const difference=mode===undefined?0:value-mode;
+      svg.append('rect').attr('x',x0+1).attr('y',y+1).attr('width',cellWidth-2).attr('height',rowHeight-2).attr('rx',3).attr('fill',color(difference)).attr('stroke',difference?'none':'#e2e8f0')
+        .on('mousemove',event=>hover(event,`<b>${esc(marker)}</b> · ${esc(projectDisplayText(item.row))}<br>${esc(item.row['Seed Input'])} · k${esc(item.row['K-mer'])} · _${esc(item.row['Assembly copy'])}${isPick?' (recommended)':''}<br>${d3.format(',')(value)} bp · mode of the sample ${d3.format(',')(mode)} bp${difference?` (${d3.format('+')(difference)} bp)`:''}`)).on('mouseleave',unhover);
+      const strong=Math.abs(difference)>=scaleMax*.35;
+      svg.append('text').attr('x',x0+cellWidth/2).attr('y',y+15).attr('text-anchor','middle').attr('font-size',9.5).attr('font-weight',difference?750:400).attr('fill',strong?'#ffffff':(difference?'#0f172a':'#94a3b8')).attr('pointer-events','none').text(cellText(value,mode));
+    });
+  });
+}
+
+// -------------------------------------------------- RSCU with RefSeq genomes
+function referenceRscuItems() {
+  const accessions=referenceAccessionsByProject();
+  const projects=new Set(organpipeRows('composition').map(row=>text(row['Project name'])));
+  const wanted=new Set([...projects].flatMap(project=>accessions.get(project)||[]));
+  return [...wanted].map(accession=>referenceRscuByAccession.get(accession)).filter(Boolean).map(ref=>({...ref,isReference:true,Assembly:`ref:${text(ref.Accession)}`}));
+}
+
+function initCompositionControls() {
+  document.getElementById('compositionMetric').innerHTML=COMPOSITION_METRICS.map(([column,label])=>`<option value="${esc(column)}" ${column===compositionMetric?'selected':''}>${esc(label)}</option>`).join('');
+}
+
 function renderAll() {
   updateText();
   updateMetrics();
@@ -4438,6 +5025,8 @@ async function start() {
     document.getElementById('abbreviateSpecies').checked=false;
     renderTabs();
     resetFilterSelections();
+    initChartGuides();
+    initCompositionControls();
     renderAll();
     initStaticTooltips();
     initStickyFilterLogo();
@@ -4486,6 +5075,11 @@ document.getElementById('heteroplasmySearch').addEventListener('input',renderHet
 document.getElementById('heteroplasmyShowLow').addEventListener('change',renderHeteroplasmy);
 document.getElementById('referenceMetric').addEventListener('change',event=>{ referenceMetric=event.target.value; renderReferenceStrip(); });
 document.getElementById('referenceGenesScope').addEventListener('change',event=>{ referenceGenesScope=event.target.value; renderReferenceGenes(); });
+document.getElementById('referenceGenesOutside').addEventListener('change',event=>{ referenceGenesOnlyOutside=event.target.checked; renderReferenceGenes(); });
+document.getElementById('compositionMetric').addEventListener('change',event=>{ compositionMetric=event.target.value; renderCompositionStrip(); });
+document.getElementById('compositionScope').addEventListener('change',event=>{ compositionScope=event.target.value; renderCompositionStrip(); });
+document.getElementById('markerValueMode').addEventListener('change',event=>{ markerValueMode=event.target.value; renderMarkerHeatmap(); });
+document.getElementById('markerOnlyDifferent').addEventListener('change',event=>{ markerOnlyDifferent=event.target.checked; renderMarkerHeatmap(); });
 
 start();
 </script>

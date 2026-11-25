@@ -12,6 +12,9 @@ From: condaforge/miniforge3:latest
     mocura.py /opt/mocura/mocura.py
     moCURA /opt/mocura/moCURA
     assets /opt/mocura/assets
+    # .env (NCBI_API_KEY) when present, and always .env.example. The glob keeps the
+    # build working without a .env. moCURA reads /opt/mocura/.env by default.
+    .env* /opt/mocura/
 
 %post
     set -eu
@@ -25,6 +28,13 @@ From: condaforge/miniforge3:latest
     /opt/conda/envs/mocura_env/bin/python -c "import pysam"
     # table2asn validates the annotation for GenBank submission (Phase 3).
     /opt/conda/envs/mocura_env/bin/table2asn -version
+
+    # Report whether the image carries an NCBI API key (the key itself is not printed).
+    if [ -f /opt/mocura/.env ] && grep -Eq '^[[:space:]]*(export[[:space:]]+)?NCBI_API_KEY[[:space:]]*=[[:space:]]*["'"'"']?[A-Za-z0-9]' /opt/mocura/.env; then
+        echo "moCURA: NCBI_API_KEY found in .env, NCBI and BOLD at 10 requests per second"
+    else
+        echo "moCURA: no NCBI_API_KEY in the image, NCBI and BOLD at 3 requests per second"
+    fi
 
     /opt/conda/envs/mocura_env/bin/python -m compileall -q /opt/mocura/mocura.py /opt/mocura/moCURA
 
@@ -44,7 +54,10 @@ From: condaforge/miniforge3:latest
     exec python /opt/mocura/mocura.py "$@"
 
 %help
-    Build from the project root, because %files uses project-relative paths:
+    Build from the project root, because %files uses project-relative paths.
+    A .env at the project root (NCBI_API_KEY=...) is copied into the image and
+    read by default; anyone with the .sif can read that key. Without a .env the
+    image queries NCBI and BOLD at 3 requests per second.
 
         singularity build mocura.sif mocura.def
 

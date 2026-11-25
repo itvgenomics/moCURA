@@ -15,7 +15,10 @@ Each assembly of the project is then compared with the references:
   absent from the assembly are listed;
 * tandem repeats: TRF (same parameters as the ``trf`` section) runs on every
   reference, and the number of repeats and bases in repeats of the assembly are
-  compared with the reference range.
+  compared with the reference range;
+* base composition and codon usage: GC %, AT and GC skews of the genome and of
+  the protein-coding genes, and the RSCU, computed for every reference exactly
+  as ``sequence_composition`` does for the assemblies.
 
 Gene names of the references go through the same standardization as the
 assemblies (SynGenes aliases), so ``cox1``, ``COX1`` and ``COI`` are one gene.
@@ -32,8 +35,10 @@ import pandas as pd
 from Bio import SeqIO
 
 from ..load.organpipe_layout import ASSEMBLY_ID_COLUMNS, assembly_identity
+from ..standardization.plastid_marker_name import plastid_marker_name
 from ..standardization.standardized_marker_name import standardized_marker_name
 from .run_trf_analysis import run_trf_job
+from .sequence_composition import codon_counts, composition, rscu
 
 
 REFERENCE_COLUMNS = [
@@ -47,6 +52,14 @@ SUMMARY_COLUMNS = ASSEMBLY_ID_COLUMNS + [
     "Tandem repeats", "Bases in repeats", "Reference repeats min", "Reference repeats max",
     "Reference bases in repeats min", "Reference bases in repeats max", "Repeat status",
 ]
+REFERENCE_GENE_COLUMNS = ["Accession", "Organism", "Marker", "Length"]
+REFERENCE_COMPOSITION_COLUMNS = [
+    "Accession", "Organism", "Genome length", "GC %", "AT skew", "GC skew",
+    "PCG + strand bp", "PCG + GC %", "PCG + AT skew", "PCG + GC skew",
+    "PCG - strand bp", "PCG - GC %", "PCG - AT skew", "PCG - GC skew",
+    "PCG bp", "PCG GC %", "PCG AT skew", "PCG GC skew", "Codons counted", "Genetic code",
+]
+REFERENCE_RSCU_COLUMNS = ["Accession", "Organism", "Codon", "Amino acid", "Count", "RSCU"]
 GENE_COLUMNS = ASSEMBLY_ID_COLUMNS + [
     "Marker", "Length", "References with the gene", "Reference min", "Reference median", "Reference max",
     "Deviation from median (%)", "Status",
@@ -68,6 +81,8 @@ def trna_qualifiers(feature):
     ``tRNA-Phe`` would otherwise be resolved by the letter after ``trn``.
     """
 
+    if plastid_marker_name(feature_type="tRNA", qualifiers=feature.qualifiers):
+        return feature.qualifiers
     product = str((feature.qualifiers.get("product") or [""])[0])
     match = re.match(r"tRNA-([A-Za-z]{3})", product)
     if not match or match.group(1).capitalize() not in ONE_LETTER:
@@ -92,6 +107,34 @@ def genome_genes(record):
             continue
         genes[marker] = max(genes.get(marker, 0), len(feature.location))
     return genes
+
+
+def reference_composition(record, genetic_code=2):
+    """Composition row and RSCU rows of one reference, as for the assemblies."""
+
+    plus, minus = [], []
+    for feature in record.features:
+        if feature.type != "CDS":
+            continue
+        try:
+            coding = str(feature.extract(record.seq)).upper()
+        except ValueError:
+            continue
+        (minus if feature.location.strand == -1 else plus).append(coding)
+    genome = composition(sequence=record.seq)
+    strand_plus, strand_minus, pcg = composition(sequence="".join(plus)), composition(sequence="".join(minus)), composition(sequence="".join(plus + minus))
+    counts = codon_counts(sequences=plus + minus, table=genetic_code)
+    organism = record.annotations.get("organism", "")
+    row = {
+        "Accession": record.id, "Organism": organism, "Genome length": len(record.seq),
+        "GC %": genome["GC %"], "AT skew": genome["AT skew"], "GC skew": genome["GC skew"],
+        "PCG + strand bp": strand_plus["bp"], "PCG + GC %": strand_plus["GC %"], "PCG + AT skew": strand_plus["AT skew"], "PCG + GC skew": strand_plus["GC skew"],
+        "PCG - strand bp": strand_minus["bp"], "PCG - GC %": strand_minus["GC %"], "PCG - AT skew": strand_minus["AT skew"], "PCG - GC skew": strand_minus["GC skew"],
+        "PCG bp": pcg["bp"], "PCG GC %": pcg["GC %"], "PCG AT skew": pcg["AT skew"], "PCG GC skew": pcg["GC skew"],
+        "Codons counted": sum(counts.values()), "Genetic code": genetic_code,
+    }
+    usage = [{"Accession": record.id, "Organism": organism, **item} for item in rscu(counts=counts, table=genetic_code)] if counts else []
+    return row, usage
 
 
 def organelle_filter(organelle):
@@ -265,7 +308,7 @@ def compare_project(**kwargs):
 
 
 async def run_reference_comparison(**kwargs):
-    """Return (summary, genes, references) dataframes."""
+    """Return (summary, genes, references, reference genes, reference composition, reference RSCU) dataframes."""
 
     service = kwargs.get("service")
     settings = kwargs.get("settings", {}) or {}
@@ -274,7 +317,9 @@ async def run_reference_comparison(**kwargs):
     output_dir = kwargs.get("output_dir")
     trf_config = kwargs.get("trf_config", {}) or {}
     jobs = kwargs.get("jobs", [])
-    empty = (pd.DataFrame(columns=SUMMARY_COLUMNS), pd.DataFrame(columns=GENE_COLUMNS), pd.DataFrame(columns=REFERENCE_COLUMNS))
+    genetic_code = int(kwargs.get("genetic_code", 2))
+    empty = (pd.DataFrame(columns=SUMMARY_COLUMNS), pd.DataFrame(columns=GENE_COLUMNS), pd.DataFrame(columns=REFERENCE_COLUMNS),
+             pd.DataFrame(columns=REFERENCE_GENE_COLUMNS), pd.DataFrame(columns=REFERENCE_COMPOSITION_COLUMNS), pd.DataFrame(columns=REFERENCE_RSCU_COLUMNS))
     if species is None or species.empty:
         logging.warning("RefSeq comparison skipped: no taxonomy from the species identification")
         return empty
@@ -299,8 +344,10 @@ async def run_reference_comparison(**kwargs):
                 SeqIO.write([record], path, "genbank")
             count, bases = (await reference_repeats(record=record, folder=reference_dir, trf_config=trf_config, semaphore=semaphore)
                             if settings.get("compare_repeats", True) else (None, None))
+            composition_row, usage = reference_composition(record, genetic_code)
             items.append({"Accession": record.id, "Organism": record.annotations.get("organism", ""), "Genome length": len(record.seq),
-                          "genes": genome_genes(record), "Tandem repeats": count, "Bases in repeats": bases})
+                          "genes": genome_genes(record), "Tandem repeats": count, "Bases in repeats": bases,
+                          "composition": composition_row, "rscu": usage})
         references_by_taxid[taxid] = items
         return items
 
@@ -335,5 +382,12 @@ async def run_reference_comparison(**kwargs):
         genes.extend(project_genes)
 
     logging.info("RefSeq comparison: %d assemblies compared with %d reference genomes", len(summaries), len({row["Accession"] for row in reference_rows}))
+    used = {row["Accession"] for row in reference_rows}
+    unique = {item["Accession"]: item for items in references_by_taxid.values() for item in items if item["Accession"] in used}
+    reference_gene_rows = [{"Accession": accession, "Organism": item["Organism"], "Marker": marker, "Length": length}
+                           for accession, item in sorted(unique.items()) for marker, length in sorted(item["genes"].items())]
+    composition_rows = [item["composition"] for _, item in sorted(unique.items())]
+    rscu_rows = [usage for _, item in sorted(unique.items()) for usage in item["rscu"]]
     return (pd.DataFrame(summaries, columns=SUMMARY_COLUMNS), pd.DataFrame(genes, columns=GENE_COLUMNS),
-            pd.DataFrame(reference_rows, columns=REFERENCE_COLUMNS))
+            pd.DataFrame(reference_rows, columns=REFERENCE_COLUMNS), pd.DataFrame(reference_gene_rows, columns=REFERENCE_GENE_COLUMNS),
+            pd.DataFrame(composition_rows, columns=REFERENCE_COMPOSITION_COLUMNS), pd.DataFrame(rscu_rows, columns=REFERENCE_RSCU_COLUMNS))

@@ -1,5 +1,6 @@
 import re
 
+from .plastid_marker_name import plastid_marker_name
 from .standardized_gene_name import GENE_ALIASES, normalize_gene_name
 
 
@@ -268,6 +269,11 @@ def standardized_marker_name(**kwargs):
 
     feature_type = str(kwargs.get("feature_type", "")).strip()
     qualifiers = kwargs.get("qualifiers", {})
+
+    # Plastid gene symbols (psbA, trnH-GUG, rrn16) are kept as written; see plastid_marker_name.
+    plastid_name = plastid_marker_name(feature_type=feature_type, qualifiers=qualifiers)
+    if plastid_name:
+        return plastid_name
 
     candidate_values = [
         first_qualifier_value(qualifiers=qualifiers, qualifier_name="gene"),

@@ -63,7 +63,7 @@ def main():
             --config: YAML file containing report and plot settings.
             --metadata: Optional metadata table mapped by Project name.
             --organpipe-dir: Optional OrganPipe root (results/, workflow/reports/, benchmarks/).
-            --env-file: Optional .env file with NCBI_API_KEY (and NCBI_EMAIL) for NCBI queries.
+            --env-file: .env file with NCBI_API_KEY (and NCBI_EMAIL); default: .env at the moCURA root.
             """
         ),
     )
@@ -105,6 +105,7 @@ def main():
         default=None,
         help=(
             "Optional .env file with NCBI_API_KEY=... (and NCBI_EMAIL=...). "
+            "Default: the .env at the moCURA root (/opt/mocura/.env in the container), if present. "
             "With a key, NCBI and BOLD are queried at 10 requests per second; without it, 3."
         ),
     )

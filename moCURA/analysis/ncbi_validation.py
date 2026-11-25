@@ -104,6 +104,25 @@ def incomplete_stop(**kwargs):
     return f"{high}" if remainder == 1 else f"{high - 1}..{high}"
 
 
+def trans_spliced(feature):
+    """True when the parts of a feature lie on both strands (trans-spliced rps12 of plastomes)."""
+
+    return len({part.strand for part in feature.location.parts}) > 1
+
+
+def edited_start(**kwargs):
+    """True for a CDS starting with ACG, a start codon created by C-to-U RNA editing in plastids."""
+
+    feature = kwargs.get("feature")
+    if int(kwargs.get("genetic_code", 2)) != 11:
+        return False
+    try:
+        first = str(feature.extract(kwargs.get("record").seq)[:3]).upper()
+    except ValueError:
+        return False
+    return first == "ACG"
+
+
 def feature_table(**kwargs):
     """Return (table text, incomplete stops completed) for one record."""
 
@@ -134,15 +153,26 @@ def feature_table(**kwargs):
         if feature.type == "tRNA":
             product = (marker or "tRNA-Xxx").split("-")
             product = "-".join(product[:2])
+            # Plastid annotators (and RefSeq) already write the NCBI form, e.g. tRNA-Lys.
+            if re.fullmatch(r"tRNA-[A-Z][a-z]{2}", qualifier(feature, "product")):
+                product = qualifier(feature, "product")
             raw = qualifier(feature, "gene") or qualifier(feature, "product")
             gene_symbol = raw.split("(")[0] if raw.lower().startswith("trn") else None
         gene_symbol = gene_symbol or qualifier(feature, "gene") or marker
         product = product or qualifier(feature, "product") or qualifier(feature, "gene") or marker
-        write(feature, "gene", [("gene", gene_symbol)])
+        write(feature, "gene", [("gene", gene_symbol)] + ([("exception", "trans-splicing")] if trans_spliced(feature) else []))
         values = [("product", product)]
         if feature.type == "CDS":
             values = [("gene", gene_symbol), ("product", product), ("codon_start", qualifier(feature, "codon_start") or "1"),
                       ("transl_table", str(genetic_code))]
+            # Plastid particularities NCBI accepts with an exception: rps12 is trans-spliced
+            # (exons on both strands), and ACG starts (psbL, ndhD) are edited to AUG.
+            if trans_spliced(feature):
+                values.append(("exception", "trans-splicing"))
+            elif edited_start(feature=feature, record=record, genetic_code=genetic_code):
+                low, high = int(feature.location.start) + 1, int(feature.location.end)
+                span = f"complement({high - 2}..{high})" if feature.location.strand == -1 else f"{low}..{low + 2}"
+                values += [("transl_except", f"(pos:{span},aa:Met)"), ("exception", "RNA editing")]
             stop = incomplete_stop(feature=feature, record=record)
             if stop:
                 completed += 1
@@ -228,6 +258,8 @@ async def validate_assembly(**kwargs):
     modifiers = [f"[organism={organism}]", f"[location={location}]"]
     if location == "mitochondrion":
         modifiers.append(f"[mgcode={genetic_code}]")
+    else:
+        modifiers.append(f"[pgcode={genetic_code}]")
     if str(record.annotations.get("topology", "")).lower() == "circular":
         modifiers += ["[topology=circular]", "[completeness=complete]"]
     fasta_path = os.path.join(folder, f"{sequence_id}.fsa")

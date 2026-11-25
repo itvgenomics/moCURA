@@ -11,6 +11,7 @@ stops the run. Outputs:
 
 import logging
 import os
+import re
 
 import pandas as pd
 
@@ -20,7 +21,7 @@ from ..load.load_mitos2_data import EXPECTED_MARKERS, load_mitos2_data
 from ..load.load_nhmmer_data import load_nhmmer_data
 from ..load.load_recruitment_data import IDENTITY_BINS, load_recruitment_data
 from ..load.organpipe_layout import find_organpipe_assemblies
-from ..utils.remote_service import RemoteService, read_env_file
+from ..utils.remote_service import RemoteService, read_env_file, resolve_env_file
 from .annotation_integrity import find_key, genetic_code_from_organpipe, load_annotation_integrity
 from .assembly_alerts import build_assembly_alerts, summary_lookup
 from .assembly_concordance import run_assembly_concordance
@@ -115,8 +116,35 @@ def organelle_from_organpipe(**kwargs):
                     logging.warning("Could not read organelle from %s: %s", path, error)
                 if value:
                     break
+    if not value:
+        value = organelle_from_novoplasty(results_dir=kwargs.get("results_dir"))
     text = str(value or "mitochondrion").lower()
     return "chloroplast" if text.startswith("chlo") or "plast" in text else "mitochondrion"
+
+
+def organelle_from_novoplasty(**kwargs):
+    """``Type`` (mito, chloro, mito_plant) of the first NOVOPlasty log under the results, or None."""
+
+    results_dir = kwargs.get("results_dir")
+    if not results_dir or not os.path.isdir(results_dir):
+        return None
+    pattern = re.compile(r"^\s*Type\s*=\s*(\S+)", re.MULTILINE)
+    for project in sorted(os.listdir(results_dir)):
+        novoplasty = os.path.join(results_dir, project, "novoplasty")
+        if not os.path.isdir(novoplasty):
+            continue
+        for current, _, files in os.walk(novoplasty):
+            for name in sorted(files):
+                if name.startswith("log_") and name.endswith(".txt") and not name.startswith("log_extended"):
+                    try:
+                        with open(os.path.join(current, name), encoding="utf-8", errors="replace") as handle:
+                            match = pattern.search(handle.read(4000))
+                    except OSError:
+                        continue
+                    if match:
+                        # mito_plant is a plant mitochondrion.
+                        return "chloroplast" if match.group(1).lower() == "chloro" else "mitochondrion"
+    return None
 
 
 async def guarded(name, coroutine, count):
@@ -232,12 +260,19 @@ async def run_organpipe_qc(**kwargs):
     summary_rows = summary_lookup(dataframe=summary_dataframe)
     circular_lookup = {key: bool(row.get("Circularized")) for key, row in summary_rows.items() if pd.notna(row.get("Circularized"))}
     pilon_lookup = {key: float(row.get("Pilon Confirmed %")) for key, row in summary_rows.items() if pd.notna(row.get("Pilon Confirmed %"))}
+    organelle = organelle_from_organpipe(configured=section("species_identification").get("organelle"), organpipe_dir=organpipe_dir, results_dir=results_dir)
     configured_code = section("annotation_integrity").get("genetic_code")
     organpipe_code = genetic_code_from_organpipe(organpipe_dir=organpipe_dir)
-    genetic_code = int(configured_code or organpipe_code or 2)
-    html["settings_phase2"] = {"genetic_code": genetic_code, "genetic_code_source": "config.yml" if configured_code else ("OrganPipe config" if organpipe_code else "default (2, vertebrate mitochondrial)")}
+    if organelle == "chloroplast":
+        # The 37 expected genes are mitochondrial; plastid completeness is not scored.
+        html["expected_markers"] = []
+    default_code = 11 if organelle == "chloroplast" else 2
+    genetic_code = int(configured_code or organpipe_code or default_code)
+    html["settings_phase2"] = {"genetic_code": genetic_code, "genetic_code_source": "config.yml" if configured_code else (
+        "OrganPipe config" if organpipe_code else ("default (11, plastid)" if organelle == "chloroplast" else "default (2, vertebrate mitochondrial)"))}
     junction = integrity_issues = integrity = concordance_pairs = concordance = composition = rscu = scores = pd.DataFrame()
     heteroplasmy = heteroplasmy_sites = species = species_hits = reference = reference_genes = reference_genomes = pd.DataFrame()
+    reference_gene_lengths = reference_composition = reference_rscu = pd.DataFrame()
     validation = validation_messages = pd.DataFrame()
 
     if jobs and enabled("junction_validation"):
@@ -291,7 +326,6 @@ async def run_organpipe_qc(**kwargs):
     })
 
     # ---- Phase 3 ----
-    organelle = organelle_from_organpipe(configured=section("species_identification").get("organelle"), organpipe_dir=organpipe_dir)
     html["settings_phase3"] = {"organelle": organelle}
 
     if jobs and enabled("heteroplasmy"):
@@ -310,15 +344,17 @@ async def run_organpipe_qc(**kwargs):
     service = None
     remote_on = lambda name: False
     if jobs and (enabled("species_identification") or enabled("reference_comparison")):
-        env_file = kwargs.get("env_file") or remote.get("env_file")
+        env_file, explicit = resolve_env_file(path=kwargs.get("env_file") or remote.get("env_file"))
+        env = read_env_file(path=env_file, explicit=explicit)
         service = RemoteService(
-            env=read_env_file(path=env_file),
+            env=env,
             cache_dir=remote.get("cache_dir") or os.path.join(output_dir, folder("species_identification", "species_identification"), "cache"),
             refresh=remote.get("refresh", False), timeout=remote.get("timeout", 120), retries=remote.get("retries", 3),
             blast_submit_interval=remote.get("blast_submit_interval", 10), blast_poll_interval=remote.get("blast_poll_interval", 60),
             blast_max_wait=remote.get("blast_max_wait", 1800),
         )
-        logging.info("Remote services: %d requests per second (%s)", service.rate, "NCBI_API_KEY from the env file" if service.api_key else "no API key")
+        logging.info("Remote services: %d requests per second (%s)", service.rate,
+                     f"NCBI_API_KEY from {env_file}" if service.api_key else (f"no NCBI_API_KEY in {env_file}" if os.path.isfile(env_file) else "no .env file, no API key"))
         if not await service.available():
             logging.warning("Species identification and RefSeq comparison skipped: no network access to NCBI")
             html["settings_phase3"]["remote"] = {"offline": True}
@@ -339,15 +375,19 @@ async def run_organpipe_qc(**kwargs):
 
     if jobs and remote_on("reference_comparison"):
         reference_config = section("reference_comparison")
-        reference, reference_genes, reference_genomes = await guarded("RefSeq comparison", run_reference_comparison(
-            jobs=jobs, service=service, settings=reference_config, species_dataframe=species, organelle=organelle,
+        (reference, reference_genes, reference_genomes, reference_gene_lengths, reference_composition,
+         reference_rscu) = await guarded("RefSeq comparison", run_reference_comparison(
+            jobs=jobs, service=service, settings=reference_config, species_dataframe=species, organelle=organelle, genetic_code=genetic_code,
             output_dir=os.path.join(output_dir, folder("reference_comparison", "reference_comparison")),
             trf_config=kwargs.get("trf_config", {}), trf_repeats_dataframe=kwargs.get("trf_repeats_dataframe"),
             trf_summary_dataframe=kwargs.get("trf_summary_dataframe"),
-        ), 3)
+        ), 6)
         save("reference_comparison", "reference_comparison.tsv", "reference", reference)
         save("reference_comparison", "reference_genes.tsv", "reference_genes", reference_genes)
         save("reference_comparison", "reference_genomes.tsv", "reference_genomes", reference_genomes)
+        save("reference_comparison", "reference_gene_lengths.tsv", "reference_gene_lengths", reference_gene_lengths)
+        save("reference_comparison", "reference_composition.tsv", "reference_composition", reference_composition)
+        save("reference_comparison", "reference_rscu.tsv", "reference_rscu", reference_rscu)
         html["settings_phase3"]["reference"] = {key: reference_config.get(key, default) for key, default in (
             ("length_tolerance_percent", 5), ("gene_tolerance_percent", 10), ("levels", ["genus", "family"]))}
 
@@ -412,16 +452,20 @@ async def run_organpipe_qc(**kwargs):
         ("reference", "RefSeq Comparison"),
         ("reference_genes", "RefSeq Gene Lengths"),
         ("reference_genomes", "RefSeq Genomes"),
+        ("reference_gene_lengths", "RefSeq Genes"),
+        ("reference_composition", "RefSeq Composition"),
+        ("reference_rscu", "RefSeq RSCU"),
         ("validation", "NCBI Validation"),
         ("validation_messages", "NCBI Messages"),
     ]
     excel_sheets = [(sheet, tables[key]) for key, sheet in sheet_names if key in tables and not tables[key].empty]
 
+    html["reference_rscu"] = tables.get("reference_rscu", pd.DataFrame())
     html.update({key: tables.get(key, pd.DataFrame()) for key in (
         "completeness", "origin", "coverage", "pilon_changes", "pilon_breaks", "recruitment", "nhmmer", "read_qc", "benchmarks", "alerts",
         "junction", "integrity", "integrity_issues", "concordance", "concordance_pairs", "composition", "rscu", "scores",
         "heteroplasmy", "heteroplasmy_sites", "species", "species_hits", "reference", "reference_genes", "reference_genomes",
-        "validation", "validation_messages",
+        "reference_gene_lengths", "reference_composition", "reference_rscu", "validation", "validation_messages",
     )})
     html["coverage_windows"] = windows
     html["identity_histograms"] = histograms

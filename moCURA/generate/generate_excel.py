@@ -53,6 +53,9 @@ def write_dataframe_sheet(**kwargs):
     worksheet = writer.sheets[sheet_name]
     adjust_excel_columns(worksheet=worksheet, dataframe=dataframe, max_width=max_width)
 
+LEADING_SHEETS = ("Recommendation",)
+
+
 def generate_excel(**kwargs):
     dataframe = kwargs.get("dataframe")
     output_file = kwargs.get("output_file", "novoplasty_summary.xlsx")
@@ -77,14 +80,21 @@ def generate_excel(**kwargs):
     else:
         export_df = export_df.fillna("-")
 
+    extra_sheets = list(kwargs.get("extra_sheets", []) or [])
+    # The recommended assembly per sample is the first thing to read: its sheet opens the workbook.
+    leading = [item for item in extra_sheets if item[0] in LEADING_SHEETS]
+    extra_sheets = [item for item in extra_sheets if item[0] not in LEADING_SHEETS]
+
     with pd.ExcelWriter(output_file, engine="openpyxl") as writer:
+        for sheet_name, sheet_dataframe in leading:
+            write_dataframe_sheet(writer=writer, dataframe=sheet_dataframe, sheet_name=sheet_name, max_width=70)
         write_dataframe_sheet(writer=writer, dataframe=export_df, sheet_name="Summary")
         write_dataframe_sheet(writer=writer, dataframe=genbank_files_dataframe, sheet_name="GenBank Files", max_width=70)
         write_dataframe_sheet(writer=writer, dataframe=marker_dataframe, sheet_name="Marker Lengths", max_width=70)
         write_dataframe_sheet(writer=writer, dataframe=trf_summary_dataframe, sheet_name="TRF Summary", max_width=70)
         write_dataframe_sheet(writer=writer, dataframe=trf_repeats_dataframe, sheet_name="TRF Repeats", max_width=100)
 
-        for sheet_name, sheet_dataframe in kwargs.get("extra_sheets", []) or []:
+        for sheet_name, sheet_dataframe in extra_sheets:
             write_dataframe_sheet(writer=writer, dataframe=sheet_dataframe, sheet_name=sheet_name, max_width=70)
 
     logging.info(f"Excel report generated: {output_file}")

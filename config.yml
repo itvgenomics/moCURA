@@ -295,7 +295,8 @@ heteroplasmy:
 
 # NCBI and BOLD access shared by species_identification and reference_comparison.
 # env_file (or --env-file) holds NCBI_API_KEY=... and optionally NCBI_EMAIL=...;
-# with a key, 10 requests per second, without it 3. BLAST also follows NCBI's
+# null reads the .env at the moCURA root (/opt/mocura/.env in the container) when
+# it exists. With a key, 10 requests per second; without it (or no .env), 3. BLAST also follows NCBI's
 # rule of 10 s between submissions and one status check per minute per search.
 # Answers are cached in cache_dir (default: <output>/species_identification/cache).
 remote_services:
@@ -314,7 +315,8 @@ remote_services:
 species_identification:
   enabled: true
   output_folder: species_identification
-  # null: read organelle from the OrganPipe config, falling back to mitochondrion.
+  # null: read organelle from the OrganPipe config, then from the NOVOPlasty log
+  # (Type = chloro), falling back to mitochondrion.
   organelle: null
   # null: COI for mitochondrion, rbcL and matK for chloroplast.
   markers: null
