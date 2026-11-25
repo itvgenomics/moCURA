@@ -238,7 +238,7 @@ junction_validation:
   bam_template: null
 
 # genetic_code: null reads genetic_code from the OrganPipe config/config.yaml,
-# falling back to 2 (vertebrate mitochondrial).
+# falling back to 2 (vertebrate mitochondrial), or to 11 (plastid) for chloroplasts.
 annotation_integrity:
   enabled: true
   output_folder: annotation_integrity

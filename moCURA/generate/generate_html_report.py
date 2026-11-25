@@ -418,7 +418,7 @@ code { word-break: break-all; font-size: 11px; }
 .side-nav a:hover { background: var(--brand-soft); color: var(--brand); }
 .side-nav a.active { background: var(--brand-soft); color: #075985; border-left-color: var(--brand); }
 .section-bar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 10px; margin: 12px -28px 0; padding: 8px 28px; background: rgba(248,250,252,.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
-.section-bar .nav { margin-top: 0; flex: 1 1 auto; flex-wrap: nowrap; }
+.section-bar .nav { margin-top: 0; flex: 1 1 auto; flex-wrap: wrap; overflow: visible; row-gap: 5px; }
 .section-bar .nav { gap: 5px; }
 .section-bar .nav a { padding: 6px 10px; font-size: 12px; }
 .section-bar .species-toggle { padding: 6px 10px; }
@@ -707,9 +707,9 @@ tr.q-project td > .row-head { position: sticky; left: 10px; display: inline-bloc
       <a class="nav-link" href="#pilon" data-tooltip="Interactive polishing metrics from Pilon.">Pilon</a>
       <a class="nav-link" href="#genome" data-tooltip="Marker and tandem-repeat positions for every assembly that passes the filters.">Genome</a>
       <a class="nav-link" href="#quality" data-tooltip="Gene completeness, coverage, junction support, annotation integrity, concordance, heteroplasmy and NCBI validation.">Quality</a>
-      <a class="nav-link" href="#composition" data-tooltip="GC content, skews and codon usage (RSCU).">Composition</a>
       <a class="nav-link" href="#species" data-tooltip="Species identification against BOLD and GenBank, and comparison with RefSeq genomes of the same genus or family.">Species</a>
-      <a class="nav-link" href="#markers" data-tooltip="Marker lengths with an independent min–max color scale for every marker column.">Markers</a>
+      <a class="nav-link" href="#composition" data-tooltip="GC content, skews and codon usage (RSCU), compared with the RefSeq genomes.">Composition</a>
+      <a class="nav-link" href="#markers" data-tooltip="Marker lengths per assembly, colored by the difference from the most common length in the sample, with the RefSeq median.">Markers</a>
       <a class="nav-link" href="#repeats" data-tooltip="TRF repeat families, genomic context and comparative table.">Repeats</a>
       <a class="nav-link" href="#snps" data-tooltip="True-SNP matrices rendered directly with D3 in a Snipit-like layout.">SNPs</a>
       <a class="nav-link" href="#map" data-tooltip="Sampling localities with SNP differences on the embedded geographic basemap.">Map</a>

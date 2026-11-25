@@ -29,7 +29,21 @@ The current report is designed to support comparisons across many projects, seed
   - [Marker SNP workflow](#marker-snp-workflow)
   - [HTML report](#html-report)
   - [OrganPipe quality analyses](#organpipe-quality-analyses)
+  - [Curation analyses (Phase 2)](#curation-analyses-phase-2)
+  - [Curation analyses (Phase 3)](#curation-analyses-phase-3)
+  - [Chloroplast (plastid) assemblies](#chloroplast-plastid-assemblies)
 - [Interactive HTML report](#interactive-html-report)
+  - [Layout](#layout)
+  - [Overview](#overview)
+  - [Pilon polishing](#pilon-polishing)
+  - [Genome structure and tandem-repeat positions](#genome-structure-and-tandem-repeat-positions)
+  - [Marker comparison](#marker-comparison)
+  - [How to read this](#how-to-read-this)
+  - [Recommendation](#recommendation)
+  - [Assembly quality](#assembly-quality)
+  - [Sequence composition](#sequence-composition)
+  - [Species identification and RefSeq references](#species-identification-and-refseq-references)
+  - [Sampling map](#sampling-map)
 - [Marker SNP analysis](#marker-snp-analysis)
 - [Tandem repeats](#tandem-repeats)
 - [HTML-only mode](#html-only-mode)
@@ -777,6 +791,7 @@ ncbi_validation:
 
 **NCBI validation.** MITOS2 GenBank files cannot be submitted as they are: coding sequences have no product, tRNA names are `trnX(anticodon)` and incomplete stop codons are not marked. For each checked assembly (the recommended one per project, or all with `assemblies: all`) moCURA writes in `ncbi_validation/<assembly>/`:
 - `<id>.fsa`: the sequence with `[organism=...] [location=mitochondrion] [mgcode=N] [topology=circular] [completeness=complete]` (the organism is the metadata species, or the best species match without metadata);
+- the sequence ID is the assembly name, cut to 48 characters when longer but always ending with its K-mer and copy (`CA_1_ITV38292_2-NADH_dehydrogenase_subunit_45_1`), so two copies of one assembly keep distinct IDs;
 - `<id>.tbl`: the 5-column feature table with a gene feature for every CDS, rRNA and tRNA, NCBI product names (`cytochrome c oxidase subunit I`, `12S ribosomal RNA`, `tRNA-Leu`) and, for coding sequences ending in T or TA, `transl_except (pos:...,aa:TERM)` with the note that the stop codon is completed by polyadenylation;
 - the table2asn outputs `.sqn`, `.val` (validation), `.dr` (discrepancy report), `.gbf` and `table2asn.log`.
 
@@ -838,7 +853,7 @@ The report is divided into the following main sections.
 
 ### Layout
 
-The filters sit in a fixed column on the left. The section links and `Abbreviate species` stay in a slim bar at the top of the content. On narrow screens (below 1000 px) the filter column moves above the report. The four Assembly overview charts share one row, with the project names in the first one. The other charts take their own row and the full width of their card. Table search boxes span the width of their card.
+The filters sit in a fixed column on the left. The section links and `Abbreviate species` stay in a slim bar at the top of the content; the links follow the order of the sections and wrap onto a second row when the window is narrower than about 1600 px, so every section (Recommendation to Provenance) is always reachable. On narrow screens (below 1000 px) the filter column moves above the report. The four Assembly overview charts share one row, with the project names in the first one. The other charts take their own row and the full width of their card. Table search boxes span the width of their card.
 
 ### Project selection
 
@@ -1378,7 +1393,7 @@ The example dataset has no `fastp.json`, nhmmer output, `workflow/reports/`, Sna
 
 ## Interactive input guide
 ##### [:rocket: Go to Contents Overview](#contents-overview)
-`docs/index.html` is an interactive, step-by-step guide to what moCURA reads from OrganPipe and how each value is obtained: file locations in the old and current OrganPipe layouts, the line each value comes from, the three coordinate systems, the 12S origin problem, coverage, read recruitment and the analyses planned for the next phases. It is available in English, Portuguese and Spanish (`?lang=en|pt|es`) and needs an internet connection for D3 and the web fonts.
+`docs/index.html` is an interactive, step-by-step guide to what moCURA reads from OrganPipe and how each value is obtained: file locations in the old and current OrganPipe layouts, the line each value comes from, the three coordinate systems, the 12S origin problem, coverage, read recruitment, junction support, annotation integrity, concordance, the score, and the Phase 3 analyses: heteroplasmy (with an interactive candidate classifier), species identification against BOLD and GenBank, the RefSeq comparison (drawn with the 21 RefSeq *Ipomoea* plastomes), the GenBank submission check and chloroplast support. It is available in English, Portuguese and Spanish (`?lang=en|pt|es`) and needs an internet connection for D3 and the web fonts.
 
 Open it directly in a browser, or publish the `docs/` folder with GitHub Pages. The genome maps, coverage tracks and identity histograms use the 296 rotated assemblies of the example dataset, stored in `docs/assets/example_data.js`. To rebuild that file after changing `data/`:
 
@@ -1522,7 +1537,8 @@ The SNP workflow has an `overwrite` setting. If a run was terminated while an al
 ## Future work
 
 Not implemented yet:
-- **Other assemblers and plastomes:** GetOrganelle, MitoHiFi, and plastomes annotated with CPGAVAS2 or Chloe. Species identification, the RefSeq comparison and table2asn already accept `organelle: chloroplast`, but the chloroplast annotation has not been tested.
+- **Other assemblers:** GetOrganelle and MitoHiFi.
+- **A real OrganPipe chloroplast run.** Chloroplasts are supported and were tested on a plastome built from GenBank LC729555 (see [Chloroplast (plastid) assemblies](#chloroplast-plastid-assemblies)); the CPGAVAS2 and Chloë GenBank files of a real run have not been processed yet.
 - **Heteroplasmy from raw reads.** The OrganPipe BAM holds the reads NOVOPlasty assembled; `heteroplasmy.bam_template` is ready for a BAM of all reads.
 - **Junction support from raw reads.** `bam_template` is ready to receive such a BAM; producing the mapping is not part of moCURA.
 

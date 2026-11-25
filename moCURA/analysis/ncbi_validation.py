@@ -203,6 +203,22 @@ def parse_validation(**kwargs):
     return messages
 
 
+def submission_id(name, limit=48):
+    """Sequence ID for table2asn: at most ``limit`` characters, keeping the K-mer and copy at the end.
+
+    ``CA_1_ITV38292_2-NADH_dehydrogenase_subunit_2_45_1`` (49 characters) becomes
+    ``CA_1_ITV38292_2-NADH_dehydrogenase_subunit_45_1``, not ``..._45_``, so two copies
+    of the same assembly keep distinct IDs.
+    """
+
+    clean = re.sub(r"[^A-Za-z0-9_.-]", "_", str(name))
+    if len(clean) <= limit:
+        return clean
+    tail = "_".join(clean.split("_")[-2:])[-limit // 2:]
+    head = clean[: limit - len(tail) - 1].rstrip("_")
+    return f"{head}_{tail}"
+
+
 def parse_discrepancies(**kwargs):
     """Summary lines of a table2asn .dr file (informational tests left out)."""
 
@@ -253,7 +269,7 @@ async def validate_assembly(**kwargs):
     name = job["Assembly"]
     folder = os.path.join(output_dir, name)
     os.makedirs(folder, exist_ok=True, mode=0o755)
-    sequence_id = re.sub(r"[^A-Za-z0-9_.-]", "_", name)[:48]
+    sequence_id = submission_id(name)
     location = "chloroplast" if organelle == "chloroplast" else "mitochondrion"
     modifiers = [f"[organism={organism}]", f"[location={location}]"]
     if location == "mitochondrion":

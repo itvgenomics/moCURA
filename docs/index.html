@@ -268,6 +268,29 @@ pre.excerpt mark.lit { animation: markPulse 1.1s ease; }
 .verdict { font-weight: 600; }
 .verdict.ok { color: var(--ok); } .verdict.err { color: var(--alert); } .verdict.info { color: var(--rrna); } .verdict.wait { color: var(--muted); font-weight: 400; }
 
+/* phase 3 sections */
+.chip.f3 { color: var(--rrna); }
+#cpMetrics { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.he-bar { position: relative; display: flex; height: 26px; border-radius: 4px; overflow: hidden; background: var(--sunken); margin: 4px 0 2px; }
+.he-bar span { display: block; height: 100%; transition: width .25s ease; }
+.he-bar .maj { background: var(--ori); opacity: .35; }
+.he-bar .fwd { background: var(--brand); }
+.he-bar .rev { background: var(--brand); opacity: .6; }
+.he-bar .tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.he-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .8rem; color: var(--muted); }
+.he-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.sp-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 14px; }
+.sp-cols h3 { font-size: .95rem; font-weight: 600; margin: 0 0 6px; }
+.sp-row { display: grid; grid-template-columns: minmax(0, 1fr) 90px 4.2em; gap: 8px; align-items: center; padding: 4px 0; font-size: .88rem; border-top: 1px solid var(--rule); }
+.sp-row em { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-row .bar { height: 8px; background: var(--sunken); border-radius: 4px; overflow: hidden; }
+.sp-row .bar span { display: block; height: 100%; background: var(--ori); }
+.sp-row.declared em, .sp-row.declared b { color: var(--ok); }
+.sp-row.declared .bar span { background: var(--ok); }
+.sp-row b { font-variant-numeric: tabular-nums; text-align: right; font-weight: 600; }
+.sp-row small { grid-column: 1 / -1; color: var(--muted); margin-top: -3px; }
+@media (max-width: 560px) { .sp-cols { grid-template-columns: minmax(0, 1fr); } }
+
 /* score */
 .score-row { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr) 4.2em; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--rule); }
 .score-row .name { font-size: .9rem; }
@@ -483,6 +506,11 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
       <li><a href="#integridade" data-i18n="n.int"></a></li>
       <li><a href="#concordancia" data-i18n="n.conc"></a></li>
       <li><a href="#pontuacao" data-i18n="n.score"></a></li>
+      <li><a href="#heteroplasmia" data-i18n="n.het"></a></li>
+      <li><a href="#especie" data-i18n="n.spec"></a></li>
+      <li><a href="#refseq" data-i18n="n.ref"></a></li>
+      <li><a href="#submissao" data-i18n="n.ncbi"></a></li>
+      <li><a href="#cloroplasto" data-i18n="n.cp"></a></li>
       <li><a href="#saidas" data-i18n="n.out"></a></li>
       <li><a href="#limites" data-i18n="n.lim"></a></li>
     </ol>
@@ -501,6 +529,7 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
           <span class="chip now" data-i18n="st.now"></span>
           <span class="chip f1" data-i18n="st.f1"></span>
           <span class="chip f2" data-i18n="st.f2"></span>
+          <span class="chip f3" data-i18n="st.f3"></span>
           <span class="chip absent" data-i18n="st.absent"></span>
         </div>
       </div>
@@ -552,7 +581,7 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
         <p class="fig-note" data-i18n="flow.note"></p>
       </div>
       <div class="s-body">
-        <div class="fig"><svg id="flow" viewBox="0 0 1000 640" role="img"></svg></div>
+        <div class="fig"><svg id="flow" viewBox="0 0 1000 780" role="img"></svg></div>
       </div>
     </section>
 
@@ -778,9 +807,138 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
       </div>
     </section>
 
+    <section id="heteroplasmia" class="slide split">
+      <div class="s-text">
+        <div class="sec-head"><span class="n">13</span><h2 data-i18n="he.h"></h2></div>
+        <p class="lede" data-i18n="he.lede"></p>
+        <p data-i18n="he.after"></p>
+      </div>
+      <div class="s-body">
+        <div class="fig">
+          <div class="controls">
+            <label for="heDepth"><span data-i18n="he.depth"></span> <input type="range" id="heDepth" min="5" max="120" value="37"><output id="heDepthOut">37</output></label>
+            <label for="heMinor"><span data-i18n="he.minor"></span> <input type="range" id="heMinor" min="0" max="30" value="4"><output id="heMinorOut">4</output></label>
+            <label for="heRev"><span data-i18n="he.rev"></span> <input type="range" id="heRev" min="0" max="30" value="3"><output id="heRevOut">3</output></label>
+            <label for="heCluster"><span data-i18n="he.cluster"></span> <input type="range" id="heCluster" min="0" max="30" value="0"><output id="heClusterOut">0</output></label>
+            <label><input type="checkbox" id="heEdge"> <span data-i18n="he.edge"></span></label>
+            <label><input type="checkbox" id="heRepeat"> <span data-i18n="he.repeat"></span></label>
+          </div>
+          <div class="he-bar" id="heBar" role="img"></div>
+          <div class="he-legend" id="heLegend"></div>
+          <ul class="checks" id="heChecks"></ul>
+          <dl class="metrics" id="heMetrics"></dl>
+          <p class="fig-note" data-i18n="he.note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="especie" class="slide split">
+      <div class="s-text">
+        <div class="sec-head"><span class="n">14</span><h2 data-i18n="sp.h"></h2></div>
+        <p class="lede" data-i18n="sp.lede"></p>
+        <p data-i18n="sp.after"></p>
+      </div>
+      <div class="s-body">
+        <div class="fig">
+          <div class="tbl-wrap"><table class="tbl compact" id="spVerdicts"></table></div>
+          <div class="sp-cols" id="spCols"></div>
+          <p class="fig-note" data-i18n="sp.note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="refseq" class="slide split">
+      <div class="s-text">
+        <div class="sec-head"><span class="n">15</span><h2 data-i18n="rf.h"></h2></div>
+        <p class="lede" data-i18n="rf.lede"></p>
+        <p data-i18n="rf.after"></p>
+      </div>
+      <div class="s-body">
+        <div class="fig">
+          <div class="controls">
+            <label for="rfMetric"><span data-i18n="rf.compare"></span> <select id="rfMetric"></select></label>
+          </div>
+          <svg id="rfSvg" viewBox="0 0 1000 250" role="img"></svg>
+          <dl class="metrics" id="rfMetrics"></dl>
+          <p class="fig-note" data-i18n="rf.note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="submissao" class="slide split">
+      <div class="s-text">
+        <div class="sec-head"><span class="n">16</span><h2 data-i18n="nc.h"></h2></div>
+        <p class="lede" data-i18n="nc.lede"></p>
+        <p data-i18n="nc.after"></p>
+      </div>
+      <div class="s-body">
+        <div class="fig">
+          <div class="controls">
+            <div class="seg" role="group">
+              <button type="button" aria-pressed="true" data-nc="mito" data-i18n="nc.tab1"></button>
+              <button type="button" aria-pressed="false" data-nc="cp" data-i18n="nc.tab2"></button>
+            </div>
+          </div>
+          <pre class="excerpt" id="ncMito"><span class="src">ncbi_validation/CA_1_ITV38292_2-NADH_dehydrogenase_subunit_2_45_1/*.fsa</span>
+&gt;CA_1_ITV38292_2-NADH_dehydrogenase_subunit_45_1 <mark>[organism=Kinosternon scorpioides]</mark> <mark>[location=mitochondrion]</mark> <mark>[mgcode=2]</mark> [topology=circular] [completeness=complete]
+
+<span class="src">*.tbl</span>
+2631	2705	gene
+			gene	trnL2
+2631	2705	tRNA
+			product	<mark>tRNA-Leu</mark>
+3885	4920	gene
+			gene	ND2
+3885	4920	CDS
+			gene	ND2
+			product	<mark>NADH dehydrogenase subunit 2</mark>
+			codon_start	1
+			transl_table	2
+			<mark>transl_except	(pos:4920,aa:TERM)</mark>
+			note	TAA stop codon is completed by the addition of 3' A residues to the mRNA</pre>
+          <pre class="excerpt" id="ncCp" hidden><span class="src">ncbi_validation/CA_1_IPO001_1-rbcL_33_1/*.fsa</span>
+&gt;CA_1_IPO001_1-rbcL_33_1 <mark>[organism=Ipomoea pes-caprae]</mark> <mark>[location=chloroplast]</mark> <mark>[pgcode=11]</mark> [topology=circular] [completeness=complete]
+
+<span class="src">*.tbl</span>
+66098	65982	CDS
+			gene	psbL
+			product	photosystem II protein L
+			codon_start	1
+			transl_table	11
+			<mark>transl_except	(pos:complement(66096..66098),aa:Met)</mark>
+			<mark>exception	RNA editing</mark>
+71851	71738	CDS
+149307	149538
+150075	150100
+			gene	rps12
+			product	ribosomal protein S12
+			codon_start	1
+			transl_table	11
+			<mark>exception	trans-splicing</mark></pre>
+          <dl class="metrics" id="ncMetrics"></dl>
+          <p class="fig-note" data-i18n="nc.note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="cloroplasto" class="slide split">
+      <div class="s-text">
+        <div class="sec-head"><span class="n">17</span><h2 data-i18n="cp.h"></h2></div>
+        <p class="lede" data-i18n="cp.lede"></p>
+        <p data-i18n="cp.after"></p>
+      </div>
+      <div class="s-body">
+        <div class="fig">
+          <div class="tbl-wrap"><table class="tbl compact" id="cpTable"></table></div>
+          <dl class="metrics" id="cpMetrics"></dl>
+          <p class="fig-note" data-i18n="cp.note"></p>
+        </div>
+      </div>
+    </section>
+
     <section id="saidas" class="slide split">
       <div class="s-text">
-        <div class="sec-head"><span class="n">13</span><h2 data-i18n="ou.h"></h2></div>
+        <div class="sec-head"><span class="n">18</span><h2 data-i18n="ou.h"></h2></div>
         <p data-i18n="ou.p1"></p>
         <p data-i18n="ou.p2"></p>
         <h3 data-i18n="ou.h3a"></h3>
@@ -798,36 +956,51 @@ main .facts li, main .legend, .rules li, .checks li, .tree li { text-align: left
           <pre class="excerpt" id="outYaml" hidden><span class="src" data-i18n="ou.yamlc"></span>
 organpipe:
   organpipe_dir: null          # inferred from --results-dir when null
-mitos2_completeness:
+mitos2_completeness: { enabled: true }
+coverage_profile: { enabled: true, window_size: 50, low_depth_threshold: 10 }
+pilon_changes: { enabled: true }
+read_recruitment: { enabled: true, identity_threshold: 98 }
+nhmmer_alerts: { enabled: true, max_evalue: 0.001 }
+read_qc: { enabled: true }
+provenance: { enabled: true }
+assembly_alerts: { enabled: true }
+# Phase 2
+junction_validation: { enabled: true, min_flank: 20 }
+annotation_integrity: { enabled: true, genetic_code: null }   # null: 2 (mito) or 11 (plastid)
+assembly_concordance: { enabled: true, group_identity_threshold: 99.5 }
+sequence_composition: { enabled: true }
+assembly_score: { enabled: true }
+# Phase 3
+heteroplasmy:
   enabled: true
-coverage_profile:
+  min_depth: 20
+  min_minor_reads: 3
+  min_frequency: 0.10
+  edge_exclusion: 50
+  cluster_window: 20
+  max_cluster_sites: 2
+remote_services:
+  env_file: null               # null: the .env at the moCURA root
+  blast_max_wait: 1800
+species_identification:
   enabled: true
-  window_size: 50              # bp
-  low_depth_threshold: 10      # x
-  low_coverage_alert_percent: 5
-pilon_changes:
+  organelle: null              # OrganPipe config, then NOVOPlasty Type
+  identity_threshold: 97
+reference_comparison:
   enabled: true
-read_recruitment:
+  levels: [genus, family]
+  length_tolerance_percent: 5
+  gene_tolerance_percent: 10
+ncbi_validation:
   enabled: true
-  identity_threshold: 98       # %
-nhmmer_alerts:
-  enabled: true
-  max_evalue: 0.001
-read_qc:
-  enabled: true
-provenance:
-  enabled: true
-assembly_alerts:
-  enabled: true
-# Phase 2 (planned): junction_validation, annotation_integrity,
-# assembly_concordance, composition, assembly_score</pre>
+  assemblies: recommended      # or all</pre>
         </div>
       </div>
     </section>
 
     <section id="limites" class="slide split">
       <div class="s-text">
-        <div class="sec-head"><span class="n">14</span><h2 data-i18n="li.h"></h2></div>
+        <div class="sec-head"><span class="n">19</span><h2 data-i18n="li.h"></h2></div>
         <div class="callout"><p data-i18n="li.callout"></p></div>
       </div>
       <div class="s-body">
@@ -932,9 +1105,9 @@ var T = {
     "Montagem, anotação e curadoria de genomas mitocondriais e de cloroplasto. NOVOPlasty ou GetOrganelle para reads curtos, MitoHiFi para reads longos, polimento com Pilon e anotação com MITOS2.",
     "Ensamblaje, anotación y curaduría de genomas mitocondriales y de cloroplasto. NOVOPlasty o GetOrganelle para lecturas cortas, MitoHiFi para lecturas largas, pulido con Pilon y anotación con MITOS2."],
   "pip.op.reads": [
-    "NOVOPlasty and Pilon logs, GenBank files, MITOS2 results, samtools depth, BLAST recruitment and Pilon change lists; nhmmer, fastp and Snakemake benchmarks when present. Both the older and the current directory layout. Phase 2 adds the rotated BAM.",
-    "Logs do NOVOPlasty e do Pilon, GenBanks, resultados do MITOS2, profundidade do samtools, recrutamento por BLAST e listas de mudanças do Pilon; nhmmer, fastp e benchmarks do Snakemake quando existem. Layout antigo e atual. A Fase 2 acrescenta o BAM rotacionado.",
-    "Logs de NOVOPlasty y de Pilon, GenBank, resultados de MITOS2, profundidad de samtools, reclutamiento por BLAST y listas de cambios de Pilon; nhmmer, fastp y benchmarks de Snakemake cuando existen. Diseño antiguo y actual. La Fase 2 añade el BAM rotado."],
+    "NOVOPlasty and Pilon logs, GenBank files, MITOS2 results, samtools depth, BLAST recruitment and Pilon change lists; nhmmer, fastp and Snakemake benchmarks when present. Both the older and the current directory layout. Phase 2 adds the rotated BAM; Phase 3 queries BOLD and NCBI online and runs table2asn.",
+    "Logs do NOVOPlasty e do Pilon, GenBanks, resultados do MITOS2, profundidade do samtools, recrutamento por BLAST e listas de mudanças do Pilon; nhmmer, fastp e benchmarks do Snakemake quando existem. Layout antigo e atual. A Fase 2 acrescenta o BAM rotacionado; a Fase 3 consulta o BOLD e o NCBI online e roda o table2asn.",
+    "Logs de NOVOPlasty y de Pilon, GenBank, resultados de MITOS2, profundidad de samtools, reclutamiento por BLAST y listas de cambios de Pilon; nhmmer, fastp y benchmarks de Snakemake cuando existen. Diseño antiguo y actual. La Fase 2 añade el BAM rotado; la Fase 3 consulta BOLD y NCBI en línea y ejecuta table2asn."],
   "pip.ss.does": [
     "Mitochondrial genome assembly from RNA-Seq data (the repository presents it as SnakeGARD), with SPAdes, rnaSPAdes, Trinity or MitoZ.",
     "Montagem de mitogenomas a partir de dados de RNA-Seq (o repositório o apresenta como SnakeGARD), com SPAdes, rnaSPAdes, Trinity ou MitoZ.",
@@ -943,10 +1116,7 @@ var T = {
     "Listed as supported in the moCURA README. This guide does not cover its directory layout.",
     "Listado como compatível no README do moCURA. Este guia não cobre o layout de diretórios dele.",
     "Figura como compatible en el README de moCURA. Esta guía no cubre su estructura de directorios."],
-  "pip.note": [
-    "GetOrganelle, MitoHiFi and plastome assemblies are outside the current scope (see Limitations).",
-    "Montagens do GetOrganelle, do MitoHiFi e de plastomas estão fora do escopo atual (veja Limitações).",
-    "Los ensamblajes de GetOrganelle, de MitoHiFi y de plastomas quedan fuera del alcance actual (vea Limitaciones)."],
+"pip.note": ["GetOrganelle and MitoHiFi assemblies are outside the current scope. OrganPipe chloroplast runs are read (section 17).", "Montagens do GetOrganelle e do MitoHiFi estão fora do escopo atual. Execuções de cloroplasto do OrganPipe são lidas (seção 17).", "Los ensamblajes de GetOrganelle y de MitoHiFi quedan fuera del alcance actual. Las ejecuciones de cloroplasto de OrganPipe se leen (sección 17)."],
 
   "flow.h": ["How data flows", "Fluxo dos dados", "Flujo de los datos"],
   "flow.lede": [
@@ -1211,24 +1381,21 @@ var T = {
     "Every new analysis is optional, with its own section in <code>config.yml</code> and an <code>enabled</code> key. A missing file logs a warning and leaves NA in the table; the run goes on. Without OrganPipe files beyond those read today, the outputs are identical to the current ones.",
     "Cada análise nova é opcional, com uma seção própria no <code>config.yml</code> e uma chave <code>enabled</code>. Um arquivo ausente gera um aviso no log e NA na tabela; a execução continua. Sem arquivos do OrganPipe além dos que já são lidos hoje, as saídas ficam idênticas às atuais.",
     "Cada análisis nuevo es opcional, con su propia sección en <code>config.yml</code> y una clave <code>enabled</code>. Un archivo ausente genera un aviso en el log y deja NA en la tabla; la ejecución continúa. Sin archivos de OrganPipe además de los que ya se leen hoy, las salidas son idénticas a las actuales."],
-  "ou.p2": [
-    "All new HTML sections respect the global filters the report already has: project, seed, k-mer, status and repeats. No new static figure is produced by default.",
-    "Todas as seções novas do HTML respeitam os filtros globais que o relatório já tem: projeto, seed, k-mer, status e repetições. Nenhuma figura estática nova é gerada por padrão.",
-    "Todas las secciones nuevas del HTML respetan los filtros globales que el informe ya tiene: proyecto, seed, k-mer, estado y repeticiones. No se genera ninguna figura estática nueva por defecto."],
+"ou.p2": ["All new HTML sections respect the global filters the report already has: project, seed, k-mer, status and repeats. Every chart and table has a <i>How to read this</i> card that opens an animated schematic with what it shows, how to read it and what to look for. No new static figure is produced by default.", "Todas as seções novas do HTML respeitam os filtros globais que o relatório já tem: projeto, seed, k-mer, status e repetições. Cada gráfico e tabela tem um cartão <i>How to read this</i> que abre um esquema animado com o que ele mostra, como lê-lo e o que procurar. Nenhuma figura estática nova é gerada por padrão.", "Todas las secciones nuevas del HTML respetan los filtros globales que el informe ya tiene: proyecto, seed, k-mer, estado y repeticiones. Cada gráfico y tabla tiene una tarjeta <i>How to read this</i> que abre un esquema animado con lo que muestra, cómo leerlo y qué buscar. No se genera ninguna figura estática nueva por defecto."],
   "ou.h3a": ["New argument", "Argumento novo", "Argumento nuevo"],
   "ou.arg": [
     "<code>--organpipe-dir</code> points to the root of the OrganPipe run. When omitted, moCURA infers it from <code>--results-dir</code> if <code>results/</code>, <code>workflow/reports/</code> and <code>benchmarks/</code> are siblings.",
     "<code>--organpipe-dir</code> aponta para a raiz da execução do OrganPipe. Se omitido, o moCURA o deduz de <code>--results-dir</code> quando <code>results/</code>, <code>workflow/reports/</code> e <code>benchmarks/</code> são irmãos.",
     "<code>--organpipe-dir</code> apunta a la raíz de la ejecución de OrganPipe. Si se omite, moCURA lo deduce de <code>--results-dir</code> cuando <code>results/</code>, <code>workflow/reports/</code> y <code>benchmarks/</code> están al mismo nivel."],
   "ou.h3b": ["Draft <code>config.yml</code>", "Esboço do <code>config.yml</code>", "Borrador de <code>config.yml</code>"],
-  "ou.yamlc": ["# Phase 1 sections in config.yml. Existing keys did not change.", "# Seções da Fase 1 no config.yml. As chaves existentes não mudaram.", "# Secciones de la Fase 1 en config.yml. Las claves existentes no cambiaron."],
+"ou.yamlc": ["# Sections added to config.yml in phases 1 to 3 (abridged). Existing keys did not change.", "# Seções acrescentadas ao config.yml nas fases 1 a 3 (resumidas). As chaves existentes não mudaram.", "# Secciones añadidas a config.yml en las fases 1 a 3 (resumidas). Las claves existentes no cambiaron."],
   "ou.th": [["Analysis", "Input", "Excel", "TSV in <code>--output-dir</code>", "HTML", "Phase"], ["Análise", "Entrada", "Excel", "TSV em <code>--output-dir</code>", "HTML", "Fase"], ["Análisis", "Entrada", "Excel", "TSV en <code>--output-dir</code>", "HTML", "Fase"]],
 
   "li.h": ["Limitations", "Limitações", "Limitaciones"],
   "li.callout": [
-    "<b>OrganPipe BAMs map the same reads NOVOPlasty used to build the assembly</b> (<code>Assembled_reads</code>). Coverage and junction support computed from them tend to favour the assembly: a read the assembler already accepted agrees with it again. The code will be ready to take a raw-reads BAM in the future, but that mapping is not part of this stage.",
-    "<b>Os BAMs do OrganPipe mapeiam os próprios reads que o NOVOPlasty usou na montagem</b> (<code>Assembled_reads</code>). A cobertura e o suporte da junção calculados a partir deles tendem a favorecer a montagem: um read que o montador já aceitou volta a concordar com ela. O código fica pronto para receber um BAM de reads brutos no futuro, mas esse mapeamento não faz parte desta etapa.",
-    "<b>Los BAM de OrganPipe mapean las mismas lecturas que NOVOPlasty usó en el ensamblaje</b> (<code>Assembled_reads</code>). La cobertura y el soporte de la unión calculados a partir de ellos tienden a favorecer el ensamblaje: una lectura que el ensamblador ya aceptó vuelve a coincidir con él. El código quedará preparado para recibir un BAM de lecturas crudas en el futuro, pero ese mapeo no forma parte de esta etapa."],
+    "<b>OrganPipe BAMs map the same reads NOVOPlasty used to build the assembly</b> (<code>Assembled_reads</code>). Coverage and junction support computed from them tend to favour the assembly: a read the assembler already accepted agrees with it again. The code will be ready to take a raw-reads BAM in the future, but that mapping is not part of this stage. Heteroplasmy reads the same BAM, so its frequencies are a lower bound.",
+    "<b>Os BAMs do OrganPipe mapeiam os próprios reads que o NOVOPlasty usou na montagem</b> (<code>Assembled_reads</code>). A cobertura e o suporte da junção calculados a partir deles tendem a favorecer a montagem: um read que o montador já aceitou volta a concordar com ela. O código fica pronto para receber um BAM de reads brutos no futuro, mas esse mapeamento não faz parte desta etapa. A heteroplasmia lê o mesmo BAM, então as frequências dela são um limite inferior.",
+    "<b>Los BAM de OrganPipe mapean las mismas lecturas que NOVOPlasty usó en el ensamblaje</b> (<code>Assembled_reads</code>). La cobertura y el soporte de la unión calculados a partir de ellos tienden a favorecer el ensamblaje: una lectura que el ensamblador ya aceptó vuelve a coincidir con él. El código quedará preparado para recibir un BAM de lecturas crudas en el futuro, pero ese mapeo no forma parte de esta etapa. La heteroplasmia lee el mismo BAM, así que sus frecuencias son un límite inferior."],
   "li.1": [
     "The example dataset has no <code>mitos2.csv</code>, nhmmer outputs, <code>fastp.json</code>, Snakemake benchmarks or <code>config/</code>. Those parsers are tested against real excerpts in <code>tests/</code>, without an end-to-end run.",
     "O conjunto de exemplo não tem <code>mitos2.csv</code>, saídas do nhmmer, <code>fastp.json</code>, benchmarks do Snakemake nem <code>config/</code>. Esses parsers são testados com trechos reais em <code>tests/</code>, sem execução de ponta a ponta.",
@@ -1241,14 +1408,117 @@ var T = {
     "95 <code>.gb</code> files have no rotated version because MITOS2 did not annotate <code>rrnS</code>. Nineteen of them are circularized assemblies of 15 kb or more that today vanish from the marker analyses without a warning; they will appear with the alert “annotated but not rotated”.",
     "95 arquivos <code>.gb</code> não têm versão rotacionada porque o MITOS2 não anotou o <code>rrnS</code>. Dezenove deles são montagens circularizadas de 15 kb ou mais que hoje somem das análises de marcadores sem aviso; passam a aparecer com o alerta “anotada, mas não rotacionada”.",
     "95 archivos <code>.gb</code> no tienen versión rotada porque MITOS2 no anotó <code>rrnS</code>. Diecinueve de ellos son ensamblajes circularizados de 15 kb o más que hoy desaparecen de los análisis de marcadores sin aviso; pasarán a aparecer con la alerta “anotado, pero no rotado”."],
-  "li.4": [
-    "Out of scope: species identification (BOLD, NCBI), heteroplasmy, GetOrganelle, MitoHiFi, plastomes and table2asn for mitogenomes.",
-    "Fora do escopo: identificação de espécie (BOLD, NCBI), heteroplasmia, GetOrganelle, MitoHiFi, plastomas e table2asn para mitogenomas.",
-    "Fuera del alcance: identificación de especies (BOLD, NCBI), heteroplasmia, GetOrganelle, MitoHiFi, plastomas y table2asn para mitogenomas."],
-  "li.src": [
-    "Excerpts and numbers from the example dataset, read on 23 November 2026. The full layout diagnosis is in commit <code>969d57e</code>.",
-    "Trechos e números do conjunto de exemplo, lidos em 23 de novembro de 2026. O diagnóstico completo do layout está no commit <code>969d57e</code>.",
-    "Fragmentos y números del conjunto de ejemplo, leídos el 23 de noviembre de 2026. El diagnóstico completo del diseño está en el commit <code>969d57e</code>."],
+"li.4": ["Out of scope: GetOrganelle and MitoHiFi assemblies, and heteroplasmy or junction support from a BAM of all reads (the <code>bam_template</code> keys are ready for it). The chloroplast support was tested on a plastome built from GenBank, not on a real OrganPipe chloroplast run.", "Fora do escopo: montagens do GetOrganelle e do MitoHiFi, e heteroplasmia ou suporte da junção a partir de um BAM com todos os reads (as chaves <code>bam_template</code> já estão prontas para isso). O suporte a cloroplastos foi testado com um plastoma montado a partir do GenBank, não com uma execução real de cloroplasto do OrganPipe.", "Fuera del alcance: ensamblajes de GetOrganelle y de MitoHiFi, y heteroplasmia o soporte de la unión a partir de un BAM con todas las lecturas (las claves <code>bam_template</code> ya están listas para ello). El soporte de cloroplastos se probó con un plastoma construido a partir de GenBank, no con una ejecución real de cloroplasto de OrganPipe."],
+"li.src": ["Excerpts and numbers from the example dataset and the chloroplast test, read on 23–25 November 2026. The full layout diagnosis is in commit <code>969d57e</code>.", "Trechos e números do conjunto de exemplo e do teste de cloroplasto, lidos de 23 a 25 de novembro de 2026. O diagnóstico completo do layout está no commit <code>969d57e</code>.", "Fragmentos y números del conjunto de ejemplo y de la prueba de cloroplasto, leídos del 23 al 25 de noviembre de 2026. El diagnóstico completo del diseño está en el commit <code>969d57e</code>."],
+
+  "n.het": ["Heteroplasmy", "Heteroplasmia", "Heteroplasmia"],
+  "n.spec": ["Species identification", "Identificação da espécie", "Identificación de la especie"],
+  "n.ref": ["RefSeq references", "Referências do RefSeq", "Referencias de RefSeq"],
+  "n.ncbi": ["GenBank submission check", "Verificação para o GenBank", "Verificación para GenBank"],
+  "n.cp": ["Chloroplasts", "Cloroplastos", "Cloroplastos"],
+  "st.f3": ["Phase 3", "Fase 3", "Fase 3"],
+  "he.h": ["Heteroplasmy", "Heteroplasmia", "Heteroplasmia"],
+  "he.lede": ["The heteroplasmy file of NOVOPlasty is empty in OrganPipe, so moCURA counts the bases at every position of the rotated BAM. A position is a candidate when it has at least 20 reads, at least 3 of them carry a second base, and that base reaches 10% of the reads. Every threshold is in <code>config.yml</code>.", "O arquivo de heteroplasmia do NOVOPlasty vem vazio no OrganPipe, então o moCURA conta as bases em cada posição do BAM rotacionado. Uma posição é candidata quando tem pelo menos 20 reads, pelo menos 3 deles trazem uma segunda base e essa base chega a 10% dos reads. Todos os limiares estão no <code>config.yml</code>.", "El archivo de heteroplasmia de NOVOPlasty está vacío en OrganPipe, así que moCURA cuenta las bases en cada posición del BAM rotado. Una posición es candidata cuando tiene al menos 20 lecturas, al menos 3 de ellas llevan una segunda base y esa base llega al 10 % de las lecturas. Todos los umbrales están en <code>config.yml</code>."],
+  "he.after": ["A candidate is low confidence when it lies within 50 bp of a contig end, has more than 2 other candidates within 20 bp (typical of misaligned repeats or nuclear copies), shows the second base on one strand only, or falls inside a tandem repeat found by TRF. Only high-confidence sites count in the summary and the alerts.", "Uma candidata tem baixa confiança quando fica a menos de 50 pb de uma ponta do contig, tem mais de 2 outras candidatas em 20 pb (típico de repetições mal alinhadas ou de cópias nucleares), mostra a segunda base em uma fita só ou cai dentro de uma repetição em tandem achada pelo TRF. Só os sítios de alta confiança entram no resumo e nos alertas.", "Una candidata tiene baja confianza cuando está a menos de 50 pb de un extremo del contig, tiene más de 2 candidatas a menos de 20 pb (típico de repeticiones mal alineadas o de copias nucleares), muestra la segunda base en una sola hebra o cae dentro de una repetición en tándem hallada por TRF. Solo los sitios de alta confianza entran en el resumen y en las alertas."],
+  "he.depth": ["Reads at the site", "Reads no sítio", "Lecturas en el sitio"],
+  "he.minor": ["Reads with the second base", "Reads com a segunda base", "Lecturas con la segunda base"],
+  "he.rev": ["of them on the reverse strand", "deles na fita reversa", "de ellas en la hebra reversa"],
+  "he.cluster": ["Other candidates within 20 bp", "Outras candidatas em 20 pb", "Otras candidatas a 20 pb"],
+  "he.edge": ["Within 50 bp of a contig end", "A menos de 50 pb da ponta", "A menos de 50 pb del extremo"],
+  "he.repeat": ["Inside a tandem repeat", "Dentro de repetição em tandem", "Dentro de una repetición en tándem"],
+  "he.barLabel": ["{m} of {d} reads carry the second base", "{m} de {d} reads trazem a segunda base", "{m} de {d} lecturas llevan la segunda base"],
+  "he.lg.major": ["main base", "base principal", "base principal"],
+  "he.lg.fwd": ["second base, forward", "segunda base, fita direta", "segunda base, hebra directa"],
+  "he.lg.rev": ["second base, reverse", "segunda base, fita reversa", "segunda base, hebra reversa"],
+  "he.lg.tick": ["10% threshold", "limiar de 10%", "umbral del 10 %"],
+  "he.l.depth": ["Depth", "Profundidade", "Profundidad"],
+  "he.l.minor": ["Second base", "Segunda base", "Segunda base"],
+  "he.l.freq": ["Frequency", "Frequência", "Frecuencia"],
+  "he.l.strand": ["Strands", "Fitas", "Hebras"],
+  "he.l.place": ["Context", "Contexto", "Contexto"],
+  "he.l.verdict": ["Verdict", "Veredito", "Veredicto"],
+  "he.fwdrev": ["{f} forward, {r} reverse", "{f} na direta, {r} na reversa", "{f} en la directa, {r} en la reversa"],
+  "he.oneStrand": ["second base on one strand only", "segunda base em uma fita só", "segunda base en una sola hebra"],
+  "he.edgeR": ["within 50 bp of the contig ends", "a menos de 50 pb das pontas do contig", "a menos de 50 pb de los extremos del contig"],
+  "he.clusterR": ["{n} other candidates within 20 bp", "{n} outras candidatas em 20 pb", "{n} otras candidatas a 20 pb"],
+  "he.repeatR": ["inside a TRF tandem repeat", "dentro de uma repetição em tandem do TRF", "dentro de una repetición en tándem de TRF"],
+  "he.clear": ["nothing against it", "nada contra", "nada en contra"],
+  "he.high": ["High-confidence candidate", "Candidata de alta confiança", "Candidata de alta confianza"],
+  "he.low": ["Low-confidence candidate: {r}", "Candidata de baixa confiança: {r}", "Candidata de baja confianza: {r}"],
+  "he.none": ["Not a candidate", "Não é candidata", "No es candidata"],
+  "he.m.asm": ["Assemblies with a BAM", "Montagens com BAM", "Ensamblajes con BAM"],
+  "he.m.cand": ["Candidate sites", "Sítios candidatos", "Sitios candidatos"],
+  "he.m.high": ["High confidence", "Alta confiança", "Alta confianza"],
+  "he.m.asmHigh": ["Assemblies with one or more", "Montagens com um ou mais", "Ensamblajes con uno o más"],
+  "he.m.in": ["in {n} assemblies", "em {n} montagens", "en {n} ensamblajes"],
+  "he.m.max": ["Highest frequency", "Maior frequência", "Mayor frecuencia"],
+  "he.note": ["The sliders start at a real site of the example: assembly ITV38290 (seed COIII, k-mer 20), position 15,115, G→C in 4 of 37 reads (10.8%), 1 forward and 3 reverse. Of the 4,550 candidates in the example, 4,433 are low confidence: 4,239 sit in clusters and 4,113 have the second base on one strand only. The BAM holds only the reads NOVOPlasty assembled, so frequencies are a lower bound, and a nuclear copy (NUMT) gives the same signal as heteroplasmy.", "Os controles começam num sítio real do exemplo: montagem ITV38290 (seed COIII, k-mer 20), posição 15.115, G→C em 4 de 37 reads (10,8%), 1 na fita direta e 3 na reversa. Dos 4.550 candidatos do exemplo, 4.433 têm baixa confiança: 4.239 estão em aglomerados e 4.113 têm a segunda base em uma fita só. O BAM guarda só os reads que o NOVOPlasty montou, então as frequências são um limite inferior, e uma cópia nuclear (NUMT) dá o mesmo sinal que a heteroplasmia.", "Los controles empiezan en un sitio real del ejemplo: ensamblaje ITV38290 (seed COIII, k-mer 20), posición 15.115, G→C en 4 de 37 lecturas (10,8 %), 1 en la directa y 3 en la reversa. De los 4.550 candidatos del ejemplo, 4.433 tienen baja confianza: 4.239 están en agrupaciones y 4.113 tienen la segunda base en una sola hebra. El BAM guarda solo las lecturas que NOVOPlasty ensambló, así que las frecuencias son un límite inferior, y una copia nuclear (NUMT) da la misma señal que la heteroplasmia."],
+  "sp.h": ["Species identification", "Identificação da espécie", "Identificación de la especie"],
+  "sp.lede": ["The recommended assembly of each sample gives its barcode: COI for mitochondria, rbcL and matK for chloroplasts. moCURA searches it in BOLD (v5 ID engine) and in GenBank (megablast against <code>core_nt</code>), ignores hits shorter than 400 bp and ranks species by their best identity. Ranking by bit score would favour long partial genomes over 658 bp barcodes.", "A montagem recomendada de cada amostra fornece o barcode: COI para mitocôndrias, rbcL e matK para cloroplastos. O moCURA busca esse barcode no BOLD (motor de identificação v5) e no GenBank (megablast contra o <code>core_nt</code>), ignora hits com menos de 400 pb e ordena as espécies pela melhor identidade. Ordenar pelo bit score favoreceria genomas parciais longos em vez de barcodes de 658 pb.", "El ensamblaje recomendado de cada muestra aporta el barcode: COI para mitocondrias, rbcL y matK para cloroplastos. moCURA lo busca en BOLD (motor de identificación v5) y en GenBank (megablast contra <code>core_nt</code>), ignora los hits de menos de 400 pb y ordena las especies por su mejor identidad. Ordenar por bit score favorecería genomas parciales largos frente a barcodes de 658 pb."],
+  "sp.after": ["With metadata, the declared species is also searched on its own in GenBank and gets a verdict. Without metadata the verdict is <i>Not declared</i> and the three most similar species of each database are listed. All requests to NCBI and BOLD share one limiter: 3 per second, or 10 with <code>NCBI_API_KEY</code> in the <code>.env</code> at the moCURA root. Identical barcodes share one BLAST search. In the example, the seven identical COI searches each used to hit the 30 min limit; one shared search now answers in about 35 s.", "Com metadados, a espécie declarada também é buscada sozinha no GenBank e recebe um veredito. Sem metadados o veredito é <i>Not declared</i> e as três espécies mais parecidas de cada base são listadas. Todas as requisições ao NCBI e ao BOLD passam por um único limitador: 3 por segundo, ou 10 com <code>NCBI_API_KEY</code> no <code>.env</code> da raiz do moCURA. Barcodes idênticos dividem uma única busca BLAST. No exemplo, as sete buscas idênticas de COI esgotavam, cada uma, o limite de 30 min; agora uma busca compartilhada responde em cerca de 35 s.", "Con metadatos, la especie declarada también se busca sola en GenBank y recibe un veredicto. Sin metadatos el veredicto es <i>Not declared</i> y se listan las tres especies más parecidas de cada base. Todas las solicitudes a NCBI y BOLD pasan por un único limitador: 3 por segundo, o 10 con <code>NCBI_API_KEY</code> en el <code>.env</code> de la raíz de moCURA. Los barcodes idénticos comparten una sola búsqueda BLAST. En el ejemplo, cada una de las siete búsquedas idénticas de COI agotaba el límite de 30 min; ahora una búsqueda compartida responde en unos 35 s."],
+  "sp.th1": ["Verdict", "Veredito", "Veredicto"],
+  "sp.th2": ["When", "Quando", "Cuándo"],
+  "sp.v.c": ["Confirmed", "Confirmed", "Confirmed"],
+  "sp.v.a": ["Ambiguous", "Ambiguous", "Ambiguous"],
+  "sp.v.n": ["Not confirmed", "Not confirmed", "Not confirmed"],
+  "sp.v.r": ["No reference", "No reference", "No reference"],
+  "sp.d.c": ["identity to the declared species ≥ 97% and no other species more than 0.5 points closer", "identidade com a espécie declarada ≥ 97% e nenhuma outra espécie mais de 0,5 ponto mais próxima", "identidad con la especie declarada ≥ 97 % y ninguna otra especie más de 0,5 puntos más cercana"],
+  "sp.d.a": ["identity ≥ 97%, but another species is closer", "identidade ≥ 97%, mas outra espécie está mais próxima", "identidad ≥ 97 %, pero otra especie está más cerca"],
+  "sp.d.n": ["identity below 97%", "identidade abaixo de 97%", "identidad por debajo del 97 %"],
+  "sp.d.r": ["neither BOLD nor GenBank has a sequence of the declared species", "nem o BOLD nem o GenBank têm sequência da espécie declarada", "ni BOLD ni GenBank tienen una secuencia de la especie declarada"],
+  "sp.bold": ["BOLD, best identity per species", "BOLD, melhor identidade por espécie", "BOLD, mejor identidad por especie"],
+  "sp.gb": ["GenBank, best identity per species", "GenBank, melhor identidade por espécie", "GenBank, mejor identidad por especie"],
+  "sp.own": ["search restricted to the declared species: {acc}", "busca restrita à espécie declarada: {acc}", "búsqueda restringida a la especie declarada: {acc}"],
+  "sp.note": ["Sample ITV38290 of the example, COI of 1,549 bp, declared <i>Kinosternon scorpioides</i> (green): 97.6% in BOLD, above the threshold, with no closer species, so <i>Confirmed</i>. The general GenBank search did not reach a <i>K. scorpioides</i> COI; the search restricted to the declared species found MH274192 at 96.8%.", "Amostra ITV38290 do exemplo, COI de 1.549 pb, declarada como <i>Kinosternon scorpioides</i> (em verde): 97,6% no BOLD, acima do limiar e sem espécie mais próxima, portanto <i>Confirmed</i>. A busca geral no GenBank não chegou a um COI de <i>K. scorpioides</i>; a busca restrita à espécie declarada achou o MH274192 com 96,8%.", "Muestra ITV38290 del ejemplo, COI de 1.549 pb, declarada como <i>Kinosternon scorpioides</i> (en verde): 97,6 % en BOLD, por encima del umbral y sin especie más cercana, por lo tanto <i>Confirmed</i>. La búsqueda general en GenBank no llegó a un COI de <i>K. scorpioides</i>; la búsqueda restringida a la especie declarada halló MH274192 con 96,8 %."],
+  "rf.h": ["RefSeq references", "Referências do RefSeq", "Referencias de RefSeq"],
+  "rf.lede": ["RefSeq complete genomes of the same organelle are searched in the genus of the sample, taken from the species identification, and in the family when the genus has none. Gene names of the references are standardized like those of the assemblies. Every assembly is then compared with the reference range of genome length, of each gene, of tandem repeats, of base composition and of codon usage (RSCU).", "Os genomas completos do RefSeq da mesma organela são buscados no gênero da amostra, obtido da identificação da espécie, e na família quando o gênero não tem nenhum. Os nomes de genes das referências são padronizados como os das montagens. Cada montagem é então comparada com a faixa das referências para o comprimento do genoma, cada gene, as repetições em tandem, a composição de bases e o uso de códons (RSCU).", "Los genomas completos de RefSeq del mismo orgánulo se buscan en el género de la muestra, tomado de la identificación de la especie, y en la familia cuando el género no tiene ninguno. Los nombres de genes de las referencias se estandarizan como los de los ensamblajes. Cada ensamblaje se compara luego con el rango de las referencias para la longitud del genoma, cada gen, las repeticiones en tándem, la composición de bases y el uso de codones (RSCU)."],
+  "rf.after": ["The report draws these comparisons as strips: one row per sample (or per gene), grey diamonds for the references, a green band for their range widened by the tolerance (5% for the genome, 10% for genes) and circles for the assemblies. In the turtle example the genus <i>Kinosternon</i> has a single RefSeq mitogenome (NC_014577, 16,559 bp): 145 of the 286 assemblies fall within the tolerance and 141 are shorter, most of them partial contigs.", "O relatório desenha essas comparações como faixas: uma linha por amostra (ou por gene), losangos cinza para as referências, uma faixa verde para a amplitude delas alargada pela tolerância (5% para o genoma, 10% para os genes) e círculos para as montagens. No exemplo de tartarugas, o gênero <i>Kinosternon</i> tem um único mitogenoma RefSeq (NC_014577, 16.559 pb): 145 das 286 montagens ficam dentro da tolerância e 141 são mais curtas, a maioria contigs parciais.", "El informe dibuja estas comparaciones como franjas: una fila por muestra (o por gen), rombos grises para las referencias, una banda verde para su rango ampliado por la tolerancia (5 % para el genoma, 10 % para los genes) y círculos para los ensamblajes. En el ejemplo de tortugas, el género <i>Kinosternon</i> tiene un único mitogenoma RefSeq (NC_014577, 16.559 pb): 145 de los 286 ensamblajes quedan dentro de la tolerancia y 141 son más cortos, la mayoría contigs parciales."],
+  "rf.compare": ["Compare", "Comparar", "Comparar"],
+  "rf.m.len": ["Genome length", "Comprimento do genoma", "Longitud del genoma"],
+  "rf.m.gc": ["GC %", "GC %", "GC %"],
+  "rf.m.rep": ["Tandem repeats", "Repetições em tandem", "Repeticiones en tándem"],
+  "rf.mm.refs": ["RefSeq genomes", "Genomas RefSeq", "Genomas RefSeq"],
+  "rf.mm.range": ["Reference range", "Faixa das referências", "Rango de referencias"],
+  "rf.mm.band": ["Accepted band", "Faixa aceita", "Banda aceptada"],
+  "rf.mm.asm": ["Assembly", "Montagem", "Ensamblaje"],
+  "rf.mm.status": ["Status", "Situação", "Estado"],
+  "rf.noTol": ["the range itself", "a própria faixa", "el propio rango"],
+  "rf.within": ["Within", "Dentro", "Dentro"],
+  "rf.outside": ["Outside", "Fora", "Fuera"],
+  "rf.note": ["Chloroplast test: the 21 RefSeq <i>Ipomoea</i> plastomes (160,082–162,663 bp) against the assembly of <i>Ipomoea pes-caprae</i> built from GenBank LC729555. Genome length uses the 5% tolerance; GC % and tandem repeats use the plain reference range. The grey bar is the reference range and the green band the accepted range. Hover a diamond to see the genome.", "Teste de cloroplasto: os 21 plastomas RefSeq de <i>Ipomoea</i> (160.082–162.663 pb) contra a montagem de <i>Ipomoea pes-caprae</i> feita a partir do GenBank LC729555. O comprimento do genoma usa a tolerância de 5%; GC % e repetições em tandem usam a faixa simples das referências. A barra cinza é a faixa das referências e a faixa verde, a faixa aceita. Passe o cursor sobre um losango para ver o genoma.", "Prueba de cloroplasto: los 21 plastomas RefSeq de <i>Ipomoea</i> (160.082–162.663 pb) frente al ensamblaje de <i>Ipomoea pes-caprae</i> construido a partir de GenBank LC729555. La longitud del genoma usa la tolerancia del 5 %; el GC % y las repeticiones en tándem usan el rango simple de las referencias. La barra gris es el rango de las referencias y la banda verde, el rango aceptado. Pase el cursor sobre un rombo para ver el genoma."],
+  "nc.h": ["GenBank submission check", "Verificação para o GenBank", "Verificación para GenBank"],
+  "nc.lede": ["MITOS2 GenBank files cannot be submitted as they are: coding sequences have no product, tRNAs are named <code>trnX(anticodon)</code> and incomplete stop codons are not marked. For the recommended assembly of each sample (or all of them, with <code>assemblies: all</code>), moCURA writes the FASTA with its source modifiers and the five-column feature table, then runs NCBI <code>table2asn</code>.", "Os GenBanks do MITOS2 não podem ser submetidos como estão: as sequências codificantes não têm produto, os tRNAs se chamam <code>trnX(anticódon)</code> e os stops incompletos não são marcados. Para a montagem recomendada de cada amostra (ou para todas, com <code>assemblies: all</code>), o moCURA escreve o FASTA com os modificadores de origem e a tabela de features de cinco colunas, e roda o <code>table2asn</code> do NCBI.", "Los GenBank de MITOS2 no pueden enviarse tal cual: las secuencias codificantes no tienen producto, los tRNA se llaman <code>trnX(anticodón)</code> y los stops incompletos no se marcan. Para el ensamblaje recomendado de cada muestra (o para todos, con <code>assemblies: all</code>), moCURA escribe el FASTA con sus modificadores de origen y la tabla de features de cinco columnas, y ejecuta <code>table2asn</code> de NCBI."],
+  "nc.after": ["Rejects, errors and FATAL discrepancies would block or delay a submission, and raise the alert <i>NCBI validation errors</i>. Without a submission template, the messages about the missing publication are ignored. Plastomes get <code>[pgcode=11]</code>, <code>exception trans-splicing</code> for rps12 and <code>exception RNA editing</code> for ACG starts.", "Rejeições, erros e discrepâncias FATAL bloqueariam ou atrasariam uma submissão, e disparam o alerta <i>NCBI validation errors</i>. Sem um modelo de submissão, as mensagens sobre a publicação ausente são ignoradas. Plastomas recebem <code>[pgcode=11]</code>, <code>exception trans-splicing</code> no rps12 e <code>exception RNA editing</code> nos inícios ACG.", "Los rechazos, errores y discrepancias FATAL bloquearían o retrasarían un envío, y activan la alerta <i>NCBI validation errors</i>. Sin una plantilla de envío, los mensajes sobre la publicación ausente se ignoran. Los plastomas reciben <code>[pgcode=11]</code>, <code>exception trans-splicing</code> en rps12 y <code>exception RNA editing</code> en los inicios ACG."],
+  "nc.tab1": ["Mitogenome", "Mitogenoma", "Mitogenoma"],
+  "nc.tab2": ["Plastome", "Plastoma", "Plastoma"],
+  "nc.m.asm": ["Assemblies checked", "Montagens verificadas", "Ensamblajes verificados"],
+  "nc.m.err": ["Rejects and errors", "Rejeições e erros", "Rechazos y errores"],
+  "nc.m.warn": ["Warnings", "Avisos", "Avisos"],
+  "nc.m.stop": ["Stops completed", "Stops completados", "Stops completados"],
+  "nc.m.stopv": ["5 per assembly", "5 por montagem", "5 por ensamblaje"],
+  "nc.m.exc": ["Exceptions written", "Exceções escritas", "Excepciones escritas"],
+  "nc.m.excv": ["rps12, psbL, ndhD", "rps12, psbL, ndhD", "rps12, psbL, ndhD"],
+  "nc.note": ["Excerpts of the files written for the example: the recommended mitogenome of ITV38292 and the test plastome. Highlighted: what moCURA adds to the annotation.", "Trechos dos arquivos escritos para o exemplo: o mitogenoma recomendado de ITV38292 e o plastoma de teste. Em destaque, o que o moCURA acrescenta à anotação.", "Fragmentos de los archivos escritos para el ejemplo: el mitogenoma recomendado de ITV38292 y el plastoma de prueba. Resaltado, lo que moCURA añade a la anotación."],
+  "cp.h": ["Chloroplasts", "Cloroplastos", "Cloroplastos"],
+  "cp.lede": ["OrganPipe assembles chloroplasts with NOVOPlasty <code>Type = chloro</code> and annotates them with CPGAVAS2 or Chloë instead of MITOS2. moCURA reads the organelle from <code>config.yml</code>, else from the OrganPipe <code>config/config.yaml</code>, else from the first NOVOPlasty log, and changes only what depends on it.", "O OrganPipe monta cloroplastos com o NOVOPlasty <code>Type = chloro</code> e os anota com o CPGAVAS2 ou o Chloë em vez do MITOS2. O moCURA lê a organela do <code>config.yml</code>, senão do <code>config/config.yaml</code> do OrganPipe, senão do primeiro log do NOVOPlasty, e muda só o que depende dela.", "OrganPipe ensambla cloroplastos con NOVOPlasty <code>Type = chloro</code> y los anota con CPGAVAS2 o Chloë en lugar de MITOS2. moCURA lee el orgánulo de <code>config.yml</code>, si no del <code>config/config.yaml</code> de OrganPipe, si no del primer log de NOVOPlasty, y cambia solo lo que depende de él."],
+  "cp.after": ["Plastid gene symbols are kept as the annotator writes them: a plastome carries several tRNAs for the same amino acid (trnI-CAU and trnI-GAU), which one <code>tRNA-Ile</code> name would merge. Coverage, Pilon, TRF, concordance, composition, markers, SNPs, the RefSeq comparison and table2asn run as for mitochondria.", "Os símbolos de genes do plastídio são mantidos como o anotador os escreve: um plastoma tem vários tRNAs para o mesmo aminoácido (trnI-CAU e trnI-GAU), que um único nome <code>tRNA-Ile</code> juntaria. Cobertura, Pilon, TRF, concordância, composição, marcadores, SNPs, a comparação com o RefSeq e o table2asn rodam como para mitocôndrias.", "Los símbolos de genes del plástido se conservan como los escribe el anotador: un plastoma tiene varios tRNA para el mismo aminoácido (trnI-CAU y trnI-GAU), que un único nombre <code>tRNA-Ile</code> fusionaría. Cobertura, Pilon, TRF, concordancia, composición, marcadores, SNP, la comparación con RefSeq y table2asn funcionan como para las mitocondrias."],
+  "cp.th1": ["Setting", "Ajuste", "Ajuste"],
+  "cp.th2": ["Mitochondrion", "Mitocôndria", "Mitocondria"],
+  "cp.th3": ["Chloroplast", "Cloroplasto", "Cloroplasto"],
+  "cp.r.code": [["Default genetic code", "2, vertebrate mitochondrial", "11, plastid"], ["Código genético padrão", "2, mitocondrial de vertebrados", "11, plastídio"], ["Código genético por defecto", "2, mitocondrial de vertebrados", "11, plástido"]],
+  "cp.r.bar": [["Barcode", "COI", "rbcL and matK"], ["Barcode", "COI", "rbcL e matK"], ["Barcode", "COI", "rbcL y matK"]],
+  "cp.r.bold": [["BOLD database", "<code>public.tax-derep</code>", "<code>public.plants</code>"], ["Base do BOLD", "<code>public.tax-derep</code>", "<code>public.plants</code>"], ["Base de BOLD", "<code>public.tax-derep</code>", "<code>public.plants</code>"]],
+  "cp.r.ref": [["RefSeq search", "<code>mitochondrion[filter]</code>", "<code>chloroplast[filter]</code>"], ["Busca no RefSeq", "<code>mitochondrion[filter]</code>", "<code>chloroplast[filter]</code>"], ["Búsqueda en RefSeq", "<code>mitochondrion[filter]</code>", "<code>chloroplast[filter]</code>"]],
+  "cp.r.asn": [["table2asn source", "<code>[mgcode=2]</code>", "<code>[pgcode=11]</code>, trans-splicing, RNA editing"], ["Origem no table2asn", "<code>[mgcode=2]</code>", "<code>[pgcode=11]</code>, trans-splicing, edição de RNA"], ["Origen en table2asn", "<code>[mgcode=2]</code>", "<code>[pgcode=11]</code>, trans-splicing, edición de ARN"]],
+  "cp.r.names": [["Gene names", "MITOS2 (<code>trnL1</code>, <code>rrnS</code>)", "annotator symbols (<code>trnH-GUG</code>, <code>rrn16</code>)"], ["Nomes de genes", "MITOS2 (<code>trnL1</code>, <code>rrnS</code>)", "símbolos do anotador (<code>trnH-GUG</code>, <code>rrn16</code>)"], ["Nombres de genes", "MITOS2 (<code>trnL1</code>, <code>rrnS</code>)", "símbolos del anotador (<code>trnH-GUG</code>, <code>rrn16</code>)"]],
+  "cp.r.comp": [["Gene completeness", "37 expected genes", "not scored (no MITOS2)"], ["Completude gênica", "37 genes esperados", "não pontuada (sem MITOS2)"], ["Completitud génica", "37 genes esperados", "no puntuada (sin MITOS2)"]],
+  "cp.m.len": ["Test plastome", "Plastoma de teste", "Plastoma de prueba"],
+  "cp.m.id": ["rbcL and matK identity", "Identidade de rbcL e matK", "Identidad de rbcL y matK"],
+  "cp.m.refs": ["RefSeq plastomes", "Plastomas RefSeq", "Plastomas RefSeq"],
+  "cp.m.genes": ["Genes compared", "Genes comparados", "Genes comparados"],
+  "cp.m.out": ["Genes outside the range", "Genes fora da faixa", "Genes fuera del rango"],
+  "cp.m.asn": ["table2asn errors", "Erros do table2asn", "Errores de table2asn"],
+  "cp.note": ["Test data: the plastome of <i>Ipomoea pes-caprae</i> (GenBank LC729555) laid out as an OrganPipe run with four NOVOPlasty runs (seeds rbcL and matK, k-mers 33 and 39). A real OrganPipe chloroplast run annotated by CPGAVAS2 or Chloë has not been processed yet. rrn16 and ycf15 count as absent: LC729555 names the 16S only by its product, which in mitochondria is the large rRNA, and does not annotate ycf15.", "Dados de teste: o plastoma de <i>Ipomoea pes-caprae</i> (GenBank LC729555) organizado como uma execução do OrganPipe com quatro execuções do NOVOPlasty (seeds rbcL e matK, k-mers 33 e 39). Uma execução real de cloroplasto do OrganPipe anotada pelo CPGAVAS2 ou pelo Chloë ainda não foi processada. rrn16 e ycf15 contam como ausentes: o LC729555 nomeia o 16S só pelo produto, que na mitocôndria é o rRNA grande, e não anota o ycf15.", "Datos de prueba: el plastoma de <i>Ipomoea pes-caprae</i> (GenBank LC729555) organizado como una ejecución de OrganPipe con cuatro ejecuciones de NOVOPlasty (seeds rbcL y matK, k-mers 33 y 39). Todavía no se ha procesado una ejecución real de cloroplasto de OrganPipe anotada por CPGAVAS2 o Chloë. rrn16 y ycf15 cuentan como ausentes: LC729555 nombra el 16S solo por su producto, que en la mitocondria es el ARNr grande, y no anota ycf15."],
 
   "ft.names": ["Luan Rabelo and Renato Moreira-Oliveira", "Luan Rabelo e Renato Moreira-Oliveira", "Luan Rabelo y Renato Moreira-Oliveira"],
   "ft.gbb": ["The project is part of the Brazilian Biodiversity Genomics Consortium, GBB.", "O projeto faz parte do Consórcio Brasileiro de Genômica da Biodiversidade, GBB.", "El proyecto forma parte del Consorcio Brasileño de Genómica de la Biodiversidad, GBB."],
@@ -1431,7 +1701,8 @@ var IN = [
   ["i_mitos", ["MITOS2: result.* and ignored.mitos", "MITOS2: result.* e ignored.mitos", "MITOS2: result.* e ignored.mitos"], "now"],
   ["i_depth", ".rotated.depth", "now"], ["i_blast", ".rotated.blastn.out", "now"], ["i_bam", ".rotated_mapping.bam", "now"],
   ["i_nhmmer", "nhmmer tblout", "absent"], ["i_fastp", "fastp.json", "absent"],
-  ["i_bench", ["Snakemake benchmarks", "benchmarks do Snakemake", "benchmarks de Snakemake"], "absent"]
+  ["i_bench", ["Snakemake benchmarks", "benchmarks do Snakemake", "benchmarks de Snakemake"], "absent"],
+  ["i_web", ["BOLD and NCBI (online)", "BOLD e NCBI (online)", "BOLD y NCBI (en línea)"], "now"]
 ];
 var AN = [
   ["a_asm", ["Assemblies", "Montagens", "Ensamblajes"], "now"], ["a_pil", ["Polishing (Pilon)", "Polimento (Pilon)", "Pulido (Pilon)"], "now"],
@@ -1446,22 +1717,28 @@ var AN = [
   ["a_junc", ["Circularization junction", "Junção de circularização", "Unión de circularización"], "now"],
   ["a_int", ["Annotation integrity", "Integridade da anotação", "Integridad de la anotación"], "now"],
   ["a_conc", ["Concordance and composition", "Concordância e composição", "Concordancia y composición"], "now"],
-  ["a_score", ["Score and recommendation", "Pontuação e recomendação", "Puntuación y recomendación"], "now"]
+  ["a_score", ["Score and recommendation", "Pontuação e recomendação", "Puntuación y recomendación"], "now"],
+  ["a_het", ["Heteroplasmy", "Heteroplasmia", "Heteroplasmia"], "now"],
+  ["a_spec", ["Species identification", "Identificação da espécie", "Identificación de la especie"], "now"],
+  ["a_ref", ["RefSeq comparison", "Comparação com o RefSeq", "Comparación con RefSeq"], "now"],
+  ["a_ncbi", ["GenBank submission check", "Verificação para o GenBank", "Verificación para GenBank"], "now"]
 ];
 var OUT = [["o_xlsx", "moCURA_summary.xlsx", "now"], ["o_tsv", ["TSVs in subfolders", "TSVs em subpastas", "TSV en subcarpetas"], "now"], ["o_html", "moCURA_report.html", "now"]];
 var EDGES = [
   ["i_novo", "a_asm"], ["i_pilon", "a_pil"], ["i_changes", "a_pchg"], ["i_rgb", "a_mark"], ["i_rgb", "a_comp"], ["i_rgb", "a_int"],
   ["i_rgb", "a_conc"], ["i_rgb", "a_junc"], ["i_gb", "a_pchg"], ["i_gb", "a_junc"], ["i_gb", "a_comp"], ["i_mitos", "a_comp"], ["i_mitos", "a_int"],
-  ["i_depth", "a_cov"], ["i_blast", "a_rec"], ["i_bam", "a_junc"], ["i_nhmmer", "a_nhm"], ["i_fastp", "a_qc"], ["i_bench", "a_prov"]
+  ["i_depth", "a_cov"], ["i_blast", "a_rec"], ["i_bam", "a_junc"], ["i_nhmmer", "a_nhm"], ["i_fastp", "a_qc"], ["i_bench", "a_prov"],
+  ["i_bam", "a_het"], ["i_rgb", "a_spec"], ["i_web", "a_spec"], ["i_rgb", "a_ref"], ["i_web", "a_ref"], ["i_rgb", "a_ncbi"]
 ];
 AN.forEach(function (a) { EDGES.push([a[0], "o_xlsx"]); EDGES.push([a[0], "o_html"]); if (["a_asm", "a_pil", "a_mark"].indexOf(a[0]) < 0) EDGES.push([a[0], "o_tsv"]); });
 var flowSel = null, flowSetFn = null;
 function drawFlow() {
   var svg = d3.select("#flow"); svg.selectAll("*").remove();
   var pos = {}, H = 30, X1 = 10, X2 = 380, X3 = 790, W1 = 250, W2 = 262, W3 = 200;
-  IN.forEach(function (d, i) { pos[d[0]] = { x: X1, y: 40 + i * 49, w: W1, d: d }; });
-  AN.forEach(function (d, i) { pos[d[0]] = { x: X2, y: 40 + i * 42.3, w: W2, d: d }; });
-  OUT.forEach(function (d, i) { pos[d[0]] = { x: X3, y: 140 + i * 170, w: W3, d: d }; });
+  var span = 700;
+  IN.forEach(function (d, i) { pos[d[0]] = { x: X1, y: 40 + i * span / (IN.length - 1), w: W1, d: d }; });
+  AN.forEach(function (d, i) { pos[d[0]] = { x: X2, y: 40 + i * span / (AN.length - 1), w: W2, d: d }; });
+  OUT.forEach(function (d, i) { pos[d[0]] = { x: X3, y: 170 + i * 210, w: W3, d: d }; });
   [[X1, "flow.c1"], [X2, "flow.c2"], [X3, "flow.c3"]].forEach(function (c) { svg.append("text").attr("class", "flow-col").attr("x", c[0]).attr("y", 20).text(t(c[1])); });
   var edges = svg.append("g").selectAll("path").data(EDGES).join("path").attr("class", "flow-edge")
     .attr("d", function (e) {
@@ -2380,14 +2657,145 @@ var OUTROWS = [
   [["Integrity", "Integridade", "Integridad"], "<code>.rotated.gb</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["alerts column and list", "coluna de alertas e lista", "columna de alertas y lista"], "now"],
   [["Concordance", "Concordância", "Concordancia"], "<code>.rotated.gb</code> + MAFFT", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["identity matrix", "matriz de identidade", "matriz de identidad"], "now"],
   [["Composition", "Composição", "Composición"], "<code>.rotated.gb</code>", ["new sheet", "aba nova", "hoja nueva"], ["yes", "sim", "sí"], ["table and panel", "tabela e painel", "tabla y panel"], "now"],
-  [["Score", "Pontuação", "Puntuación"], ["all of the above", "todas acima", "todas las anteriores"], ["<code>Recommendation</code> sheet", "aba <code>Recommendation</code>", "hoja <code>Recommendation</code>"], ["yes", "sim", "sí"], ["section at the top", "seção no topo", "sección al inicio"], "now"]
+  [["Score", "Pontuação", "Puntuación"], ["all of the above", "todas acima", "todas las anteriores"], ["<code>Recommendation</code> sheet", "aba <code>Recommendation</code>", "hoja <code>Recommendation</code>"], ["yes", "sim", "sí"], ["section at the top", "seção no topo", "sección al inicio"], "now"],
+  [["Heteroplasmy", "Heteroplasmia", "Heteroplasmia"], "<code>.rotated_mapping.bam</code>", ["<code>Heteroplasmy</code>, <code>Heteroplasmy Sites</code>", "<code>Heteroplasmy</code>, <code>Heteroplasmy Sites</code>", "<code>Heteroplasmy</code>, <code>Heteroplasmy Sites</code>"], ["yes", "sim", "sí"], ["candidate sites table; alerts", "tabela de sítios candidatos; alertas", "tabla de sitios candidatos; alertas"], "f3"],
+  [["Species identification", "Identificação da espécie", "Identificación de la especie"], ["barcode + BOLD and GenBank", "barcode + BOLD e GenBank", "barcode + BOLD y GenBank"], ["<code>Species ID</code>, <code>Species Top Hits</code>", "<code>Species ID</code>, <code>Species Top Hits</code>", "<code>Species ID</code>, <code>Species Top Hits</code>"], ["yes, with cache", "sim, com cache", "sí, con caché"], ["Species section; recommendation cards", "seção Species; cartões de recomendação", "sección Species; tarjetas de recomendación"], "f3"],
+  [["RefSeq comparison", "Comparação com o RefSeq", "Comparación con RefSeq"], ["RefSeq genomes (NCBI)", "genomas RefSeq (NCBI)", "genomas RefSeq (NCBI)"], ["six <code>RefSeq</code> sheets", "seis abas <code>RefSeq</code>", "seis hojas <code>RefSeq</code>"], ["yes", "sim", "sí"], ["strips, composition and marker rows", "faixas, composição e linhas de marcadores", "franjas, composición y filas de marcadores"], "f3"],
+  [["GenBank submission check", "Verificação para o GenBank", "Verificación para GenBank"], "table2asn", ["<code>NCBI Validation</code>, <code>NCBI Messages</code>", "<code>NCBI Validation</code>, <code>NCBI Messages</code>", "<code>NCBI Validation</code>, <code>NCBI Messages</code>"], [".fsa, .tbl, .sqn, .val per assembly", ".fsa, .tbl, .sqn, .val por montagem", ".fsa, .tbl, .sqn, .val por ensamblaje"], ["Quality: NCBI submission check", "Quality: verificação NCBI", "Quality: verificación NCBI"], "f3"]
 ];
 function buildOutTable() {
   var th = T["ou.th"][LI];
   document.getElementById("outTable").innerHTML = "<thead><tr>" + th.map(function (h) { return "<th>" + h + "</th>"; }).join("") + "</tr></thead><tbody>" +
     OUTROWS.map(function (r) {
-      return "<tr><td>" + L(r[0]) + "</td><td>" + L(r[1]) + "</td><td>" + L(r[2]) + "</td><td>" + L(r[3]) + "</td><td>" + L(r[4]) + '</td><td><span class="chip ' + r[5] + '">' + (r[5] === "f1" ? "1" : "2") + "</span></td></tr>";
+      return "<tr><td>" + L(r[0]) + "</td><td>" + L(r[1]) + "</td><td>" + L(r[2]) + "</td><td>" + L(r[3]) + "</td><td>" + L(r[4]) + '</td><td><span class="chip ' + r[5] + '">' + ({ f1: "1", now: "2", f3: "3" }[r[5]] || "2") + "</span></td></tr>";
     }).join("") + "</tbody>";
+}
+
+/* ================= phase 3: heteroplasmy, species, RefSeq, table2asn, chloroplast ================= */
+var HE = { minDepth: 20, minMinor: 3, minFreq: 0.10, maxCluster: 2 };
+function heVal(id) { return +document.getElementById(id).value; }
+function drawHe() {
+  var depthIn = document.getElementById("heDepth"), minorIn = document.getElementById("heMinor"), revIn = document.getElementById("heRev");
+  if (!depthIn) return;
+  if (+minorIn.value > +depthIn.value) minorIn.value = depthIn.value;
+  revIn.max = minorIn.value; if (+revIn.value > +minorIn.value) revIn.value = minorIn.value;
+  var depth = heVal("heDepth"), minor = heVal("heMinor"), rev = heVal("heRev"), fwd = minor - rev, cluster = heVal("heCluster");
+  var edge = document.getElementById("heEdge").checked, rep = document.getElementById("heRepeat").checked;
+  ["heDepth", "heMinor", "heRev", "heCluster"].forEach(function (id) { document.getElementById(id + "Out").textContent = document.getElementById(id).value; });
+  var freq = depth ? minor / depth : 0;
+  var pct = function (n) { return (100 * n / Math.max(depth, 1)) + "%"; };
+  document.getElementById("heBar").innerHTML = '<span class="maj" style="width:' + pct(depth - minor) + '"></span><span class="fwd" style="width:' + pct(fwd) + '"></span><span class="rev" style="width:' + pct(rev) + '"></span><span class="tick" style="left:calc(' + (100 - 100 * HE.minFreq) + '% - 1px)" title="10%"></span>';
+  document.getElementById("heBar").setAttribute("aria-label", t("he.barLabel", { m: minor, d: depth }));
+  document.getElementById("heLegend").innerHTML = '<span><i style="background:var(--ori);opacity:.35"></i>' + t("he.lg.major") + '</span><span><i style="background:var(--brand)"></i>' + t("he.lg.fwd") + '</span><span><i style="background:var(--brand);opacity:.6"></i>' + t("he.lg.rev") + '</span><span><i style="background:var(--ink);width:2px"></i>' + t("he.lg.tick") + "</span>";
+  var okDepth = depth >= HE.minDepth, okMinor = minor >= HE.minMinor, okFreq = freq >= HE.minFreq;
+  var candidate = okDepth && okMinor && okFreq;
+  var reasons = [];
+  if (edge) reasons.push(t("he.edgeR"));
+  if (cluster > HE.maxCluster) reasons.push(t("he.clusterR", { n: cluster }));
+  if (minor && (fwd === 0 || rev === 0)) reasons.push(t("he.oneStrand"));
+  if (rep) reasons.push(t("he.repeatR"));
+  var mark = function (ok) { return ok ? "ok" : "err"; };
+  var rows = [
+    ["he.l.depth", fmt(depth) + (okDepth ? " ≥ " : " < ") + HE.minDepth, mark(okDepth)],
+    ["he.l.minor", fmt(minor) + (okMinor ? " ≥ " : " < ") + HE.minMinor, mark(okMinor)],
+    ["he.l.freq", fmt(100 * freq, 1) + "%" + (okFreq ? " ≥ " : " < ") + "10%", mark(okFreq)],
+    ["he.l.strand", t("he.fwdrev", { f: fwd, r: rev }), minor && (fwd === 0 || rev === 0) ? "info" : "ok"],
+    ["he.l.place", reasons.filter(function (x) { return x !== t("he.oneStrand"); }).join("; ") || t("he.clear"), (edge || rep || cluster > HE.maxCluster) ? "info" : "ok"],
+    ["he.l.verdict", !candidate ? t("he.none") : reasons.length ? t("he.low", { r: reasons.join("; ") }) : t("he.high"), !candidate ? "err" : reasons.length ? "info" : "ok"]
+  ];
+  document.getElementById("heChecks").innerHTML = rows.map(function (r) { return "<li><span>" + t(r[0]) + '</span><span class="verdict ' + r[2] + '">' + r[1] + "</span></li>"; }).join("");
+  document.getElementById("heMetrics").innerHTML = [["he.m.asm", fmt(192)], ["he.m.cand", fmt(4550)], ["he.m.high", fmt(117) + " " + t("he.m.in", { n: 49 })], ["he.m.max", fmt(17.9, 1) + "%"]]
+    .map(function (m) { return "<div><dt>" + t(m[0]) + "</dt><dd>" + m[1] + "</dd></div>"; }).join("");
+}
+["heDepth", "heMinor", "heRev", "heCluster", "heEdge", "heRepeat"].forEach(function (id) {
+  var el = document.getElementById(id); if (el) el.addEventListener("input", drawHe);
+});
+
+var SP_BOLD = [["Kinosternon scorpioides", 97.568, 1], ["Kinosternon integrum", 96.31], ["Kinosternon hirtipes", 96.00]];
+var SP_GB = [["Kinosternon leucostomum", 92.64], ["Kinosternon flavescens", 92.45], ["Sternotherus carinatus", 91.80], ["Kinosternon scorpioides", 96.789, 1, "MH274192"]];
+function drawSpecies() {
+  var tb = document.getElementById("spVerdicts"); if (!tb) return;
+  tb.innerHTML = "<thead><tr><th>" + t("sp.th1") + "</th><th>" + t("sp.th2") + "</th></tr></thead><tbody>" +
+    ["c", "a", "n", "r"].map(function (k) { return "<tr><td><b>" + t("sp.v." + k) + "</b></td><td>" + t("sp.d." + k) + "</td></tr>"; }).join("") + "</tbody>";
+  var col = function (title, rows) {
+    return "<div><h3>" + title + "</h3>" + rows.map(function (r) {
+      var w = Math.max(0, Math.min(100, (r[1] - 90) * 10));
+      return '<div class="sp-row' + (r[2] ? " declared" : "") + '"><em>' + r[0] + '</em><span class="bar"><span style="width:' + w + '%"></span></span><b>' + fmt(r[1], 2) + "%</b>" + (r[3] ? "<small>" + t("sp.own", { acc: r[3] }) + "</small>" : "") + "</div>";
+    }).join("") + "</div>";
+  };
+  document.getElementById("spCols").innerHTML = col(t("sp.bold"), SP_BOLD) + col(t("sp.gb"), SP_GB);
+}
+
+var RF = {
+  refs: [["NC_009808", "Ipomoea purpurea", 162046, 37.483, 60], ["NC_026703", "Ipomoea batatas", 161303, 37.586, 61], ["NC_037911", "Ipomoea hederacea", 161354, 37.523, 62],
+    ["NC_037912", "Ipomoea lacunosa", 161492, 37.531, 66], ["NC_037913", "Ipomoea triloba", 161750, 37.513, 67], ["NC_041203", "Ipomoea cynanchifolia", 161386, 37.53, 70],
+    ["NC_041204", "Ipomoea cordatotriloba", 161242, 37.55, 66], ["NC_041205", "Ipomoea ramosissima", 161402, 37.536, 69], ["NC_041206", "Ipomoea splendor-sylvae", 161721, 37.524, 73],
+    ["NC_041207", "Ipomoea tabascana", 161225, 37.55, 66], ["NC_041208", "Ipomoea x leucantha", 161296, 37.545, 67], ["NC_042935", "Ipomoea asarifolia", 160589, 37.545, 69],
+    ["NC_042936", "Ipomoea carnea", 160819, 37.571, 61], ["NC_042937", "Ipomoea cavalcantei", 161563, 37.555, 64], ["NC_042938", "Ipomoea goyazensis", 160414, 37.566, 63],
+    ["NC_042939", "Ipomoea marabensis", 161324, 37.529, 67], ["NC_042940", "Ipomoea maurandioides", 161242, 37.546, 64], ["NC_042941", "Ipomoea quamoclit", 160836, 37.519, 61],
+    ["NC_042942", "Ipomoea setifera", 160082, 37.299, 59], ["NC_056300", "Ipomoea aquatica", 162663, 37.417, 81], ["NC_068906", "Ipomoea alba", 161353, 37.528, 71]],
+  asm: [161618, 37.568, 69],
+  metrics: [["rf.m.len", 2, 0.05, 0], ["rf.m.gc", 3, 0, 2], ["rf.m.rep", 4, 0, 0]]
+};
+function drawRef() {
+  var sel = document.getElementById("rfMetric"); if (!sel || !hasD3) return;
+  if (!sel.options.length || sel.dataset.lang !== lang) {
+    var keep = sel.selectedIndex < 0 ? 0 : sel.selectedIndex;
+    sel.innerHTML = RF.metrics.map(function (m, i) { return '<option value="' + i + '">' + t(m[0]) + "</option>"; }).join("");
+    sel.selectedIndex = keep; sel.dataset.lang = lang;
+  }
+  var m = RF.metrics[+sel.value || 0], col = m[1], tol = m[2], dec = m[3];
+  var vals = RF.refs.map(function (r) { return r[col]; }), lo = d3.min(vals), hi = d3.max(vals), a = RF.asm[col - 2];
+  var bandLo = lo * (1 - tol), bandHi = hi * (1 + tol);
+  var pad = (bandHi - bandLo) * 0.35 || 1;
+  var x = d3.scaleLinear().domain([Math.min(bandLo, a) - pad, Math.max(bandHi, a) + pad]).range([40, 960]);
+  var svg = d3.select("#rfSvg"); svg.selectAll("*").remove();
+  var y = 120;
+  svg.append("g").attr("transform", "translate(0,200)").call(d3.axisBottom(x).ticks(6).tickFormat(function (v) { return fmt(v, dec); }))
+    .call(function (g) { g.selectAll("text").attr("font-size", 17).attr("fill", css("--muted")); g.selectAll("line,path").attr("stroke", css("--rule")); });
+  svg.append("text").attr("x", 40).attr("y", 40).attr("font-size", 19).attr("font-style", "italic").attr("fill", css("--muted")).text("Ipomoea pes-caprae (IPO001)");
+  var band = svg.append("rect").attr("x", x(bandLo)).attr("y", y - 34).attr("height", 68).attr("rx", 4).attr("fill", css("--ok")).attr("opacity", .16).attr("width", 0);
+  band.transition().duration(reduced ? 0 : 600).attr("width", Math.max(2, x(bandHi) - x(bandLo)));
+  svg.append("line").attr("x1", 40).attr("x2", 960).attr("y1", y).attr("y2", y).attr("stroke", css("--rule"));
+  svg.append("rect").attr("x", x(lo)).attr("y", y - 24).attr("height", 48).attr("rx", 3).attr("fill", css("--muted")).attr("opacity", .12).attr("width", Math.max(2, x(hi) - x(lo)));
+  svg.selectAll("path.ref").data(RF.refs).join("path").attr("class", "ref")
+    .attr("d", d3.symbol(d3.symbolDiamond, 170)).attr("fill", css("--muted")).attr("opacity", .75)
+    .attr("transform", function (r, i) { return "translate(" + x(r[col]) + "," + (y - 12 + (i % 3) * 12) + ")"; })
+    .on("mousemove", function (ev, r) { showTip("<i>" + r[1] + "</i> " + r[0] + "<br>" + fmt(r[col], dec) + (col === 2 ? " " + BP() : col === 3 ? "%" : ""), ev); }).on("mouseleave", hideTip);
+  var inside = a >= bandLo && a <= bandHi;
+  svg.append("circle").attr("cx", x(a)).attr("cy", y).attr("r", 0).attr("fill", css(inside ? "--ok" : "--rrna")).attr("stroke", css("--ink")).attr("stroke-width", 2)
+    .transition().delay(reduced ? 0 : 450).duration(reduced ? 0 : 350).attr("r", 12);
+  svg.append("text").attr("x", x(a)).attr("y", y + 58).attr("text-anchor", "middle").attr("font-size", 18).attr("font-weight", 600).attr("fill", css("--ink")).text(fmt(a, dec));
+  document.getElementById("rfMetrics").innerHTML = [
+    ["rf.mm.range", fmt(lo, dec) + "–" + fmt(hi, dec)],
+    ["rf.mm.band", tol ? fmt(bandLo, dec) + "–" + fmt(bandHi, dec) : t("rf.noTol")], ["rf.mm.asm", fmt(a, dec)],
+    ["rf.mm.status", t(inside ? "rf.within" : "rf.outside"), inside ? "good" : "bad"]
+  ].map(function (q) { return "<div><dt>" + t(q[0]) + "</dt><dd" + (q[2] ? ' class="' + q[2] + '"' : "") + ">" + q[1] + "</dd></div>"; }).join("");
+}
+var rfSel = document.getElementById("rfMetric"); if (rfSel) rfSel.addEventListener("change", drawRef);
+redrawers.push(drawRef);
+
+function showNc(which) {
+  document.getElementById("ncMito").hidden = which !== "mito";
+  document.getElementById("ncCp").hidden = which !== "cp";
+  document.querySelectorAll("[data-nc]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.nc === which); });
+  var m = which === "mito" ? [["nc.m.asm", "7"], ["nc.m.err", "0", "good"], ["nc.m.warn", "0"], ["nc.m.stop", t("nc.m.stopv")]] : [["nc.m.asm", "1"], ["nc.m.err", "0", "good"], ["nc.m.warn", "33"], ["nc.m.exc", t("nc.m.excv")]];
+  document.getElementById("ncMetrics").innerHTML = m.map(function (q) { return "<div><dt>" + t(q[0]) + "</dt><dd" + (q[2] ? ' class="' + q[2] + '"' : "") + ">" + q[1] + "</dd></div>"; }).join("");
+}
+document.querySelectorAll("[data-nc]").forEach(function (b) { b.addEventListener("click", function () { showNc(b.dataset.nc); }); });
+
+function drawCp() {
+  var tb = document.getElementById("cpTable"); if (!tb) return;
+  tb.innerHTML = "<thead><tr><th>" + t("cp.th1") + "</th><th>" + t("cp.th2") + "</th><th>" + t("cp.th3") + "</th></tr></thead><tbody>" +
+    ["code", "bar", "bold", "ref", "asn", "names", "comp"].map(function (k) { var r = T["cp.r." + k][LI]; return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>"; }).join("") + "</tbody>";
+  document.getElementById("cpMetrics").innerHTML = [["cp.m.len", fmt(161618) + " " + BP()], ["cp.m.id", "100%", "good"], ["cp.m.refs", "21"], ["cp.m.genes", "112"], ["cp.m.out", "0", "good"], ["cp.m.asn", "0", "good"]]
+    .map(function (q) { return "<div><dt>" + t(q[0]) + "</dt><dd" + (q[2] ? ' class="' + q[2] + '"' : "") + ">" + q[1] + "</dd></div>"; }).join("");
+}
+
+function renderPhase3() {
+  drawHe(); drawSpecies(); drawCp();
+  showNc(document.getElementById("ncCp") && !document.getElementById("ncCp").hidden ? "cp" : "mito");
+  drawRef();
 }
 
 /* ================= language switch ================= */
@@ -2406,7 +2814,7 @@ function setLang(l, first) {
   lang = LANGS.indexOf(l) >= 0 ? l : "en"; LI = LANGS.indexOf(lang);
   try { localStorage.setItem("mocura-doc-lang", lang); } catch (e) {}
   applyStatic();
-  buildFilter(); buildTree(); renderLog(); fillSelects(); renderCodons(); comp(); buildOutTable(); buildWeights(); buildPickers(); updateDynamicText();
+  buildFilter(); buildTree(); renderLog(); fillSelects(); renderCodons(); comp(); buildOutTable(); buildWeights(); buildPickers(); updateDynamicText(); renderPhase3();
   if (hasD3) {
     if (first) drawHero(); else redrawAll();
     drawMatrix(); drawScores();
@@ -2584,6 +2992,14 @@ AUTO.pontuacao = function (r) {
     drawScores();
   });
 };
+AUTO.heteroplasmia = function (r) { sweep(r, document.getElementById("heMinor"), 0, 12, 1, 700, drawHe); };
+AUTO.especie = function () { fadeIn(document.querySelectorAll("#spVerdicts tbody tr, #spCols .sp-row")); };
+AUTO.refseq = function (r) {
+  var sel = document.getElementById("rfMetric");
+  r.every(4500, function () { sel.selectedIndex = (sel.selectedIndex + 1) % sel.options.length; drawRef(); });
+};
+AUTO.submissao = function (r) { r.every(6500, function () { showNc(document.getElementById("ncCp").hidden ? "cp" : "mito"); }); };
+AUTO.cloroplasto = function () { fadeIn(document.querySelectorAll("#cpTable tbody tr")); };
 AUTO.saidas = function (r) {
   r.every(6500, function () {
     var showYaml = !document.getElementById("outYaml").hidden ? false : true;

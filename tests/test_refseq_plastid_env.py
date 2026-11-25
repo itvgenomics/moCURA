@@ -255,3 +255,13 @@ def test_plastid_exceptions_for_trans_splicing_and_edited_starts():
     # The same ACG start in a mitochondrial code is left alone.
     text, _ = feature_table(record=record, sequence_id="cp", genetic_code=2)
     assert "RNA editing" not in text
+
+
+def test_submission_id_keeps_the_copy_number():
+    from moCURA.analysis.ncbi_validation import submission_id
+
+    first = submission_id("CA_1_ITV38292_2-NADH_dehydrogenase_subunit_2_45_1")
+    second = submission_id("CA_1_ITV38292_2-NADH_dehydrogenase_subunit_2_45_2")
+    assert len(first) <= 48 and first.endswith("_45_1")
+    assert first != second
+    assert submission_id("CA_1_IPO001_1-rbcL_33_1") == "CA_1_IPO001_1-rbcL_33_1"
